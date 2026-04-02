@@ -3,24 +3,61 @@ import nodemailer from "nodemailer";
 import fetch from "node-fetch";
 
 export default async function handler(req, res) {
-  // CORS for your frontend domain
-  res.setHeader("Access-Control-Allow-Origin", "https://heavenxentph.com");
+  // CORS for your frontend domain - set FIRST before any logic
+  const origin = req.headers.origin;
+  const allowedOrigins = ["https://heavenxentph.com", "http://localhost:3000"];
+  
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  } else {
+    res.setHeader("Access-Control-Allow-Origin", "https://heavenxentph.com");
+  }
+  
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Max-Age", "86400");
 
   // Handle preflight OPTIONS requests
   if (req.method === "OPTIONS") {
-    return res.status(204).end(); // No content
+    return res.status(200).end();
   }
 
-  if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
   try {
     const { name, email, type, pdf: pdfBase64, address } = req.body;
 
+    // Validate required fields
+    if (!name || !email || !type) {
+      return res.status(400).json({ error: "Missing required fields: name, email, type" });
+    }
+
+    if (!pdfBase64) {
+      return res.status(400).json({ error: "PDF data is required" });
+    }
+
     // --- Convert PDF base64 to Buffer ---
-    const pdfBuffer = Buffer.from(pdfBase64, "base64");
+    let pdfBuffer;
+    try {
+      pdfBuffer = Buffer.from(pdfBase64, "base64");
+    } catch (e) {
+      return res.status(400).json({ error: "Invalid base64 PDF data" });
+    }
+
+    // Check environment variables
+    const requiredEnvVars = [
+      'GOOGLE_CLIENT_EMAIL',
+      'GOOGLE_PRIVATE_KEY',
+      'GOOGLE_DRIVE_FOLDER_ID',
+      'PAYMONGO_SECRET_KEY',
+      'RESEND_API_KEY'
+    ];
+    
+    const missingVars = requiredEnvVars.filter(v => !process.env[v]);
+    if (missingVars.length > 0) {
+      console.error("Missing environment variables:", missingVars);
+      return res.status(500).json({ error: "Server configuration error. Missing: " + missingVars.join(", ") });
+    }
 
     // --- Google Drive Auth ---
     const auth = new google.auth.GoogleAuth({
@@ -36,7 +73,11 @@ export default async function handler(req, res) {
     // --- Decide folder based on type ---
     const folderId = type === "PDF"
       ? process.env.GOOGLE_DRIVE_FOLDER_ID     // PDF folder
-      : process.env.GOOGLE_DRIVE_FOLDER_ID_PRINT; // Print folder
+      : (process.env.GOOGLE_DRIVE_FOLDER_ID_PRINT || process.env.GOOGLE_DRIVE_FOLDER_ID); // Print folder
+
+    if (!folderId) {
+      return res.status(500).json({ error: "Google Drive folder not configured" });
+    }
 
     const fileName = `${type}-ORD-${Date.now()}.pdf`;
 
@@ -92,12 +133,24 @@ export default async function handler(req, res) {
       })
     });
 
+    if (!checkoutRes.ok) {
+      const errorText = await checkoutRes.text();
+      console.error("PayMongo error:", checkoutRes.status, errorText);
+      return res.status(500).json({ error: "Payment gateway error" });
+    }
+
     const checkoutData = await checkoutRes.json();
+
+    if (!checkoutData.data?.attributes?.checkout_url) {
+      console.error("Invalid PayMongo response:", checkoutData);
+      return res.status(500).json({ error: "Invalid payment response" });
+    }
 
     return res.status(200).json({ checkout_url: checkoutData.data.attributes.checkout_url });
 
   } catch (err) {
     console.error("Backend error:", err);
-    return res.status(500).json({ error: err.message });
+    // CORS headers are already set above, so error response will include them
+    return res.status(500).json({ error: err.message || "Internal server error" });
   }
 }
