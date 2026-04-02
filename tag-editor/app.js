@@ -596,22 +596,34 @@ async function generatePDF() {
 }
 
 async function handleBuyPDF() {
-  alert("Function is running");
+  try {
+    const btn = document.getElementById("btnDownload");
+    btn.innerText = "Redirecting to checkout...";
+    btn.disabled = true;
 
-  const res = await fetch("https://api.heavenxentph.com/api/checkout", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      name: "Test",
-      email: "test@email.com",
-      type: "PDF"
-    })
-  });
+    const res = await fetch("https://api.heavenxentph.com/api/checkout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name: "Test User",
+        email: "test@email.com",
+        type: "PDF"
+      })
+    });
 
-  const data = await res.json();
-  console.log(data);
+    const data = await res.json();
+
+    console.log("Checkout response:", data); // debug
+
+    // ✅ THIS IS THE IMPORTANT LINE
+    window.location.href = data.checkout_url;
+
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong. Please try again.");
+  }
 }
 
 //function to generate PDF blob without triggering download
