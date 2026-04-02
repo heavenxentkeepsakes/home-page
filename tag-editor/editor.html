@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Design Your Tags — Heavenxent Keepsakes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link id="designFonts" rel="stylesheet" href="" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body class="page-editor">
+  <nav>
+    <a href="../" class="nav-logo">Heavenxent Keepsakes</a>
+    <ul class="nav-links">
+      <li><a href="../#products">Products</a></li>
+      <li><a href="../#how-it-works">How it works</a></li>
+      <li><a href="./">Design now</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <div class="studio">
+      <!-- LEFT: Form -->
+      <div class="form-panel">
+        <a href="index.html" class="back-to-designs">← Back to Design Selection</a>
+        
+        <div class="design-badge">
+          <span class="design-badge-name" id="designBadgeName">Classic Bloom</span>
+          <a href="index.html" class="design-badge-change">Change design</a>
+        </div>
+
+        <h2>Create Your Tag</h2>
+        <p class="sub">Personalize the design below — the preview updates live as you type.</p>
+
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <span class="step-label">Couple's Names</span>
+            <div class="name-row">
+              <input type="text" id="name1" placeholder="Ethan" maxlength="18" oninput="updateTag()" />
+              <div class="ampersand">&amp;</div>
+              <input type="text" id="name2" placeholder="Maria" maxlength="18" oninput="updateTag()" />
+            </div>
+
+            <!-- Custom font selector with styled dropdown -->
+            <div class="font-selector" style="margin-top: 12px;">
+              <label
+                style="font-size: 0.7rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); display: block; margin-bottom: 6px;">
+                Font Style
+              </label>
+              <div class="custom-select" id="fontSelectWrapper">
+                <div class="custom-select-trigger" id="fontSelectTrigger">
+                  <span id="selectedFontDisplay">Select a font...</span>
+                  <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </div>
+                <div class="custom-select-options" id="fontSelectOptions"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <span class="step-label">Wedding Date</span>
+            <input type="date" id="wdate" oninput="updateTag()" />
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <span class="step-label">
+              Tagline
+              <span style="opacity:0.5;font-weight:300;text-transform:none;letter-spacing:0">(optional)</span>
+            </span>
+            <input type="text" id="tagline" class="tagline-input" placeholder="Forever starts today" maxlength="40"
+              oninput="updateTag()" />
+          </div>
+        </div>
+
+        <!-- Photo step — shown only when design has photo.enabled = true -->
+        <div class="step" id="photoStep" style="display:none">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <span class="step-label">
+              Couple Photo
+              <span style="opacity:0.5;font-weight:300;text-transform:none;letter-spacing:0">(optional)</span>
+            </span>
+            <label class="photo-upload-label" id="photoUploadLabel">
+              <input type="file" id="photoInput" accept="image/*" onchange="handlePhotoUpload(event)"
+                style="display:none" />
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="3" />
+                <circle cx="8.5" cy="8.5" r="1.5" />
+                <polyline points="21 15 16 10 5 21" />
+              </svg>
+              <span>Click to upload a photo</span>
+            </label>
+            <button class="photo-remove-btn" id="photoRemoveBtn" onclick="removePhoto()" style="display:none">
+              ✕ Remove photo
+            </button>
+          </div>
+        </div>
+
+        <div class="cta-section">
+          <button class="btn-download-pdf" id="btnDownload" onclick="generatePDF()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Download PDF — 12 Tags
+          </button>
+          <p class="dl-note">A4 · 12 tags per sheet · High-resolution · Print-ready</p>
+        </div>
+      </div>
+
+      <!-- RIGHT: Preview -->
+      <div class="preview-panel">
+        <p class="preview-label">✦ Live Preview ✦</p>
+        <!-- tagWrapper is sized dynamically by app.js to match the design -->
+        <div class="tag-wrapper" id="tagWrapper"></div>
+        <div class="preview-meta">
+          <span>Print size: 1.9" x 3.5"</span>
+          <span id="previewDesignName"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="tag-renderer.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>

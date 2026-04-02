@@ -1,0 +1,832 @@
+[
+  {
+    "id": "1",
+    "name": "Autumn Bloom",
+    "description": "Warm, earthy florals frame your details in seasonal beauty.",
+    "tagImage": "./wedding-img/tag1.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;500;600;700&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false,
+        "x": "50%",
+        "y": "30%",
+        "width": 80,
+        "height": 80,
+        "shape": "circle",
+        "borderColor": "#c4956a",
+        "borderWidth": 2
+      },
+      "couple": {
+        "x": "50%",
+        "y": "63%",
+        "width": "85%",
+        "alignment": "center",
+        "fontFamily": "Bebas Neue, sans-serif",
+        "fontSize": "1.2rem",
+        "fontWeight": "100",
+        "lineHeight": "1.4",
+        "maxLines": 1,
+        "letterSpacing": "0.15em",
+        "textTransform": "none",
+        "color": "#3a2e28",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1rem",
+        "ampCharacter": "&"
+      },
+      "date": {
+        "x": "50%",
+        "y": "70%",
+        "width": "85%",
+        "alignment": "center",
+        "fontFamily": "Barlow Condensed, sans-serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "500",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.12em",
+        "textTransform": "none",
+        "color": "#6a5a50",
+        "format": "MM | DD | YYYY"
+      },
+      "tagline": {
+        "x": "50%",
+        "y": "73%",
+        "width": "85%",
+        "alignment": "center",
+        "fontFamily": "Barlow Condensed, sans-serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.1em",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "Forever starts today"
+      }
+    }
+  },
+  {
+    "id": "2",
+    "name": "Minimal Frame",
+    "description": "A clean, modern spotlight on your favorite captured moment.",
+    "tagImage": "./wedding-img/tag2.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Gilda+Display&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": true,
+        "x": "50%",
+        "y": "25%",
+        "width": 130,
+        "height": 200,
+        "shape": "rectangle",
+        "borderColor": "#ddd3cc",
+        "borderWidth": 2
+      },
+      "couple": {
+        "x": "50%",
+        "y": "70%",
+        "width": "88%",
+        "alignment": "center",
+        "fontFamily": "Gilda Display, serif",
+        "fontSize": "1 rem",
+        "fontWeight": "100",
+        "lineHeight": "1.4",
+        "maxLines": 1,
+        "letterSpacing": "0.1em",
+        "textTransform": "none",
+        "color": "#3a2e28",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1.5rem",
+        "ampCharacter": "+"
+      },
+      "date": {
+        "x": "50%",
+        "y": "77%",
+        "width": "88%",
+        "alignment": "center",
+        "fontFamily": "Gilda Display, serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.1em",
+        "textTransform": "none",
+        "color": "#6a5a50",
+        "format": "DD / MM / YYYY"
+      },
+      "tagline": {
+        "x": "50%",
+        "y": "82%",
+        "width": "88%",
+        "alignment": "center",
+        "fontFamily": "Gilda Display, serif",
+        "fontSize": "0.7rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.08em",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "Celebrating love with you"
+      }
+    }
+  },
+  {
+    "id": "3",
+    "name": "Soft Petal",
+    "description": "Delicate lavender sprigs bring a touch of garden-fresh elegance.",
+    "tagImage": "./wedding-img/tag3.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Lora:ital,wght@0,400;0,600;1,400&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false,
+        "x": "50%",
+        "y": "28%",
+        "width": 80,
+        "height": 80,
+        "shape": "circle",
+        "borderColor": "#c4956a",
+        "borderWidth": 2
+      },
+      "couple": {
+        "x": "8%",
+        "y": "55%",
+        "width": "86%",
+        "alignment": "left",
+        "fontFamily": "Cinzel, serif",
+        "fontSize": "1.6rem",
+        "fontWeight": "100",
+        "lineHeight": "1.4",
+        "maxLines": 2,
+        "letterSpacing": "0.1em",
+        "textTransform": "none",
+        "color": "#7a5f7b",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1rem",
+        "ampCharacter": "&"
+      },
+      "date": {
+        "x": "8%",
+        "y": "77%",
+        "width": "86%",
+        "alignment": "left",
+        "fontFamily": "Lora, serif",
+        "fontSize": "0.9rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.12em",
+        "textTransform": "none",
+        "color": "#735e59",
+        "format": "MMMM DD, YYYY"
+      },
+      "tagline": {
+        "x": "8%",
+        "y": "83%",
+        "width": "56%",
+        "alignment": "left",
+        "fontFamily": "Lora, serif",
+        "fontSize": "0.75rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "textTransform": "none",
+        "color": "#735e59",
+        "defaultValue": "Thank you for your love and support"
+      }
+    }
+  },
+  {
+    "id": "4",
+    "name": "Seaside Sketch",
+    "description": "Gentle blue watercolor strokes for a light, breezy coastal feel.",
+    "tagImage": "./wedding-img/tag4.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400&family=Pinyon+Script&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": true,
+        "x": "50%",
+        "y": "55%",
+        "width": 180,
+        "height": 120,
+        "shape": "rectangle",
+        "borderColor": "#cad7e2",
+        "borderWidth": 5
+      },
+      "couple": {
+        "x": "50%",
+        "y": "26%",
+        "width": "87%",
+        "alignment": "center",
+        "fontFamily": "Literata, serif",
+        "fontSize": "1.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.2",
+        "maxLines": 2,
+        "letterSpacing": "0.08em",
+        "textTransform": "none",
+        "color": "#1d4d69",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1.0625rem",
+        "ampCharacter": "&"
+      },
+      "date": {
+        "x": "50%",
+        "y": "20%",
+        "width": "87%",
+        "alignment": "center",
+        "fontFamily": "Literata, serif",
+        "fontSize": "0.6875rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.05em",
+        "textTransform": "none",
+        "color": "#6a5a50",
+        "format": "MM | DD | YYYY"
+      },
+      "tagline": {
+        "x": "50%",
+        "y": "43%",
+        "width": "70%",
+        "alignment": "center",
+        "fontFamily": "Pinyon Script, cursive",
+        "fontSize": "1rem",
+        "fontWeight": "400",
+        "lineHeight": "1.1",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "Thank you for making our day complete"
+      }
+    }
+  },
+  {
+    "id": "5",
+    "name": "Forest Arches",
+    "description": "Deep botanical greens meet a classic arch for a timeless look.",
+    "tagImage": "./wedding-img/tag5.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inria+Serif:ital,wght@0,400;0,700;1,400&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false,
+        "x": "50%",
+        "y": "28%",
+        "width": 75,
+        "height": 75,
+        "shape": "circle",
+        "borderColor": "#c4956a",
+        "borderWidth": 2
+      },
+      "couple": {
+        "x": "50%",
+        "y": "52%",
+        "width": "65%",
+        "alignment": "center",
+        "fontFamily": "Great Vibes, cursive",
+        "fontSize": "2.5rem",
+        "fontWeight": "400",
+        "lineHeight": "1.25",
+        "maxLines": 2,
+        "letterSpacing": "0em",
+        "textTransform": "none",
+        "color": "#ffffff",
+        "ampColor": "#ffffff",
+        "ampFontSize": "1.5rem",
+        "ampCharacter": "and"
+      },
+      "date": {
+        "x": "50%",
+        "y": "80%",
+        "width": "80%",
+        "alignment": "center",
+        "fontFamily": "Inria Serif, serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.1em",
+        "textTransform": "none",
+        "color": "#ffffff",
+        "format": "DD MMMM, YYYY"
+      },
+      "tagline": {
+        "x": "50%",
+        "y": "34%",
+        "width": "50%",
+        "alignment": "center",
+        "fontFamily": "Inria Serif, serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "textTransform": "uppercase",
+        "color": "#ffffff",
+        "defaultValue": "Thank you for attending the The Wedding of"
+      }
+    }
+  },
+  {
+    "id": "6",
+    "name": "Polished Portrait",
+    "description": "Traditional typography paired with a generous, centered photo.",
+    "tagImage": "./wedding-img/tag6.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Petit+Formal+Script&family=Source+Serif+Pro:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": true,
+        "x": "50%",
+        "y": "37%",
+        "width": 180,
+        "height": 180,
+        "shape": "square",
+        "borderColor": "#ffffff",
+        "borderWidth": 0
+      },
+      "couple": {
+        "x": "50%",
+        "y": "80%",
+        "width": "84%",
+        "alignment": "center",
+        "fontFamily": "Petit Formal Script, cursive",
+        "fontSize": "1.5rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "maxLines": 1,
+        "letterSpacing": "0em",
+        "textTransform": "none",
+        "color": "#3a2e28",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1rem",
+        "ampCharacter": "&"
+      },
+      "date": {
+        "x": "50%",
+        "y": "90%",
+        "width": "84%",
+        "alignment": "center",
+        "fontFamily": "Source Serif Pro, serif",
+        "fontSize": "0.9rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.1em",
+        "textTransform": "none",
+        "color": "#6a5a50",
+        "format": "DD / MM / YYYY"
+      },
+      "tagline": {
+        "x": "50%",
+        "y": "28%",
+        "width": "84%",
+        "alignment": "center",
+        "fontFamily": "Source Serif Pro, serif",
+        "fontSize": "0.9rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "textTransform": "uppercase",
+        "color": "#5a4a40",
+        "defaultValue": "happily ever after"
+      }
+    }
+  },
+  {
+    "id": "7",
+    "name": "Golden Etch",
+    "description": "Intricate, shimmering line art for a touch of vintage luxury.",
+    "tagImage": "./wedding-img/tag7.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Tangerine:wght@400;700&family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false,
+        "x": "50%",
+        "y": "30%",
+        "width": 70,
+        "height": 70,
+        "shape": "circle",
+        "borderColor": "#c4956a",
+        "borderWidth": 2
+      },
+      "couple": {
+        "x": "90%",
+        "y": "37%",
+        "width": "62%",
+        "alignment": "right",
+        "fontFamily": "Tangerine, cursive",
+        "fontSize": "3rem",
+        "fontWeight": "700",
+        "lineHeight": "1",
+        "maxLines": 2,
+        "letterSpacing": "0.05em",
+        "textTransform": "none",
+        "color": "#3a2e28",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1.3125rem",
+        "ampCharacter": "&"
+      },
+      "date": {
+        "x": "90%",
+        "y": "58%",
+        "width": "82%",
+        "alignment": "right",
+        "fontFamily": "Roboto Condensed, sans-serif",
+        "fontSize": "0.75rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.12em",
+        "textTransform": "none",
+        "color": "#6a5a50",
+        "format": "YYYY-MM-DD"
+      },
+      "tagline": {
+        "x": "90%",
+        "y": "28%",
+        "width": "40%",
+        "alignment": "right",
+        "fontFamily": "Roboto Condensed, sans-serif",
+        "fontSize": "0.9rem",
+        "fontWeight": "300",
+        "lineHeight": "1",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "Celebrating love with you."
+      }
+    }
+  },
+  {
+    "id": "8",
+    "name": "Modern Horizon",
+    "description": "A sleek, wide-angle layout perfect for landscape photography.",
+    "tagImage": "./wedding-img/tag8.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Parisienne&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": true,
+        "x": "50%",
+        "y": "38%",
+        "width": 280,
+        "height": 150,
+        "shape": "rectangle",
+        "borderColor": "#ffffff",
+        "borderWidth": 0
+      },
+      "couple": {
+        "x": "50%",
+        "y": "72%",
+        "width": "85%",
+        "alignment": "center",
+        "fontFamily": "Parisienne, cursive",
+        "fontSize": "2.4rem",
+        "fontWeight": "400",
+        "lineHeight": "1",
+        "maxLines": 2,
+        "letterSpacing": "0em",
+        "textTransform": "none",
+        "color": "#3a2e28",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1.3125rem",
+        "ampCharacter": "&"
+      },
+      "date": {
+        "x": "50%",
+        "y": "90%",
+        "width": "85%",
+        "alignment": "center",
+        "fontFamily": "Montserrat, sans-serif",
+        "fontSize": "0.75rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.15em",
+        "textTransform": "none",
+        "color": "#6a5a50",
+        "format": "MM · DD · YYYY"
+      },
+      "tagline": {
+        "x": "50%",
+        "y": "20%",
+        "width": "65%",
+        "alignment": "center",
+        "fontFamily":  "Parisienne, cursive",
+        "fontSize": "1.2rem",
+        "fontWeight": "300",
+        "lineHeight": "1",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "Welcome to our happily ever after"
+      }
+    }
+  },
+  {
+    "id": "9",
+    "name": "Ornate Border",
+    "description": "Decorative flourishes that frame your names in royal style.",
+    "tagImage": "./wedding-img/tag9.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+       "https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,500;0,600;1,400&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": true,
+        "x": "50%",
+        "y": "30%",
+        "width": 220,
+        "height": 220,
+        "shape": "circle",
+        "borderColor": "#c4956a",
+        "borderWidth": 0
+      },
+      "couple": {
+        "x": "50%",
+        "y": "80%",
+        "width": "84%",
+        "alignment": "center",
+        "fontFamily": "Alegreya, serif",
+        "fontSize": "2.5rem",
+        "fontWeight": "200",
+        "lineHeight": "1.4",
+        "maxLines": 1,
+        "letterSpacing": "0.05em",
+        "textTransform": "uppercase",
+        "color": "#3a2e28",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1.5rem",
+        "ampCharacter": "&"
+      },
+      "date": {
+        "x": "50%",
+        "y": "88%",
+        "width": "84%",
+        "alignment": "center",
+        "fontFamily": "Open Sans, sans-serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.12em",
+        "textTransform": "uppercase",
+        "color": "#6a5a50",
+        "format": "MMMM DD, YYYY"
+      },
+      "tagline": {
+        "x": "50%",
+        "y": "92%",
+        "width": "64%",
+        "alignment": "center",
+        "fontFamily": "Open Sans, sans-serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "300",
+        "lineHeight": "1",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "We are so grateful to have you in our lives."
+      }
+    }
+  },
+  {
+    "id": "10",
+    "name": "Monochrome Leaf",
+    "description": "Minimalist black-ink sketches for the modern, understated couple.",
+    "tagImage": "./wedding-img/tag10.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Srisakdi:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false,
+        "x": "50%",
+        "y": "25%",
+        "width": 390,
+        "height": 390,
+        "shape": "circle",
+        "borderColor": "#c4956a",
+        "borderWidth": 3
+      },
+      "couple": {
+        "x": "50%",
+        "y": "37%",
+        "width": "86%",
+        "alignment": "center",
+        "fontFamily": "Srisakdi, cursive",
+        "fontSize": "2.7rem",
+        "fontWeight": "500",
+        "lineHeight": "1.1",
+        "maxLines": 2,
+        "letterSpacing": "0.1em",
+        "textTransform": "none",
+        "color": "#3a2e28",
+        "ampColor": "#c4956a",
+        "ampFontSize": "0.875rem",
+        "ampCharacter": "&"
+      },
+      "date": {
+        "x": "50%",
+        "y": "75%",
+        "width": "86%",
+        "alignment": "center",
+        "fontFamily": "Cormorant Garamond, serif",
+        "fontSize": "1rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.12em",
+        "textTransform": "none",
+        "color": "#6a5a50",
+        "format": "MM | DD | YYYY"
+      },
+      "tagline": {
+        "x": "50%",
+        "y": "65%",
+        "width": "60%",
+        "alignment": "center",
+        "fontFamily": "Cormorant Garamond, serif",
+        "fontSize": "1rem",
+        "fontWeight": "300",
+        "lineHeight": "1.1",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "we are so happy you are here with us"
+      }
+    }
+  },
+  {
+    "id": "11",
+    "name": "Willow Wreath",
+    "description": "A soft, circular frame of greenery symbolizing eternal love.",
+    "tagImage": "./wedding-img/tag11.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Glass+Antiqua&family=Noto+Sans+JP:wght@100;300;400;500;700&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": true,
+        "x": "50%",
+        "y": "23.7%",
+        "width": 185,
+        "height": 220,
+        "shape": "oval",
+        "borderColor": "#c4956a",
+        "borderWidth": 0
+      },
+      "couple": {
+        "x": "50%",
+        "y": "71%",
+        "width": "84%",
+        "alignment": "center",
+        "fontFamily": "Glass Antiqua, cursive",
+        "fontSize": "2rem",
+        "fontWeight": "100",
+        "lineHeight": "1",
+        "maxLines": 2,
+        "letterSpacing": "0.08em",
+        "textTransform": "none",
+        "color": "#3a2e28",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1rem",
+        "ampCharacter": "&"
+      },
+      "date": {
+        "x": "50%",
+        "y": "87%",
+        "width": "84%",
+        "alignment": "center",
+        "fontFamily": "Noto Sans JP, sans-serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.1em",
+        "textTransform": "none",
+        "color": "#6a5a50",
+        "format": "YYYY-MM-DD"
+      },
+      "tagline": {
+        "x": "50%",
+        "y": "91%",
+        "width": "50%",
+        "alignment": "center",
+        "fontFamily": "Noto Sans JP, sans-serif",
+        "fontSize": "0.75rem",
+        "fontWeight": "300",
+        "lineHeight": "1.4",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "Thank you for growing with us"
+      }
+    }
+  },
+  {
+    "id": "12",
+    "name": "Sunset Palms",
+    "description": "Tropical warmth and golden tones for your destination celebration.",
+    "tagImage": "./wedding-img/tag12.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Pacifico&family=Pompiere&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false,
+        "x": "50%",
+        "y": "24%",
+        "width": 300,
+        "height": 365,
+        "shape": "circle",
+        "borderColor": "#c4956a",
+        "borderWidth": 2
+      },
+      "couple": {
+        "x": "50%",
+        "y": "38%",
+        "width": "82%",
+        "alignment": "center",
+        "fontFamily": "Pacifico, cursive",
+        "fontSize": "2.3rem",
+        "fontWeight": "100",
+        "lineHeight": "1.4",
+        "maxLines": 2,
+        "letterSpacing": "0",
+        "textTransform": "none",
+        "color": "#7b4628",
+        "ampColor": "#7b4628",
+        "ampFontSize": "1rem",
+        "ampCharacter": "&"
+      },
+      "date": {
+        "x": "50%",
+        "y": "67%",
+        "width": "82%",
+        "alignment": "center",
+        "fontFamily": "Pompiere, cursive",
+        "fontSize": "0.9rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.08em",
+        "textTransform": "none",
+        "color": "#6a5a50",
+        "format": "DD MMMM, YYYY"
+      },
+      "tagline": {
+        "x": "50%",
+        "y": "71%",
+        "width": "52%",
+        "alignment": "center",
+        "fontFamily": "Pompiere, cursive",
+        "fontSize": "0.9rem",
+        "fontWeight": "400",
+        "lineHeight": "1.1",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "Thank you for your presence and blessings"
+      }
+    }
+  }
+]
