@@ -3,25 +3,8 @@ import nodemailer from "nodemailer";
 import fetch from "node-fetch";
 
 export default async function handler(req, res) {
-  // ✅ CORS headers for frontend
-  res.setHeader("Access-Control-Allow-Origin", "*"); // or your domain only
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
-  // ✅ Handle preflight
-  if (req.method === "OPTIONS") return res.status(200).end();
-
-  // ✅ Only allow POST for checkout
-  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
-
-  try {
-    // ...rest of your logic here
-  } catch (err) {
-    console.error("Backend error:", err);
-    return res.status(500).json({ error: err.message });
-  }
-}  // --- CORS headers ---
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  // --- CORS headers ---
+  res.setHeader("Access-Control-Allow-Origin", "*"); // or your domain
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
@@ -46,9 +29,10 @@ export default async function handler(req, res) {
     const drive = google.drive({ version: "v3", auth });
 
     // --- Decide folder based on type ---
-    const folderId = type === "PDF" 
-      ? process.env.GOOGLE_DRIVE_FOLDER_ID // pdf-orders
-      : process.env.GOOGLE_DRIVE_FOLDER_ID_PRINT; // print-orders
+    const folderId = type === "PDF"
+      ? process.env.GOOGLE_DRIVE_FOLDER_ID     // PDF folder
+      : process.env.GOOGLE_DRIVE_FOLDER_ID_PRINT; // Print folder
+
     const fileName = `${type}-ORD-${Date.now()}.pdf`;
 
     // --- Upload PDF to Google Drive ---
@@ -57,7 +41,7 @@ export default async function handler(req, res) {
       media: { mimeType: "application/pdf", body: pdfBuffer }
     });
 
-    // --- Email Buyer ---
+    // --- Send confirmation email ---
     const transporter = nodemailer.createTransport({
       host: "smtp.resend.email",
       port: 587,
@@ -73,8 +57,7 @@ export default async function handler(req, res) {
     } else {
       const ref = `PRINT-${Date.now()}`;
       emailText = `Hi ${name},\n\nYour print order (${ref}) has been received. We will process it within a week.\n\nThank you!`;
-      // --- Log to Google Sheets if needed ---
-      // optional: append order to Google Sheets for tracking
+      // Optional: log print orders to Google Sheets here for tracking
     }
 
     await transporter.sendMail({
@@ -84,7 +67,7 @@ export default async function handler(req, res) {
       text: emailText
     });
 
-    // --- PayMongo Checkout Creation ---
+    // --- Create PayMongo checkout ---
     const checkoutRes = await fetch("https://api.paymongo.com/v1/checkout", {
       method: "POST",
       headers: {
@@ -94,7 +77,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         data: {
           attributes: {
-            amount: type === "PDF" ? 9900 : 19900, // change as needed
+            amount: type === "PDF" ? 9900 : 19900, // adjust prices
             currency: "PHP",
             metadata: { name, email, type, address },
             success_url: "https://heavenxentph.com/success.html",
@@ -109,7 +92,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ checkout_url: checkoutData.data.attributes.checkout_url });
 
   } catch (err) {
-    console.error(err);
+    console.error("Backend error:", err);
     return res.status(500).json({ error: err.message });
   }
 }
