@@ -43,8 +43,8 @@ export default async function handler(req, res) {
               }
             ],
             payment_method_types: ["card", "gcash"],
-            success_url: "https://your-site.com/success",
-            cancel_url: "https://your-site.com/cancel",
+            success_url: "https://heavenxentph.com/success",
+            cancel_url: "https://heavenxentph.com/cancel",
             metadata: {
               email,
               name,
