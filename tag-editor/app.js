@@ -596,37 +596,22 @@ async function generatePDF() {
 }
 
 async function handleBuyPDF() {
-  try {
-    // Optional: disable button while processing
-    const btn = document.getElementById("btnDownload");
-    btn.innerText = "Processing...";
-    btn.disabled = true;
+  alert("Function is running");
 
-    // 🔹 Step 1: Generate PDF (DO NOT download)
-    const pdfBlob = await generatePDFBlob(); // we'll define this next
+  const res = await fetch("https://api.heavenxentph.com/api/checkout", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      name: "Test",
+      email: "test@email.com",
+      type: "PDF"
+    })
+  });
 
-    // 🔹 Step 2: Call your backend checkout API
-    const res = await fetch("https://api.heavenxentph.com/api/checkout", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        name: "Customer", // replace later with form input
-        email: "test@email.com", // replace later
-        type: "PDF"
-      })
-    });
-
-    const data = await res.json();
-
-    // 🔹 Step 3: Redirect to PayMongo checkout
-    window.location.href = data.checkout_url;
-
-  } catch (err) {
-    console.error(err);
-    alert("Something went wrong. Please try again.");
-  }
+  const data = await res.json();
+  console.log(data);
 }
 
 //function to generate PDF blob without triggering download
