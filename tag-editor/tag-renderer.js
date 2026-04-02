@@ -283,46 +283,60 @@ function drawTextWithSpacing(ctx, text, x, y, letterSpacing, maxWidth, lineHeigh
 
 // ─── Build canvas tag asynchronously ───────────────────────────────────────────
 async function buildTagCanvas(design, values, photoDataURL) {
-  const { tagDimensions, tagImage, fields } = design;
-  const W = tagDimensions.width;
-  const H = tagDimensions.height;
-
-  // Wait for fonts to be ready before rendering
-  if (document.fonts) {
-    await document.fonts.ready;
-  }
-
-  // Collect font families for this design
-  const fontFamilies = [];
-  if (fields.couple) fontFamilies.push(fields.couple.fontFamily);
-  if (fields.date) fontFamilies.push(fields.date.fontFamily);
-  if (fields.tagline) fontFamilies.push(fields.tagline.fontFamily);
-
-  // Ensure fonts are loaded before rendering
-  await ensureFontsForCanvas(fontFamilies);
-
-  // Create canvas at 2x DPI for sharp text rendering
-  const DPI_SCALE = 2;
-  const canvas = document.createElement('canvas');
-  canvas.width = W * DPI_SCALE;
-  canvas.height = H * DPI_SCALE;
-  const ctx = canvas.getContext('2d', { alpha: true });
-
-  // Load background image - scale to 2x size
   try {
-    if (tagImage) {
-      const bgImg = await loadImage(tagImage);
-      ctx.drawImage(bgImg, 0, 0, W * DPI_SCALE, H * DPI_SCALE);
-    } else {
-      // Fallback: white background
+    console.log('buildTagCanvas: Starting for design:', design.name);
+    const { tagDimensions, tagImage, fields } = design;
+    const W = tagDimensions.width;
+    const H = tagDimensions.height;
+    console.log(`buildTagCanvas: Dimensions ${W}x${H}`);
+
+    // Wait for fonts to be ready before rendering
+    if (document.fonts) {
+      await document.fonts.ready;
+      console.log('buildTagCanvas: Fonts ready');
+    }
+
+    // Collect font families for this design
+    const fontFamilies = [];
+    if (fields.couple) fontFamilies.push(fields.couple.fontFamily);
+    if (fields.date) fontFamilies.push(fields.date.fontFamily);
+    if (fields.tagline) fontFamilies.push(fields.tagline.fontFamily);
+
+    // Ensure fonts are loaded before rendering
+    await ensureFontsForCanvas(fontFamilies);
+    console.log('buildTagCanvas: Canvas fonts ensured');
+
+    // Create canvas at 2x DPI for sharp text rendering
+    const DPI_SCALE = 2;
+    const canvas = document.createElement('canvas');
+    canvas.width = W * DPI_SCALE;
+    canvas.height = H * DPI_SCALE;
+    console.log(`buildTagCanvas: Canvas element created ${canvas.width}x${canvas.height}`);
+    
+    const ctx = canvas.getContext('2d', { alpha: true });
+    if (!ctx) {
+      throw new Error('Could not get 2D context from canvas');
+    }
+    console.log('buildTagCanvas: Canvas context obtained');
+
+    // Load background image - scale to 2x size
+    try {
+      if (tagImage) {
+        console.log('buildTagCanvas: Loading tag image:', tagImage);
+        const bgImg = await loadImage(tagImage);
+        ctx.drawImage(bgImg, 0, 0, W * DPI_SCALE, H * DPI_SCALE);
+        console.log('buildTagCanvas: Tag image drawn');
+      } else {
+        // Fallback: white background
+        console.log('buildTagCanvas: No tag image, using white background');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, W * DPI_SCALE, H * DPI_SCALE);
+      }
+    } catch (e) {
+      console.warn('Could not load tag background image:', e);
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, W * DPI_SCALE, H * DPI_SCALE);
     }
-  } catch (e) {
-    console.warn('Could not load tag background image:', e);
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, W * DPI_SCALE, H * DPI_SCALE);
-  }
 
   // Draw photo
   const p = fields.photo;
@@ -541,7 +555,12 @@ async function buildTagCanvas(design, values, photoDataURL) {
     }
   }
 
+  console.log('buildTagCanvas: Rendering complete');
   return canvas;
+  } catch (err) {
+    console.error('FATAL ERROR in buildTagCanvas:', err);
+    throw err;
+  }
 }
 
 // ─── Build proper Canvas font string with quoted font names ────────────────────
@@ -698,34 +717,42 @@ async function updateTagCanvas(canvas, design, values, photoDataURL) {
 
 // ─── Legacy HTML wrapper for backward compatibility ───────────────────────────
 async function buildTagElement(design, values, photoDataURL) {
-  const canvas = await buildTagCanvas(design, values, photoDataURL);
+  try {
+    console.log('buildTagElement: Starting...');
+    const canvas = await buildTagCanvas(design, values, photoDataURL);
+    console.log('buildTagElement: Canvas created, size:', canvas.width, 'x', canvas.height);
 
-  // Create wrapper div
-  const wrapper = document.createElement('div');
-  wrapper.className = 'tag-root';
-  wrapper.style.cssText = `
-    position: relative;
-    width: ${design.tagDimensions.width}px;
-    height: ${design.tagDimensions.height}px;
-    border-radius: 16px;
-    overflow: hidden;
-    flex-shrink: 0;
-  `;
+    // Create wrapper div
+    const wrapper = document.createElement('div');
+    wrapper.className = 'tag-root';
+    wrapper.style.cssText = `
+      position: relative;
+      width: ${design.tagDimensions.width}px;
+      height: ${design.tagDimensions.height}px;
+      border-radius: 16px;
+      overflow: hidden;
+      flex-shrink: 0;
+    `;
 
-  // Canvas is internally 2x DPI for sharp text, but display at normal size
-  canvas.style.display = 'block';
-  canvas.style.width = `${design.tagDimensions.width}px`;
-  canvas.style.height = `${design.tagDimensions.height}px`;
-  canvas.style.margin = '0';
-  canvas.style.padding = '0';
-  canvas.style.position = 'absolute';
-  canvas.style.top = '0';
-  canvas.style.left = '0';
-  canvas.style.imageRendering = 'auto';
-  canvas.className = 'tag-canvas';
-  wrapper.appendChild(canvas);
-
-  return wrapper;
+    // Canvas is internally 2x DPI for sharp text, but display at normal size
+    canvas.style.display = 'block';
+    canvas.style.width = `${design.tagDimensions.width}px`;
+    canvas.style.height = `${design.tagDimensions.height}px`;
+    canvas.style.margin = '0';
+    canvas.style.padding = '0';
+    canvas.style.position = 'absolute';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.imageRendering = 'auto';
+    canvas.className = 'tag-canvas';
+    wrapper.appendChild(canvas);
+    
+    console.log('buildTagElement: Wrapper created and canvas appended');
+    return wrapper;
+  } catch (err) {
+    console.error('FATAL ERROR in buildTagElement:', err);
+    throw err;
+  }
 }
 
 async function updateTagElement(root, design, values, photoDataURL) {

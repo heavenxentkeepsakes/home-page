@@ -358,94 +358,122 @@ async function loadFontsForDesign(design) {
 
 // ─── Bootstrap ────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', async () => {
-  const designId = sessionStorage.getItem('selectedDesignId');
-
   try {
-    const designs = await fetch('./designs.json').then(r => r.json());
+    const designId = sessionStorage.getItem('selectedDesignId');
+    console.log('Initializing editor with designId:', designId);
+
+    // Load designs
+    let designs;
+    try {
+      designs = await fetch('./designs.json').then(r => r.json());
+      console.log('Loaded designs:', designs.length);
+    } catch (e) {
+      console.error('Could not load designs.json', e);
+      alert('Error: Could not load designs. Check console.');
+      return;
+    }
+
     _currentDesign = designs.find(d => d.id === designId) || designs[0];
-  } catch (e) {
-    console.error('Could not load designs.json', e);
-    return;
-  }
+    console.log('Current design:', _currentDesign.name);
 
-  // Collect available fonts from all designs
-  await collectAvailableFonts();
+    // Collect available fonts from all designs
+    await collectAvailableFonts();
+    console.log('Fonts collected');
 
-  // Preload all fonts for the dropdown
-  await preloadAllFonts();
+    // Preload all fonts for the dropdown
+    await preloadAllFonts();
+    console.log('All fonts preloaded');
 
-  // Populate dropdown after fonts are loaded
-  populateFontDropdown();
-  initDropdown();
+    // Populate dropdown after fonts are loaded
+    populateFontDropdown();
+    initDropdown();
 
-  // Show loading state
-  const wrapper = document.getElementById('tagWrapper');
-  if (wrapper) {
+    // Show loading state
+    const wrapper = document.getElementById('tagWrapper');
+    if (!wrapper) {
+      console.error('ERROR: tagWrapper element not found!');
+      alert('Error: tagWrapper element not found');
+      return;
+    }
+    
     wrapper.style.opacity = '0.5';
     wrapper.style.transition = 'opacity 0.3s';
-  }
+    console.log('Wrapper prepared');
 
-  // Load the fonts needed for this design
-  await loadFontsForDesign(_currentDesign);
+    // Load the fonts needed for this design
+    await loadFontsForDesign(_currentDesign);
+    console.log('Design fonts loaded');
 
-  // Update design badge
-  const badgeName = document.getElementById('designBadgeName');
-  const metaName = document.getElementById('previewDesignName');
-  if (badgeName) badgeName.textContent = _currentDesign.name;
-  if (metaName) metaName.textContent = _currentDesign.name;
+    // Update design badge
+    const badgeName = document.getElementById('designBadgeName');
+    const metaName = document.getElementById('previewDesignName');
+    if (badgeName) badgeName.textContent = _currentDesign.name;
+    if (metaName) metaName.textContent = _currentDesign.name;
 
-  // Show/hide photo step
-  const photoStep = document.getElementById('photoStep');
-  if (photoStep) {
-    photoStep.style.display = (_currentDesign.fields.photo && _currentDesign.fields.photo.enabled)
-      ? 'flex' : 'none';
-  }
-
-  // Update tagline placeholder and default value
-  const taglineInput = document.getElementById('tagline');
-  if (taglineInput && _currentDesign.fields.tagline && _currentDesign.fields.tagline.defaultValue) {
-    taglineInput.placeholder = _currentDesign.fields.tagline.defaultValue;
-    if (!taglineInput.value) {
-      taglineInput.value = _currentDesign.fields.tagline.defaultValue;
+    // Show/hide photo step
+    const photoStep = document.getElementById('photoStep');
+    if (photoStep) {
+      photoStep.style.display = (_currentDesign.fields.photo && _currentDesign.fields.photo.enabled)
+        ? 'flex' : 'none';
     }
-  }
 
-  // Load default photo if design has photo enabled
-  if (_currentDesign.fields.photo && _currentDesign.fields.photo.enabled) {
-    try {
-      const res = await fetch('./couple.jpg');
-      const blob = await res.blob();
-      _photoDataURL = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (e) => resolve(e.target.result);
-        reader.readAsDataURL(blob);
-      });
-      // Update UI to show photo is loaded
-      const removeBtn = document.getElementById('photoRemoveBtn');
-      const uploadLabel = document.getElementById('photoUploadLabel');
-      if (removeBtn) removeBtn.style.display = 'block';
-      if (uploadLabel) uploadLabel.style.display = 'none';
-    } catch (e) {
-      console.warn('Could not load default couple.jpg:', e);
+    // Update tagline placeholder and default value
+    const taglineInput = document.getElementById('tagline');
+    if (taglineInput && _currentDesign.fields.tagline && _currentDesign.fields.tagline.defaultValue) {
+      taglineInput.placeholder = _currentDesign.fields.tagline.defaultValue;
+      if (!taglineInput.value) {
+        taglineInput.value = _currentDesign.fields.tagline.defaultValue;
+      }
     }
-  }
 
-  // Size the wrapper to match the design
-  if (wrapper) {
+    // Load default photo if design has photo enabled
+    if (_currentDesign.fields.photo && _currentDesign.fields.photo.enabled) {
+      try {
+        const res = await fetch('./couple.jpg');
+        const blob = await res.blob();
+        _photoDataURL = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = (e) => resolve(e.target.result);
+          reader.readAsDataURL(blob);
+        });
+        // Update UI to show photo is loaded
+        const removeBtn = document.getElementById('photoRemoveBtn');
+        const uploadLabel = document.getElementById('photoUploadLabel');
+        if (removeBtn) removeBtn.style.display = 'block';
+        if (uploadLabel) uploadLabel.style.display = 'none';
+      } catch (e) {
+        console.warn('Could not load default couple.jpg:', e);
+      }
+    }
+
+    // Size the wrapper to match the design
     wrapper.style.width = _currentDesign.tagDimensions.width + 'px';
     wrapper.style.height = _currentDesign.tagDimensions.height + 'px';
-  }
+    console.log(`Wrapper sized to ${_currentDesign.tagDimensions.width}x${_currentDesign.tagDimensions.height}px`);
 
-  // Build and mount the tag element
-  _tagRoot = await window.TagRenderer.buildTagElement(_currentDesign, _getValues(), _photoDataURL);
-  _tagRoot.id = 'theTag';
-  if (wrapper) {
+    // Build and mount the tag element
+    console.log('Building tag element...');
+    _tagRoot = await window.TagRenderer.buildTagElement(_currentDesign, _getValues(), _photoDataURL);
+    if (!_tagRoot) {
+      console.error('ERROR: buildTagElement returned null/undefined!');
+      alert('Error: Could not build tag element');
+      return;
+    }
+    
+    _tagRoot.id = 'theTag';
+    console.log('Tag element created, appending to wrapper...');
     wrapper.innerHTML = '';
     wrapper.appendChild(_tagRoot);
     wrapper.style.opacity = '1';
-  }
+    console.log('Tag element appended to DOM');
 
-  await _doUpdateTag();
+    console.log('Calling _doUpdateTag...');
+    await _doUpdateTag();
+    console.log('Preview ready!');
+  } catch (err) {
+    console.error('FATAL ERROR during initialization:', err);
+    alert('Error: ' + err.message);
+  }
 });
 
 // ─── Read form values ─────────────────────────────────────────────────────────
