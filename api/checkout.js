@@ -1,4 +1,4 @@
-import { google } from "googleapis";
+import { uploadToDrive } from "./drive.js";
 import nodemailer from "nodemailer";
 import fetch from "node-fetch";
 
@@ -59,17 +59,6 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Server configuration error. Missing: " + missingVars.join(", ") });
     }
 
-    // --- Google Drive Auth ---
-    const auth = new google.auth.GoogleAuth({
-      credentials: {
-        client_email: process.env.GOOGLE_CLIENT_EMAIL,
-        private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n")
-      },
-      scopes: ["https://www.googleapis.com/auth/drive.file"]
-    });
-
-    const drive = google.drive({ version: "v3", auth });
-
     // --- Decide folder based on type ---
     const folderId = type === "PDF"
       ? process.env.GOOGLE_DRIVE_FOLDER_ID     // PDF folder
@@ -81,14 +70,15 @@ export default async function handler(req, res) {
 
     const fileName = `${type}-ORD-${Date.now()}.pdf`;
 
-    // --- Upload PDF to Google Drive ---
-    const uploadedFile = await drive.files.create({
-      requestBody: { name: fileName, parents: [folderId] },
-      media: { mimeType: "application/pdf", body: pdfBuffer }
+    // --- Upload PDF using shared helper (Stream-safe) ---
+    const uploadResult = await uploadToDrive({
+      base64PDF: pdfBase64,
+      fileName,
+      folderId,
     });
 
-    const driveFileId = uploadedFile.data.id;
-    const driveFileUrl = `https://drive.google.com/file/d/${driveFileId}/view`;
+    const driveFileId = uploadResult.fileId;
+    const driveFileUrl = uploadResult.fileUrl;
 
     // --- Send confirmation email ---
     const transporter = nodemailer.createTransport({
