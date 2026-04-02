@@ -597,88 +597,113 @@ async function generatePDF() {
 
 async function handleBuyPDF() {
   try {
-    const btn = document.getElementById("btnDownload");
-    btn.innerText = "Redirecting to checkout...";
-    btn.disabled = true;
+    async function handleBuyPDF() {
+      try {
+        const btn = document.getElementById("btnDownload");
+        btn.innerText = "Preparing your design...";
+        btn.disabled = true;
 
-    const res = await fetch("https://api.heavenxentph.com/api/checkout", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        name: "Test User",
-        email: "test@email.com",
-        type: "PDF"
-      })
-    });
+        // ✅ 1. Generate PDF silently
+        const pdfBlob = await generatePDFBlob();
 
-    const data = await res.json();
+        // ✅ 2. Convert to base64
+        const arrayBuffer = await pdfBlob.arrayBuffer();
+        const base64PDF = btoa(
+          new Uint8Array(arrayBuffer)
+            .reduce((data, byte) => data + String.fromCharCode(byte), '')
+        );
 
-    console.log("Checkout response:", data); // debug
+        btn.innerText = "Redirecting to checkout...";
 
-    // ✅ THIS IS THE IMPORTANT LINE
-    window.location.href = data.checkout_url;
+        // ✅ 3. Send to backend
+        const res = await fetch("https://api.heavenxentph.com/api/checkout", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            name: "Test User",
+            email: "test@email.com",
+            type: "PDF",
+            pdf: base64PDF
+          })
+        });
 
-  } catch (err) {
-    console.error(err);
-    alert("Something went wrong. Please try again.");
+        const data = await res.json();
+
+        console.log("Checkout response:", data);
+
+        // ✅ 4. Redirect ONLY here
+        if (data.checkout_url) {
+          window.location.href = data.checkout_url;
+        } else {
+          throw new Error("No checkout URL returned");
+        }
+
+      } catch (err) {
+        console.error(err);
+        alert("Something went wrong. Please try again.");
+
+        const btn = document.getElementById("btnDownload");
+        btn.innerText = "Buy & Download PDF — ₱199";
+        btn.disabled = false;
+      }
+    }
   }
-}
 
 //function to generate PDF blob without triggering download
 
 async function generatePDFBlob() {
-  // Similar to generatePDF but returns a Blob instead of saving
-  const v = _getValues();
-  const n1 = v.name1 || 'Taylor';
-  const n2 = v.name2 || 'Cynthia';
+    // Similar to generatePDF but returns a Blob instead of saving
+    const v = _getValues();
+    const n1 = v.name1 || 'Taylor';
+    const n2 = v.name2 || 'Cynthia';
 
-  // Build the tag canvas at full size for high-quality PDF
-  const A4_W_MM = 210, A4_H_MM = 297;
-  const COLS = 4, ROWS = 3, MARGIN_MM = 8, GAP_MM = 4;
+    // Build the tag canvas at full size for high-quality PDF
+    const A4_W_MM = 210, A4_H_MM = 297;
+    const COLS = 4, ROWS = 3, MARGIN_MM = 8, GAP_MM = 4;
 
-  const tagW_MM = (A4_W_MM - MARGIN_MM * 2 - GAP_MM * (COLS - 1)) / COLS;
-  const tagH_MM = (A4_H_MM - MARGIN_MM * 2 - GAP_MM * (ROWS - 1)) / ROWS;
+    const tagW_MM = (A4_W_MM - MARGIN_MM * 2 - GAP_MM * (COLS - 1)) / COLS;
+    const tagH_MM = (A4_H_MM - MARGIN_MM * 2 - GAP_MM * (ROWS - 1)) / ROWS;
 
-  const tagCanvas = await window.TagRenderer.buildTagCanvas(_currentDesign, _getValues(), _photoDataURL);
+    const tagCanvas = await window.TagRenderer.buildTagCanvas(_currentDesign, _getValues(), _photoDataURL);
 
-  const imgData = tagCanvas.toDataURL('image/png');
+    const imgData = tagCanvas.toDataURL('image/png');
 
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
 
-  pdf.setFillColor(255, 255, 255);
-  pdf.rect(0, 0, A4_W_MM, A4_H_MM, 'F');
+    pdf.setFillColor(255, 255, 255);
+    pdf.rect(0, 0, A4_W_MM, A4_H_MM, 'F');
 
-  const ALIAS = 'tag';
-  pdf.addImage(imgData, 'PNG', MARGIN_MM, MARGIN_MM, tagW_MM, tagH_MM, ALIAS, 'NONE');
-  for (let row = 0; row < ROWS; row++) {
-    for (let col = 0; col < COLS; col++) {
-      if (row === 0 && col === 0) continue;
-      pdf.addImage(imgData, 'PNG',
-        MARGIN_MM + col * (tagW_MM + GAP_MM),
-        MARGIN_MM + row * (tagH_MM + GAP_MM),
-        tagW_MM, tagH_MM, ALIAS, 'NONE');
+    const ALIAS = 'tag';
+    pdf.addImage(imgData, 'PNG', MARGIN_MM, MARGIN_MM, tagW_MM, tagH_MM, ALIAS, 'NONE');
+    for (let row = 0; row < ROWS; row++) {
+      for (let col = 0; col < COLS; col++) {
+        if (row === 0 && col === 0) continue;
+        pdf.addImage(imgData, 'PNG',
+          MARGIN_MM + col * (tagW_MM + GAP_MM),
+          MARGIN_MM + row * (tagH_MM + GAP_MM),
+          tagW_MM, tagH_MM, ALIAS, 'NONE');
+      }
     }
+
+    pdf.setFontSize(5);
+    pdf.setTextColor(180, 160, 140);
+    pdf.text(
+      `HeavenXent Keepsakes · ${(_currentDesign || {}).name || 'Custom'} · 12 Custom Wedding Tags · Print at 100% on A4`,
+      A4_W_MM / 2, A4_H_MM - 2.5, { align: 'center' }
+    );
+
+    const pdfBlob = pdf.output('blob');
+    return pdfBlob;
   }
 
-  pdf.setFontSize(5);
-  pdf.setTextColor(180, 160, 140);
-  pdf.text(
-    `HeavenXent Keepsakes · ${(_currentDesign || {}).name || 'Custom'} · 12 Custom Wedding Tags · Print at 100% on A4`,
-    A4_W_MM / 2, A4_H_MM - 2.5, { align: 'center' }
-  );
 
-  const pdfBlob = pdf.output('blob');
-  return pdfBlob;
-}
-
-
-// Expose functions to global scope
-window.generatePDF = generatePDF;
-window.updateTag = updateTag;
-window.handleBuyPDF = handleBuyPDF;
-window.generatePDFBlob = generatePDFBlob;
-window.handlePhotoUpload = handlePhotoUpload;
-window.removePhoto = removePhoto;
+  // Expose functions to global scope
+  window.generatePDF = generatePDF;
+  window.updateTag = updateTag;
+  window.handleBuyPDF = handleBuyPDF;
+  window.generatePDFBlob = generatePDFBlob;
+  window.handlePhotoUpload = handlePhotoUpload;
+  window.removePhoto = removePhoto;
