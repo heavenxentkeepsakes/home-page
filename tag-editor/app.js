@@ -1,8 +1,8 @@
 // app.js — Editor page logic (complete fixed version)
 
-let _currentDesign  = null;
-let _photoDataURL   = null;
-let _tagRoot        = null;   // the live tag DOM element
+let _currentDesign = null;
+let _photoDataURL = null;
+let _tagRoot = null;   // the live tag DOM element
 let _updateTagTimer = null;
 let _fontData = []; // Store font data with display names and families
 let _isDropdownOpen = false;
@@ -38,7 +38,7 @@ function getFontUrlForFamily(fontFamily) {
     'Pacifico': 'https://fonts.googleapis.com/css2?family=Pacifico&display=swap',
     'Pompiere': 'https://fonts.googleapis.com/css2?family=Pompiere&display=swap'
   };
-  
+
   // Try to match the font family (might include multiple fonts)
   for (const [key, url] of Object.entries(fontMap)) {
     if (fontFamily.includes(key)) {
@@ -50,38 +50,38 @@ function getFontUrlForFamily(fontFamily) {
 
 async function loadFontFamily(fontFamily) {
   if (!fontFamily) return;
-  
+
   // Extract the main font name
   const mainFont = fontFamily.split(',')[0].trim().replace(/["']/g, '');
-  
+
   // Check if already loaded
   if (loadedFonts.has(mainFont)) return;
   if (loadingFonts.has(mainFont)) return loadingFonts.get(mainFont);
-  
+
   const loadPromise = (async () => {
     try {
       // Get the font URL
       const fontUrl = getFontUrlForFamily(mainFont);
-      
+
       if (fontUrl) {
         // Create a unique ID for this font link
         const fontId = `font-${mainFont.replace(/\s+/g, '-').toLowerCase()}`;
         let link = document.getElementById(fontId);
-        
+
         if (!link) {
           link = document.createElement('link');
           link.id = fontId;
           link.rel = 'stylesheet';
           link.href = fontUrl;
           document.head.appendChild(link);
-          
+
           // Wait for the stylesheet to load
           await new Promise((resolve, reject) => {
             link.onload = resolve;
             link.onerror = () => reject(new Error(`Failed to load font: ${mainFont}`));
           });
         }
-        
+
         // Wait for the font to be ready
         if (document.fonts) {
           await document.fonts.ready;
@@ -93,13 +93,13 @@ async function loadFontFamily(fontFamily) {
           ]).catch(() => null);
         }
       }
-      
+
       loadedFonts.add(mainFont);
     } catch (err) {
       console.warn(`Failed to load font: ${mainFont}`, err);
     }
   })();
-  
+
   loadingFonts.set(mainFont, loadPromise);
   await loadPromise;
   loadingFonts.delete(mainFont);
@@ -110,19 +110,19 @@ async function collectAvailableFonts() {
   try {
     const designs = await fetch('./designs.json').then(r => r.json());
     const fontMap = new Map();
-    
+
     designs.forEach(design => {
       if (design.fields && design.fields.couple && design.fields.couple.fontFamily) {
         // Extract the main font name (first in the list)
         const fullFamily = design.fields.couple.fontFamily;
         const mainFont = fullFamily.split(',')[0].trim().replace(/["']/g, '');
-        
+
         // Store font data
         if (!fontMap.has(mainFont)) {
           // Get the font weight and style from the design
           const fontWeight = design.fields.couple.fontWeight || '400';
           const fontStyle = design.fields.couple.fontStyle || 'normal';
-          
+
           fontMap.set(mainFont, {
             family: mainFont,
             fullFamily: fullFamily,
@@ -132,7 +132,7 @@ async function collectAvailableFonts() {
         }
       }
     });
-    
+
     // Convert to array and sort alphabetically
     _fontData = Array.from(fontMap.values()).sort((a, b) => a.family.localeCompare(b.family));
     return _fontData;
@@ -152,9 +152,9 @@ async function preloadAllFonts() {
 function populateFontDropdown() {
   const optionsContainer = document.getElementById('fontSelectOptions');
   if (!optionsContainer) return;
-  
+
   optionsContainer.innerHTML = '';
-  
+
   // Create styled options for each font
   _fontData.forEach(font => {
     const option = document.createElement('div');
@@ -162,7 +162,7 @@ function populateFontDropdown() {
     option.setAttribute('data-font', font.family);
     option.setAttribute('data-weight', font.weight);
     option.setAttribute('data-style', font.style);
-    
+
     // Apply the font style to the option
     option.style.fontFamily = `"${font.family}", sans-serif`;
     option.style.fontWeight = font.weight;
@@ -172,9 +172,9 @@ function populateFontDropdown() {
     option.style.cursor = 'pointer';
     option.style.transition = 'background 0.2s';
     option.style.borderBottom = '1px solid #f0e8dc';
-    
+
     option.textContent = font.family;
-    
+
     // Hover effect
     option.addEventListener('mouseenter', () => {
       option.style.background = '#faf6f1';
@@ -182,16 +182,16 @@ function populateFontDropdown() {
     option.addEventListener('mouseleave', () => {
       option.style.background = '';
     });
-    
+
     // Click handler
     option.addEventListener('click', (e) => {
       e.stopPropagation();
       selectFont(font.family);
     });
-    
+
     optionsContainer.appendChild(option);
   });
-  
+
   // Set current font display
   if (_currentDesign && _currentDesign.fields.couple) {
     const currentFont = _currentDesign.fields.couple.fontFamily.split(',')[0].trim().replace(/["']/g, '');
@@ -203,10 +203,10 @@ function populateFontDropdown() {
 function updateSelectedFontDisplay(fontFamily) {
   const selectedSpan = document.getElementById('selectedFontDisplay');
   if (!selectedSpan) return;
-  
+
   // Find the font data
   const font = _fontData.find(f => f.family === fontFamily);
-  
+
   if (font) {
     selectedSpan.textContent = font.family;
     selectedSpan.style.fontFamily = `"${font.family}", sans-serif`;
@@ -227,15 +227,15 @@ function updateSelectedFontDisplay(fontFamily) {
 function toggleDropdown() {
   const optionsContainer = document.getElementById('fontSelectOptions');
   const trigger = document.getElementById('fontSelectTrigger');
-  
+
   if (!optionsContainer || !trigger) return;
-  
+
   _isDropdownOpen = !_isDropdownOpen;
-  
+
   if (_isDropdownOpen) {
     optionsContainer.classList.add('show');
     trigger.classList.add('open');
-    
+
     // Close dropdown when clicking outside
     setTimeout(() => {
       document.addEventListener('click', closeDropdownOnClickOutside);
@@ -253,7 +253,7 @@ function closeDropdownOnClickOutside(event) {
   if (wrapper && !wrapper.contains(event.target)) {
     const optionsContainer = document.getElementById('fontSelectOptions');
     const trigger = document.getElementById('fontSelectTrigger');
-    
+
     if (optionsContainer && trigger) {
       optionsContainer.classList.remove('show');
       trigger.classList.remove('open');
@@ -266,7 +266,7 @@ function closeDropdownOnClickOutside(event) {
 // Select a font
 async function selectFont(fontFamily) {
   if (!_currentDesign || !_tagRoot) return;
-  
+
   // Close dropdown
   const optionsContainer = document.getElementById('fontSelectOptions');
   const trigger = document.getElementById('fontSelectTrigger');
@@ -275,36 +275,36 @@ async function selectFont(fontFamily) {
     trigger.classList.remove('open');
     _isDropdownOpen = false;
   }
-  
+
   // Update display
   updateSelectedFontDisplay(fontFamily);
-  
+
   // Show loading indicator on trigger
   const triggerDiv = document.getElementById('fontSelectTrigger');
   const originalBackground = triggerDiv.style.background;
   const originalBorderColor = triggerDiv.style.borderColor;
   triggerDiv.style.background = '#f0e8dc';
   triggerDiv.style.borderColor = '#c4956a';
-  
+
   try {
     // Load the new font if not already loaded
     await loadFontFamily(fontFamily);
-    
+
     // Update the design's couple font, preserving the fallback fonts
     const originalFontFamily = _currentDesign.fields.couple.fontFamily;
     const fallbackFonts = originalFontFamily.split(',').slice(1).join(',').trim();
     _currentDesign.fields.couple.fontFamily = `"${fontFamily}", ${fallbackFonts || 'sans-serif'}`;
-    
+
     // Update the design's amp font if it exists
     if (_currentDesign.fields.couple.ampFontFamily) {
       const originalAmpFont = _currentDesign.fields.couple.ampFontFamily;
       const ampFallbackFonts = originalAmpFont.split(',').slice(1).join(',').trim();
       _currentDesign.fields.couple.ampFontFamily = `"${fontFamily}", ${ampFallbackFonts || 'sans-serif'}`;
     }
-    
+
     // Re-render the tag
     await _doUpdateTag();
-    
+
     // Visual feedback - success
     triggerDiv.style.background = '#e8f5e8';
     setTimeout(() => {
@@ -328,7 +328,7 @@ function initDropdown() {
     // Remove any existing listeners
     const newTrigger = trigger.cloneNode(true);
     trigger.parentNode.replaceChild(newTrigger, trigger);
-    
+
     newTrigger.addEventListener('click', (e) => {
       e.stopPropagation();
       toggleDropdown();
@@ -338,19 +338,19 @@ function initDropdown() {
 
 async function loadFontsForDesign(design) {
   if (!design || !design.fields) return;
-  
+
   const fontFamilies = new Set();
   const fields = design.fields;
-  
+
   if (fields.couple) fontFamilies.add(fields.couple.fontFamily);
   if (fields.date) fontFamilies.add(fields.date.fontFamily);
   if (fields.tagline) fontFamilies.add(fields.tagline.fontFamily);
   if (fields.photo && fields.photo.ampFontFamily) fontFamilies.add(fields.photo.ampFontFamily);
-  
+
   // Load fonts in parallel
   const loadPromises = Array.from(fontFamilies).map(family => loadFontFamily(family));
   await Promise.all(loadPromises);
-  
+
   // Extra safety: wait for fonts to be fully applied
   await new Promise(resolve => setTimeout(resolve, 100));
   await new Promise(resolve => requestAnimationFrame(resolve));
@@ -367,13 +367,13 @@ window.addEventListener('DOMContentLoaded', async () => {
     console.error('Could not load designs.json', e);
     return;
   }
-  
+
   // Collect available fonts from all designs
   await collectAvailableFonts();
-  
+
   // Preload all fonts for the dropdown
   await preloadAllFonts();
-  
+
   // Populate dropdown after fonts are loaded
   populateFontDropdown();
   initDropdown();
@@ -390,9 +390,9 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   // Update design badge
   const badgeName = document.getElementById('designBadgeName');
-  const metaName  = document.getElementById('previewDesignName');
+  const metaName = document.getElementById('previewDesignName');
   if (badgeName) badgeName.textContent = _currentDesign.name;
-  if (metaName)  metaName.textContent  = _currentDesign.name;
+  if (metaName) metaName.textContent = _currentDesign.name;
 
   // Show/hide photo step
   const photoStep = document.getElementById('photoStep');
@@ -432,7 +432,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   // Size the wrapper to match the design
   if (wrapper) {
-    wrapper.style.width  = _currentDesign.tagDimensions.width  + 'px';
+    wrapper.style.width = _currentDesign.tagDimensions.width + 'px';
     wrapper.style.height = _currentDesign.tagDimensions.height + 'px';
   }
 
@@ -451,9 +451,9 @@ window.addEventListener('DOMContentLoaded', async () => {
 // ─── Read form values ─────────────────────────────────────────────────────────
 function _getValues() {
   return {
-    name1:   (document.getElementById('name1')   || {}).value || '',
-    name2:   (document.getElementById('name2')   || {}).value || '',
-    date:    (document.getElementById('wdate')   || {}).value || '',
+    name1: (document.getElementById('name1') || {}).value || '',
+    name2: (document.getElementById('name2') || {}).value || '',
+    date: (document.getElementById('wdate') || {}).value || '',
     tagline: (document.getElementById('tagline') || {}).value || '',
   };
 }
@@ -494,11 +494,11 @@ function removePhoto() {
   const photoInput = document.getElementById('photoInput');
   const removeBtn = document.getElementById('photoRemoveBtn');
   const uploadLabel = document.getElementById('photoUploadLabel');
-  
+
   if (photoInput) photoInput.value = '';
   if (removeBtn) removeBtn.style.display = 'none';
   if (uploadLabel) uploadLabel.style.display = 'flex';
-  
+
   // Reload default photo
   if (_currentDesign.fields.photo && _currentDesign.fields.photo.enabled) {
     fetch('./couple.jpg')
@@ -520,13 +520,13 @@ function removePhoto() {
 // ─── PDF Generation ───────────────────────────────────────────────────────────
 async function generatePDF() {
   const btn = document.getElementById('btnDownload');
-  const v   = _getValues();
-  const n1  = v.name1 || 'Taylor';
-  const n2  = v.name2 || 'Cynthia';
+  const v = _getValues();
+  const n1 = v.name1 || 'Taylor';
+  const n2 = v.name2 || 'Cynthia';
   const filename = `wedding-tags-${n1}-${n2}-${(_currentDesign || {}).id || 'custom'}`
     .toLowerCase().replace(/\s+/g, '-') + '.pdf';
 
-  btn.disabled  = true;
+  btn.disabled = true;
   btn.innerHTML = `
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite">
       <circle cx="12" cy="12" r="10" stroke-opacity="0.25"/>
@@ -537,22 +537,22 @@ async function generatePDF() {
   try {
     // Ensure fonts are loaded before PDF generation
     await loadFontsForDesign(_currentDesign);
-    
-    try { if (document.fonts?.ready) await document.fonts.ready; } catch (_) {}
-    
+
+    try { if (document.fonts?.ready) await document.fonts.ready; } catch (_) { }
+
     // Build the tag canvas at full size for high-quality PDF
     const A4_W_MM = 210, A4_H_MM = 297;
     const COLS = 4, ROWS = 3, MARGIN_MM = 8, GAP_MM = 4;
 
     const tagW_MM = (A4_W_MM - MARGIN_MM * 2 - GAP_MM * (COLS - 1)) / COLS;
     const tagH_MM = (A4_H_MM - MARGIN_MM * 2 - GAP_MM * (ROWS - 1)) / ROWS;
-    
+
     // Build canvas at PDF print size
     const tagCanvas = await window.TagRenderer.buildTagCanvas(_currentDesign, _getValues(), _photoDataURL);
-    
+
     // Convert canvas to PNG data URL
     const imgData = tagCanvas.toDataURL('image/png');
-    
+
     // Create PDF and add the image to all 12 tag positions
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
@@ -575,7 +575,7 @@ async function generatePDF() {
     pdf.setFontSize(5);
     pdf.setTextColor(180, 160, 140);
     pdf.text(
-      `Tag & Bloom · ${(_currentDesign || {}).name || 'Custom'} · 12 Custom Wedding Tags · Print at 100% on A4`,
+      `HeavenXent Keepsakes · ${(_currentDesign || {}).name || 'Custom'} · 12 Custom Wedding Tags · Print at 100% on A4`,
       A4_W_MM / 2, A4_H_MM - 2.5, { align: 'center' }
     );
     pdf.save(filename);
@@ -584,7 +584,7 @@ async function generatePDF() {
     console.error('PDF generation failed:', err);
     alert(`Oops — could not generate the PDF.\n\n${err?.message || ''}`);
   } finally {
-    btn.disabled  = false;
+    btn.disabled = false;
     btn.innerHTML = `
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
@@ -595,8 +595,93 @@ async function generatePDF() {
   }
 }
 
+async function handleBuyPDF() {
+  try {
+    // Optional: disable button while processing
+    const btn = document.getElementById("btnDownload");
+    btn.innerText = "Processing...";
+    btn.disabled = true;
+
+    // 🔹 Step 1: Generate PDF (DO NOT download)
+    const pdfBlob = await generatePDFBlob(); // we'll define this next
+
+    // 🔹 Step 2: Call your backend checkout API
+    const res = await fetch("https://api.heavenxentph.com/api/checkout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name: "Customer", // replace later with form input
+        email: "test@email.com", // replace later
+        type: "PDF"
+      })
+    });
+
+    const data = await res.json();
+
+    // 🔹 Step 3: Redirect to PayMongo checkout
+    window.location.href = data.checkout_url;
+
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong. Please try again.");
+  }
+}
+
+//function to generate PDF blob without triggering download
+
+async function generatePDFBlob() {
+  // Similar to generatePDF but returns a Blob instead of saving
+  const v = _getValues();
+  const n1 = v.name1 || 'Taylor';
+  const n2 = v.name2 || 'Cynthia';
+
+  // Build the tag canvas at full size for high-quality PDF
+  const A4_W_MM = 210, A4_H_MM = 297;
+  const COLS = 4, ROWS = 3, MARGIN_MM = 8, GAP_MM = 4;
+
+  const tagW_MM = (A4_W_MM - MARGIN_MM * 2 - GAP_MM * (COLS - 1)) / COLS;
+  const tagH_MM = (A4_H_MM - MARGIN_MM * 2 - GAP_MM * (ROWS - 1)) / ROWS;
+
+  const tagCanvas = await window.TagRenderer.buildTagCanvas(_currentDesign, _getValues(), _photoDataURL);
+
+  const imgData = tagCanvas.toDataURL('image/png');
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
+
+  pdf.setFillColor(255, 255, 255);
+  pdf.rect(0, 0, A4_W_MM, A4_H_MM, 'F');
+
+  const ALIAS = 'tag';
+  pdf.addImage(imgData, 'PNG', MARGIN_MM, MARGIN_MM, tagW_MM, tagH_MM, ALIAS, 'NONE');
+  for (let row = 0; row < ROWS; row++) {
+    for (let col = 0; col < COLS; col++) {
+      if (row === 0 && col === 0) continue;
+      pdf.addImage(imgData, 'PNG',
+        MARGIN_MM + col * (tagW_MM + GAP_MM),
+        MARGIN_MM + row * (tagH_MM + GAP_MM),
+        tagW_MM, tagH_MM, ALIAS, 'NONE');
+    }
+  }
+
+  pdf.setFontSize(5);
+  pdf.setTextColor(180, 160, 140);
+  pdf.text(
+    `HeavenXent Keepsakes · ${(_currentDesign || {}).name || 'Custom'} · 12 Custom Wedding Tags · Print at 100% on A4`,
+    A4_W_MM / 2, A4_H_MM - 2.5, { align: 'center' }
+  );
+
+  const pdfBlob = pdf.output('blob');
+  return pdfBlob;
+}
+
+
 // Expose functions to global scope
-window.generatePDF       = generatePDF;
-window.updateTag         = updateTag;
+window.generatePDF = generatePDF;
+window.updateTag = updateTag;
+window.handleBuyPDF = handleBuyPDF;
+window.generatePDFBlob = generatePDFBlob;
 window.handlePhotoUpload = handlePhotoUpload;
-window.removePhoto       = removePhoto;
+window.removePhoto = removePhoto;
