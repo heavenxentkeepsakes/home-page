@@ -1,40 +1,60 @@
 import { google } from "googleapis";
+import { Readable } from "stream";
 
-export async function uploadToDrive(buffer, filename) {
-  const auth = new google.auth.JWT(
-    process.env.GOOGLE_CLIENT_EMAIL,
-    null,
-    process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n"),
-    ["https://www.googleapis.com/auth/drive"]
-  );
+export async function uploadToDrive({ base64PDF, fileName, folderId }) {
+  try {
+    // --- 1. Convert base64 → Buffer ---
+    const buffer = Buffer.from(base64PDF, "base64");
 
-  const drive = google.drive({ version: "v3", auth });
+    // --- 2. Convert Buffer → Stream (FIX for your error) ---
+    const stream = Readable.from(buffer);
 
-  const fileMetadata = {
-    name: `${filename}.pdf`,
-    parents: [process.env.GOOGLE_DRIVE_FOLDER_ID]
-  };
+    // --- 3. Google Auth ---
+    const auth = new google.auth.GoogleAuth({
+      credentials: {
+        client_email: process.env.GOOGLE_CLIENT_EMAIL,
+        private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+      },
+      scopes: ["https://www.googleapis.com/auth/drive.file"],
+    });
 
-  const media = {
-    mimeType: "application/pdf",
-    body: buffer
-  };
+    const drive = google.drive({ version: "v3", auth });
 
-  const file = await drive.files.create({
-    resource: fileMetadata,
-    media,
-    fields: "id"
-  });
+    // --- 4. Upload to Drive ---
+    const response = await drive.files.create({
+      requestBody: {
+        name: fileName,
+        parents: [folderId],
+      },
+      media: {
+        mimeType: "application/pdf",
+        body: stream, // ✅ REQUIRED (not buffer)
+      },
+    });
 
-  const fileId = file.data.id;
+    const fileId = response.data.id;
 
-  await drive.permissions.create({
-    fileId,
-    requestBody: {
-      role: "reader",
-      type: "anyone"
-    }
-  });
+    // --- 5. Make file publicly viewable (optional but useful) ---
+    await drive.permissions.create({
+      fileId,
+      requestBody: {
+        role: "reader",
+        type: "anyone",
+      },
+    });
 
-  return `https://drive.google.com/file/d/${fileId}/view`;
+    // --- 6. Generate public link ---
+    const fileUrl = `https://drive.google.com/file/d/${fileId}/view`;
+
+    console.log("✅ Uploaded to Drive:", fileUrl);
+
+    return {
+      fileId,
+      fileUrl,
+    };
+
+  } catch (error) {
+    console.error("❌ Drive upload error:", error);
+    throw error;
+  }
 }
