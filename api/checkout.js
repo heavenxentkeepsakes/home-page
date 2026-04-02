@@ -82,10 +82,13 @@ export default async function handler(req, res) {
     const fileName = `${type}-ORD-${Date.now()}.pdf`;
 
     // --- Upload PDF to Google Drive ---
-    await drive.files.create({
+    const uploadedFile = await drive.files.create({
       requestBody: { name: fileName, parents: [folderId] },
       media: { mimeType: "application/pdf", body: pdfBuffer }
     });
+
+    const driveFileId = uploadedFile.data.id;
+    const driveFileUrl = `https://drive.google.com/file/d/${driveFileId}/view`;
 
     // --- Send confirmation email ---
     const transporter = nodemailer.createTransport({
@@ -125,7 +128,7 @@ export default async function handler(req, res) {
           attributes: {
             amount: type === "PDF" ? 9900 : 19900, // adjust prices
             currency: "PHP",
-            metadata: { name, email, type, address },
+            metadata: { name, email, type, address, driveFileId, driveFileUrl },
             success_url: "https://heavenxentph.com/success.html",
             cancel_url: "https://heavenxentph.com/cancel.html"
           }

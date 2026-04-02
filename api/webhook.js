@@ -32,31 +32,40 @@ export default async function handler(req, res) {
     console.log("✅ Payment confirmed for:", email);
 
     // --- IMPORTANT ---
-    // You must already have stored the PDF (base64) somewhere earlier
-    // For now we assume you passed it via metadata or temporary storage
+    // We allow two workflows:
+    // 1) checkout already uploaded PDF and saved driveFileId/driveFileUrl in metadata
+    // 2) webhook receives base64 PDF and uploads it now (fallback)
 
-    const pdfBase64 = metadata.pdf; // ⚠️ must exist
+    const pdfBase64 = metadata.pdf;
+    const driveFileId = metadata.driveFileId;
+    const driveFileUrl = metadata.driveFileUrl;
 
-    if (!pdfBase64) {
-      console.error("❌ No PDF found in metadata");
-      return res.status(400).json({ error: "Missing PDF" });
+    let finalFileUrl = null;
+
+    if (driveFileUrl) {
+      finalFileUrl = driveFileUrl;
+      console.log("✅ Using existing Drive file URL from metadata:", finalFileUrl);
+    } else if (driveFileId) {
+      finalFileUrl = `https://drive.google.com/file/d/${driveFileId}/view`;
+      console.log("✅ Constructed Drive file URL from metadata file ID:", finalFileUrl);
+    } else if (pdfBase64) {
+      //--- Upload to Google Drive fallback (if PDF is included directly) ---
+      const fileName = `${type}-ORD-${Date.now()}.pdf`;
+      const folderId =
+        type === "PDF"
+          ? process.env.GOOGLE_DRIVE_FOLDER_ID
+          : process.env.GOOGLE_DRIVE_FOLDER_ID_PRINT;
+
+      const result = await uploadToDrive({
+        base64PDF: pdfBase64,
+        fileName,
+        folderId,
+      });
+      finalFileUrl = result.fileUrl;
+      console.log("✅ Uploaded to Drive in webhook:", finalFileUrl);
+    } else {
+      console.warn("⚠️ No PDF or Drive file metadata available; skipping upload.");
     }
-
-    // --- Upload to Google Drive ---
-    const fileName = `${type}-ORD-${Date.now()}.pdf`;
-
-    const folderId =
-      type === "PDF"
-        ? process.env.GOOGLE_DRIVE_FOLDER_ID
-        : process.env.GOOGLE_DRIVE_FOLDER_ID_PRINT;
-
-    const result = await uploadToDrive({
-      base64PDF: pdfBase64,
-      fileName,
-      folderId,
-    });
-
-    console.log("✅ Uploaded to Drive:", result.fileUrl);
 
     // --- Send Email ---
     const transporter = nodemailer.createTransport({
@@ -73,16 +82,27 @@ export default async function handler(req, res) {
 
     if (type === "PDF") {
       subject = "Your Wedding Tag PDF is Ready";
-      message = `
+      if (finalFileUrl) {
+        message = `
 Hi ${name},
 
 Your wedding tag PDF is ready!
 
 Download here:
-${result.fileUrl}
+${finalFileUrl}
 
 Thank you for your purchase 💖
-      `;
+        `;
+      } else {
+        message = `
+Hi ${name},
+
+We have confirmed your payment, but the PDF URL is not available yet.
+Our team will send your download link shortly.
+
+Thank you for your purchase 💖
+        `;
+      }
     } else {
       const ref = `PRINT-${Date.now()}`;
       subject = "Your Print Order is Received";
