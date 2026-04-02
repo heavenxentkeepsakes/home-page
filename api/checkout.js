@@ -3,7 +3,24 @@ import nodemailer from "nodemailer";
 import fetch from "node-fetch";
 
 export default async function handler(req, res) {
-  // --- CORS headers ---
+  // ✅ CORS headers for frontend
+  res.setHeader("Access-Control-Allow-Origin", "*"); // or your domain only
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  // ✅ Handle preflight
+  if (req.method === "OPTIONS") return res.status(200).end();
+
+  // ✅ Only allow POST for checkout
+  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+
+  try {
+    // ...rest of your logic here
+  } catch (err) {
+    console.error("Backend error:", err);
+    return res.status(500).json({ error: err.message });
+  }
+}  // --- CORS headers ---
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
