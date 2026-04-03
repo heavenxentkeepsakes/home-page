@@ -106,7 +106,7 @@ export default async function handler(req, res) {
       await Promise.all([
         // ✅ Customer email
         resend.emails.send({
-          from: "no-reply@heavenxentph.com",
+          from: "HeavenXent Keepsakes <no-reply@heavenxentph.com>",
           to: email,
           subject: customerSubject,
           text: customerText,
@@ -114,7 +114,7 @@ export default async function handler(req, res) {
 
         // ✅ Owner notification
         resend.emails.send({
-          from: "no-reply@heavenxentph.com",
+          from: "HeavenXent Keepsakes <no-reply@heavenxentph.com>",
           to: "heavenxentkeepsakes@gmail.com",
           subject: `🛍️ New ${type} Order — ${name}`,
           text: `New order received!\n\nReference: ${ref}\nDate: ${date}\nName: ${name}\nEmail: ${email}\nType: ${type}\nAmount: ${amount}\nDrive URL: ${finalFileUrl || "N/A"}\n\nCheck your Google Sheet for full order history.`,

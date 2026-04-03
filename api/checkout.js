@@ -114,7 +114,7 @@ export default async function handler(req, res) {
 
     // --- 🚀 Send order received email in background (non-blocking) ---
     resend.emails.send({
-      from: "no-reply@heavenxentph.com",
+      from: "HeavenXent Keepsakes <no-reply@heavenxentph.com>",
       to: email,
       subject: type === "PDF" ? "Your order has been received" : "Print Order Received",
       text:
