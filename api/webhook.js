@@ -1,10 +1,8 @@
-import { uploadToDrive } from "./drive.js";
 import { Resend } from "resend";
 import { google } from "googleapis";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// ✅ Reuse same OAuth2 client as drive.js
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
@@ -30,77 +28,68 @@ async function logToSheets({ date, name, email, type, amount, driveUrl, ref }) {
 
     console.log("✅ Logged to Google Sheets");
   } catch (err) {
-    console.error("⚠️ Google Sheets logging failed (non-fatal):", err.message);
+    console.error("⚠️ Google Sheets logging failed:", err.message);
   }
 }
 
 export default async function handler(req, res) {
   console.log("🔥 Webhook hit");
 
-  // ✅ Always respond immediately to PayMongo
-  res.status(200).json({ received: true });
+  if (req.method !== "POST") {
+    return res.status(200).json({ received: true });
+  }
 
-  (async () => {
-    try {
-      if (req.method !== "POST") {
-        console.log("Ignored non-POST request");
-        return;
-      }
+  try {
+    const event = req.body;
+    const eventType = event?.data?.attributes?.type;
 
-      const event = req.body;
-      const eventType = event?.data?.attributes?.type;
+    if (eventType !== "payment.paid") {
+      console.log("Ignored event:", eventType);
+      return res.status(200).json({ received: true });
+    }
 
-      if (eventType !== "payment.paid") {
-        console.log("Ignored event:", eventType);
-        return;
-      }
+    const paymentData = event.data.attributes.data.attributes;
+    const metadata = paymentData.metadata || {};
 
-      const paymentData = event.data.attributes.data.attributes;
-      const metadata = paymentData.metadata || {};
+    // ✅ Pull from PayMongo billing first, metadata as fallback
+    const email = paymentData.billing?.email || metadata.email;
+    const name = paymentData.billing?.name || metadata.name || "Customer";
+    const type = metadata.type || "PDF";
+    const driveFileId = metadata.driveFileId;
+    const driveFileUrl = metadata.driveFileUrl;
+    const amount = type === "PDF" ? "₱99" : "₱199";
+    const ref = `${type}-${Date.now()}`;
+    const date = new Date().toLocaleString("en-PH", { timeZone: "Asia/Manila" });
 
-      // ✅ Pull everything from PayMongo billing info, metadata as fallback
-      const email = paymentData.billing?.email || metadata.email;
-      const name = paymentData.billing?.name || metadata.name || "Customer";
-      const type = metadata.type || "PDF";
-      const driveFileId = metadata.driveFileId;
-      const driveFileUrl = metadata.driveFileUrl;
-      const amount = type === "PDF" ? "₱99" : "₱199";
-      const ref = `${type}-${Date.now()}`;
-      const date = new Date().toLocaleString("en-PH", { timeZone: "Asia/Manila" });
+    console.log("✅ Payment confirmed for:", email);
+    console.log("👤 Customer name:", name);
 
-      console.log("✅ Payment confirmed for:", email);
-      console.log("👤 Customer name:", name);
+    // --- Build Drive URL ---
+    let finalFileUrl = null;
 
-      // --- Build Drive URL ---
-      let finalFileUrl = null;
+    if (driveFileUrl) {
+      finalFileUrl = driveFileUrl;
+      console.log("✅ Using Drive URL from metadata");
+    } else if (driveFileId) {
+      finalFileUrl = `https://drive.google.com/file/d/${driveFileId}/view`;
+      console.log("✅ Constructed URL from Drive file ID");
+    } else {
+      console.warn("⚠️ No Drive file data found in metadata");
+    }
 
-      if (driveFileUrl) {
-        finalFileUrl = driveFileUrl;
-        console.log("✅ Using Drive URL from metadata");
-      } else if (driveFileId) {
-        finalFileUrl = `https://drive.google.com/file/d/${driveFileId}/view`;
-        console.log("✅ Constructed URL from Drive file ID");
-      } else {
-        console.warn("⚠️ No Drive file data found in metadata");
-      }
+    // --- Log to Google Sheets ---
+    await logToSheets({
+      date,
+      name,
+      email: email || "N/A",
+      type,
+      amount,
+      driveUrl: finalFileUrl || "N/A",
+      ref,
+    });
 
-      // --- Log to Google Sheets ---
-      await logToSheets({
-        date,
-        name,
-        email: email || "N/A",
-        type,
-        amount,
-        driveUrl: finalFileUrl || "N/A",
-        ref,
-      });
-
-      if (!email) {
-        console.warn("⚠️ No email found, skipping emails");
-        return;
-      }
-
-      // --- Email content ---
+    // --- Send emails ---
+    if (email) {
       let customerSubject = "";
       let customerText = "";
 
@@ -114,9 +103,8 @@ export default async function handler(req, res) {
         customerText = `Hi ${name},\n\nYour payment is confirmed and your print order (${ref}) has been received.\n\nWe will process it within 5–7 days.\n\nThank you 💖`;
       }
 
-      // --- Send customer email + owner notification in parallel ---
       await Promise.all([
-        // ✅ Email to customer
+        // ✅ Customer email
         resend.emails.send({
           from: "no-reply@heavenxentph.com",
           to: email,
@@ -124,7 +112,7 @@ export default async function handler(req, res) {
           text: customerText,
         }),
 
-        // ✅ Notification email to you
+        // ✅ Owner notification
         resend.emails.send({
           from: "no-reply@heavenxentph.com",
           to: "heavenxentkeepsakes@gmail.com",
@@ -134,10 +122,15 @@ export default async function handler(req, res) {
       ]);
 
       console.log("✅ Customer email sent to:", email);
-      console.log("✅ Notification email sent to: heavenxentkeepsakes@gmail.com");
-
-    } catch (err) {
-      console.error("❌ Background webhook error:", err);
+      console.log("✅ Notification sent to: heavenxentkeepsakes@gmail.com");
+    } else {
+      console.warn("⚠️ No email found, skipping emails");
     }
-  })();
+
+  } catch (err) {
+    console.error("❌ Webhook error:", err);
+  }
+
+  // ✅ Always respond 200 to PayMongo — AFTER all work is done
+  return res.status(200).json({ received: true });
 }
