@@ -17,6 +17,8 @@ async function logToSheets({ date, name, email, type, amount, driveUrl, ref }) {
   try {
     const sheets = google.sheets({ version: "v4", auth: oauth2Client });
 
+    console.log("📊 Using Spreadsheet ID:", process.env.GOOGLE_SHEETS_ID);
+
     await sheets.spreadsheets.values.append({
       spreadsheetId: process.env.GOOGLE_SHEETS_ID,
       range: "Sheet1!A:G",
@@ -29,6 +31,9 @@ async function logToSheets({ date, name, email, type, amount, driveUrl, ref }) {
     console.log("✅ Logged to Google Sheets");
   } catch (err) {
     console.error("⚠️ Google Sheets logging failed:", err.message);
+    console.error("⚠️ Error code:", err.code);
+    console.error("⚠️ Error status:", err.status);
+    console.error("⚠️ Spreadsheet ID used:", process.env.GOOGLE_SHEETS_ID);
   }
 }
 
