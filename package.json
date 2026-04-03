@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "dependencies": {
     "googleapis": "^144.0.0",
-    "nodemailer": "^8.0.4"
+    "resend": "^4.0.0"
   }
 }
