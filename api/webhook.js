@@ -1,7 +1,38 @@
 import { uploadToDrive } from "./drive.js";
 import { Resend } from "resend";
+import { google } from "googleapis";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+
+// ✅ Reuse same OAuth2 client as drive.js
+const oauth2Client = new google.auth.OAuth2(
+  process.env.GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET,
+  "https://developers.google.com/oauthplayground"
+);
+
+oauth2Client.setCredentials({
+  refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
+});
+
+async function logToSheets({ date, name, email, type, amount, driveUrl, ref }) {
+  try {
+    const sheets = google.sheets({ version: "v4", auth: oauth2Client });
+
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: process.env.GOOGLE_SHEETS_ID,
+      range: "Sheet1!A:G",
+      valueInputOption: "USER_ENTERED",
+      requestBody: {
+        values: [[date, name, email, type, amount, driveUrl, ref]],
+      },
+    });
+
+    console.log("✅ Logged to Google Sheets");
+  } catch (err) {
+    console.error("⚠️ Google Sheets logging failed (non-fatal):", err.message);
+  }
+}
 
 export default async function handler(req, res) {
   console.log("🔥 Webhook hit");
@@ -9,7 +40,6 @@ export default async function handler(req, res) {
   // ✅ Always respond immediately to PayMongo
   res.status(200).json({ received: true });
 
-  // ✅ Process everything in background
   (async () => {
     try {
       if (req.method !== "POST") {
@@ -28,72 +58,83 @@ export default async function handler(req, res) {
       const paymentData = event.data.attributes.data.attributes;
       const metadata = paymentData.metadata || {};
 
-      const email = metadata.email;
-      const name = metadata.name || "Customer";
+      // ✅ Pull everything from PayMongo billing info, metadata as fallback
+      const email = paymentData.billing?.email || metadata.email;
+      const name = paymentData.billing?.name || metadata.name || "Customer";
       const type = metadata.type || "PDF";
-      const address = metadata.address || "";
-
-      console.log("✅ Payment confirmed for:", email);
-
-      // --- File Handling ---
-      // Since upload is now done in background during checkout,
-      // we try to use whatever is available in metadata
       const driveFileId = metadata.driveFileId;
       const driveFileUrl = metadata.driveFileUrl;
-      const pdfBase64 = metadata.pdf;
+      const amount = type === "PDF" ? "₱99" : "₱199";
+      const ref = `${type}-${Date.now()}`;
+      const date = new Date().toLocaleString("en-PH", { timeZone: "Asia/Manila" });
 
+      console.log("✅ Payment confirmed for:", email);
+      console.log("👤 Customer name:", name);
+
+      // --- Build Drive URL ---
       let finalFileUrl = null;
 
       if (driveFileUrl) {
         finalFileUrl = driveFileUrl;
-        console.log("✅ Using existing Drive URL from metadata");
+        console.log("✅ Using Drive URL from metadata");
       } else if (driveFileId) {
         finalFileUrl = `https://drive.google.com/file/d/${driveFileId}/view`;
         console.log("✅ Constructed URL from Drive file ID");
-      } else if (pdfBase64) {
-        // Fallback: upload now if background upload during checkout failed
-        console.log("⚠️ No Drive URL in metadata, uploading now as fallback...");
-        const folderId =
-          type === "PDF"
-            ? process.env.GOOGLE_DRIVE_FOLDER_ID
-            : process.env.GOOGLE_DRIVE_FOLDER_ID_PRINT || process.env.GOOGLE_DRIVE_FOLDER_ID;
-
-        const fileName = `${type}-ORD-${Date.now()}.pdf`;
-        const result = await uploadToDrive({ base64PDF: pdfBase64, fileName, folderId });
-        finalFileUrl = result.fileUrl;
-        console.log("✅ Fallback upload done:", finalFileUrl);
       } else {
-        console.warn("⚠️ No file data found in metadata");
+        console.warn("⚠️ No Drive file data found in metadata");
       }
 
-      // --- Send post-payment email ---
+      // --- Log to Google Sheets ---
+      await logToSheets({
+        date,
+        name,
+        email: email || "N/A",
+        type,
+        amount,
+        driveUrl: finalFileUrl || "N/A",
+        ref,
+      });
+
       if (!email) {
-        console.warn("⚠️ No email found in metadata, skipping email");
+        console.warn("⚠️ No email found, skipping emails");
         return;
       }
 
-      let subject = "";
-      let text = "";
+      // --- Email content ---
+      let customerSubject = "";
+      let customerText = "";
 
       if (type === "PDF") {
-        subject = "Your Wedding Tag PDF is Ready 💖";
-        text = finalFileUrl
+        customerSubject = "Your Wedding Tag PDF is Ready 💖";
+        customerText = finalFileUrl
           ? `Hi ${name},\n\nYour payment is confirmed and your wedding tag PDF is ready!\n\nDownload here:\n${finalFileUrl}\n\nThank you for your purchase 💖`
           : `Hi ${name},\n\nYour payment is confirmed! Your file is still processing and we will send your download link shortly.\n\nThank you 💖`;
       } else {
-        const ref = `PRINT-${Date.now()}`;
-        subject = "Your Print Order is Confirmed 💖";
-        text = `Hi ${name},\n\nYour payment is confirmed and your print order (${ref}) has been received.\n\nWe will process it within 5–7 days.\n\nThank you 💖`;
+        customerSubject = "Your Print Order is Confirmed 💖";
+        customerText = `Hi ${name},\n\nYour payment is confirmed and your print order (${ref}) has been received.\n\nWe will process it within 5–7 days.\n\nThank you 💖`;
       }
 
-      await resend.emails.send({
-        from: "no-reply@heavenxentph.com",
-        to: email,
-        subject,
-        text,
-      });
+      // --- Send customer email + owner notification in parallel ---
+      await Promise.all([
+        // ✅ Email to customer
+        resend.emails.send({
+          from: "no-reply@heavenxentph.com",
+          to: email,
+          subject: customerSubject,
+          text: customerText,
+        }),
 
-      console.log("✅ Post-payment email sent to:", email);
+        // ✅ Notification email to you
+        resend.emails.send({
+          from: "no-reply@heavenxentph.com",
+          to: "heavenxentkeepsakes@gmail.com",
+          subject: `🛍️ New ${type} Order — ${name}`,
+          text: `New order received!\n\nReference: ${ref}\nDate: ${date}\nName: ${name}\nEmail: ${email}\nType: ${type}\nAmount: ${amount}\nDrive URL: ${finalFileUrl || "N/A"}\n\nCheck your Google Sheet for full order history.`,
+        }),
+      ]);
+
+      console.log("✅ Customer email sent to:", email);
+      console.log("✅ Notification email sent to: heavenxentkeepsakes@gmail.com");
 
     } catch (err) {
       console.error("❌ Background webhook error:", err);
