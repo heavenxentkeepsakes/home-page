@@ -123,8 +123,19 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         data: {
           attributes: {
-            amount: type === "PDF" ? 9900 : 19900,
-            currency: "PHP",
+            billing: {
+              name,
+              email,
+            },
+            line_items: [
+              {
+                currency: "PHP",
+                amount: type === "PDF" ? 9900 : 19900,
+                name: type === "PDF" ? "PDF Download" : "Print Order",
+                quantity: 1,
+              }
+            ],
+            payment_method_types: ["gcash", "card", "paymaya"],
             metadata: { name, email, type, address, driveFileId, driveFileUrl },
             success_url: "https://heavenxentph.com/success.html",
             cancel_url: "https://heavenxentph.com/cancel.html"
