@@ -63,7 +63,12 @@ export default async function handler(req, res) {
 
     const fileName = `${type}-ORD-${Date.now()}.pdf`;
 
-    // --- 🚀 Create PayMongo checkout FIRST for speed ---
+    // --- ✅ Upload FIRST so we have the URL for PayMongo metadata ---
+    const uploadResult = await uploadToDrive({ base64PDF: pdfBase64, fileName, folderId });
+    const driveFileId = uploadResult.fileId;
+    const driveFileUrl = uploadResult.fileUrl;
+
+    // --- 🚀 Create PayMongo checkout with drive URL in metadata ---
     const checkoutRes = await fetch("https://api.paymongo.com/v1/checkout_sessions", {
       method: "POST",
       headers: {
@@ -83,8 +88,8 @@ export default async function handler(req, res) {
               },
             ],
             payment_method_types: ["gcash", "card"],
-            // ✅ No driveFileId yet — upload happens in background
-            metadata: { name, email, type, address },
+            // ✅ Drive URL is now included so webhook can send it in the email
+            metadata: { name, email, type, address, driveFileId, driveFileUrl },
             success_url: "https://heavenxentph.com/success.html",
             cancel_url: "https://heavenxentph.com/cancel.html",
           },
@@ -107,29 +112,20 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Invalid payment response" });
     }
 
-    // --- 🚀 Upload to Drive in background (don't block checkout) ---
-    uploadToDrive({ base64PDF: pdfBase64, fileName, folderId })
-      .then(({ fileUrl }) => {
-        console.log("✅ Background upload done:", fileUrl);
-      })
-      .catch((err) => {
-        console.error("❌ Background upload failed:", err.message);
-      });
-
-    // --- 🚀 Send order received email in background ---
+    // --- 🚀 Send order received email in background (non-blocking) ---
     resend.emails.send({
       from: "no-reply@heavenxentph.com",
       to: email,
       subject: type === "PDF" ? "Your order has been received" : "Print Order Received",
       text:
         type === "PDF"
-          ? `Hi ${name},\n\nWe received your order! Your download link will be emailed to you after payment is confirmed.\n\nThank you! 💖`
+          ? `Hi ${name},\n\nWe received your order! Your download link will be emailed to you once payment is confirmed.\n\nThank you! 💖`
           : `Hi ${name},\n\nYour print order has been received. We will process it within 5–7 days.\n\nThank you! 💖`,
     }).catch((err) => {
       console.error("⚠️ Order email failed (non-fatal):", err.message);
     });
 
-    // --- ✅ Return checkout URL immediately ---
+    // --- ✅ Return checkout URL ---
     return res.status(200).json({ checkout_url: checkoutUrl });
 
   } catch (err) {
