@@ -44,10 +44,11 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Invalid base64 PDF data" });
     }
 
-    // Check environment variables
+    // ✅ Updated to match new OAuth2 env vars (removed GOOGLE_CLIENT_EMAIL and GOOGLE_PRIVATE_KEY)
     const requiredEnvVars = [
-      'GOOGLE_CLIENT_EMAIL',
-      'GOOGLE_PRIVATE_KEY',
+      'GOOGLE_CLIENT_ID',
+      'GOOGLE_CLIENT_SECRET',
+      'GOOGLE_REFRESH_TOKEN',
       'GOOGLE_DRIVE_FOLDER_ID',
       'PAYMONGO_SECRET_KEY',
       'RESEND_API_KEY'
@@ -61,8 +62,8 @@ export default async function handler(req, res) {
 
     // --- Decide folder based on type ---
     const folderId = type === "PDF"
-      ? process.env.GOOGLE_DRIVE_FOLDER_ID     // PDF folder
-      : (process.env.GOOGLE_DRIVE_FOLDER_ID_PRINT || process.env.GOOGLE_DRIVE_FOLDER_ID); // Print folder
+      ? process.env.GOOGLE_DRIVE_FOLDER_ID
+      : (process.env.GOOGLE_DRIVE_FOLDER_ID_PRINT || process.env.GOOGLE_DRIVE_FOLDER_ID);
 
     if (!folderId) {
       return res.status(500).json({ error: "Google Drive folder not configured" });
@@ -96,7 +97,6 @@ export default async function handler(req, res) {
     } else {
       const ref = `PRINT-${Date.now()}`;
       emailText = `Hi ${name},\n\nYour print order (${ref}) has been received. We will process it within a week.\n\nThank you!`;
-      // Optional: log print orders to Google Sheets here for tracking
     }
 
     await transporter.sendMail({
@@ -116,7 +116,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         data: {
           attributes: {
-            amount: type === "PDF" ? 9900 : 19900, // adjust prices
+            amount: type === "PDF" ? 9900 : 19900,
             currency: "PHP",
             metadata: { name, email, type, address, driveFileId, driveFileUrl },
             success_url: "https://heavenxentph.com/success.html",
@@ -143,7 +143,6 @@ export default async function handler(req, res) {
 
   } catch (err) {
     console.error("Backend error:", err);
-    // CORS headers are already set above, so error response will include them
     return res.status(500).json({ error: err.message || "Internal server error" });
   }
 }
