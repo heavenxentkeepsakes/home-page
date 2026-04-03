@@ -114,7 +114,7 @@ export default async function handler(req, res) {
     }
 
     // --- Create PayMongo checkout ---
-    const checkoutRes = await fetch("https://api.paymongo.com/v1/checkout", {
+    const checkoutRes = await fetch("https://api.paymongo.com/v1/checkout_sessions", {
       method: "POST",
       headers: {
         "Authorization": `Basic ${Buffer.from(process.env.PAYMONGO_SECRET_KEY + ":").toString("base64")}`,
@@ -135,8 +135,12 @@ export default async function handler(req, res) {
 
     if (!checkoutRes.ok) {
       const errorText = await checkoutRes.text();
-      console.error("PayMongo error:", checkoutRes.status, errorText);
-      return res.status(500).json({ error: "Payment gateway error" });
+      console.error("PayMongo status:", checkoutRes.status);
+      console.error("PayMongo error:", errorText); // ← check your browser/server console for this
+      return res.status(500).json({
+        error: "Payment gateway error",
+        debug: errorText  // ← temporary, remove after fixing
+      });
     }
 
     const checkoutData = await checkoutRes.json();
