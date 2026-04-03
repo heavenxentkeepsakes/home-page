@@ -2,17 +2,18 @@ import { uploadToDrive } from "./drive.js";
 import nodemailer from "nodemailer";
 import fetch from "node-fetch";
 
+
 export default async function handler(req, res) {
   // CORS for your frontend domain - set FIRST before any logic
   const origin = req.headers.origin;
   const allowedOrigins = ["https://heavenxentph.com", "http://localhost:3000"];
-  
+
   if (allowedOrigins.includes(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
   } else {
     res.setHeader("Access-Control-Allow-Origin", "https://heavenxentph.com");
   }
-  
+
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.setHeader("Access-Control-Max-Age", "86400");
@@ -53,7 +54,7 @@ export default async function handler(req, res) {
       'PAYMONGO_SECRET_KEY',
       'RESEND_API_KEY'
     ];
-    
+
     const missingVars = requiredEnvVars.filter(v => !process.env[v]);
     if (missingVars.length > 0) {
       console.error("Missing environment variables:", missingVars);
@@ -82,29 +83,35 @@ export default async function handler(req, res) {
     const driveFileUrl = uploadResult.fileUrl;
 
     // --- Send confirmation email ---
-    const transporter = nodemailer.createTransport({
-      host: "smtp.resend.email",
-      port: 587,
-      auth: {
-        user: process.env.RESEND_API_KEY,
-        pass: process.env.RESEND_API_KEY
+    // --- Send confirmation email ---
+    try {
+      const transporter = nodemailer.createTransport({
+        host: "smtp.resend.email",
+        port: 587,
+        auth: {
+          user: process.env.RESEND_API_KEY,
+          pass: process.env.RESEND_API_KEY
+        }
+      });
+
+      let emailText = "";
+      if (type === "PDF") {
+        emailText = `Hi ${name},\n\nYour PDF has been generated successfully. You can download it after payment.\n\nThank you!`;
+      } else {
+        const ref = `PRINT-${Date.now()}`;
+        emailText = `Hi ${name},\n\nYour print order (${ref}) has been received. We will process it within a week.\n\nThank you!`;
       }
-    });
 
-    let emailText = "";
-    if (type === "PDF") {
-      emailText = `Hi ${name},\n\nYour PDF has been generated successfully. You can download it after payment.\n\nThank you!`;
-    } else {
-      const ref = `PRINT-${Date.now()}`;
-      emailText = `Hi ${name},\n\nYour print order (${ref}) has been received. We will process it within a week.\n\nThank you!`;
+      await transporter.sendMail({
+        from: "no-reply@heavenxentph.com",
+        to: email,
+        subject: type === "PDF" ? "Your PDF is ready" : "Print Order Received",
+        text: emailText
+      });
+    } catch (emailErr) {
+      // ⚠️ Log but don't block — checkout will still proceed
+      console.error("⚠️ Email sending failed (non-fatal):", emailErr.message);
     }
-
-    await transporter.sendMail({
-      from: "no-reply@heavenxentph.com",
-      to: email,
-      subject: type === "PDF" ? "Your PDF is ready" : "Print Order Received",
-      text: emailText
-    });
 
     // --- Create PayMongo checkout ---
     const checkoutRes = await fetch("https://api.paymongo.com/v1/checkout", {
