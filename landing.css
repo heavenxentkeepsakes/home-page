@@ -1141,6 +1141,9 @@ body::after {
   .l-cta__sub {
     font-size: 15px;
   }
-
+   
+  .l-demo-input {
+    font-size: 16px;
+  }
 
 }
