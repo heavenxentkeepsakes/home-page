@@ -170,7 +170,7 @@ body::after {
   font-style: italic;
   color: var(--gold-dark);
   display: block;
-    font-size: 0.9em;
+  font-size: 0.9em;
 }
 
 .l-hero__body {
@@ -1141,9 +1141,12 @@ body::after {
   .l-cta__sub {
     font-size: 15px;
   }
-   
+
   .l-demo-input {
     font-size: 16px;
   }
 
+  .l-demo-input:focus {
+    scroll-margin-top: 80px;
+  }
 }
