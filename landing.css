@@ -264,6 +264,13 @@ body::after {
   justify-content: center;
   padding: 120px 60px 60px;
   position: relative;
+  gap: 18px;
+  /* replaces the individual margins */
+}
+
+.l-tag-wrap {
+  position: relative;
+  /* removed margin-bottom since gap handles spacing now */
 }
 
 .l-hero__right::before {
@@ -284,7 +291,7 @@ body::after {
   letter-spacing: 0.38em;
   text-transform: uppercase;
   color: var(--ink-muted);
-  margin-bottom: 28px;
+  margin-bottom: 18px;
 }
 
 @keyframes tagCursorBlink {
@@ -315,15 +322,35 @@ body::after {
 }
 
 @keyframes soft-bounce {
-  0%, 10%, 20%, 100% { transform: translateY(0); }
-  5% { transform: translateY(-5px); }
-  15% { transform: translateY(-2px); }
+
+  0%,
+  10%,
+  20%,
+  100% {
+    transform: translateY(0);
+  }
+
+  5% {
+    transform: translateY(-5px);
+  }
+
+  15% {
+    transform: translateY(-2px);
+  }
 }
 
 @keyframes tagPulse {
-  0%   { box-shadow: 0 20px 60px rgba(242, 237, 228, 1); }
-  50%  { box-shadow: 0 0 0 6px rgba(201, 169, 110, 0.25), 0 20px 60px rgba(242, 237, 228, 1); }
-  100% { box-shadow: 0 20px 60px rgba(242, 237, 228, 1); }
+  0% {
+    box-shadow: 0 20px 60px rgba(242, 237, 228, 1);
+  }
+
+  50% {
+    box-shadow: 0 0 0 6px rgba(201, 169, 110, 0.25), 0 20px 60px rgba(242, 237, 228, 1);
+  }
+
+  100% {
+    box-shadow: 0 20px 60px rgba(242, 237, 228, 1);
+  }
 }
 
 .l-tag-card--pulse {
@@ -1125,17 +1152,5 @@ body::after {
     font-size: 15px;
   }
 
-  .l-hero__right {
-    flex-direction: column-reverse; /* tag below inputs on mobile */
-  }
 
-  .l-tag-wrap {
-    margin-bottom: 0;
-    margin-top: 32px;
-  }
-
-  .l-demo-inputs {
-    width: 100%;
-    max-width: 320px;
-  }
 }

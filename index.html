@@ -64,8 +64,10 @@
     </div>
 
     <div class="l-hero__right">
+      <span class="bounce-text">
+        <p class="l-demo-label">Type your names, see your tag live ↓</p>
+      </span>
       <div class="l-demo-inputs">
-        <p class="l-demo-label" style="text-align:center; margin-bottom: 14px;">Type your names to see the preview ↓</p>
         <div class="l-demo-inputs__row">
           <input class="l-demo-input" id="inputName1" type="text" placeholder="First name" maxlength="18">
           <span class="l-demo-inputs__amp">&amp;</span>
@@ -73,7 +75,7 @@
         </div>
         <p class="l-demo-hint">Your tag updates as you type</p>
       </div>
-      <div class="l-tag-wrap" id="tagWrap">
+      <div class="l-tag-wrap">
         <div class="l-tag-card" id="liveTag">
           <img src="tag-sample.png" alt="" class="l-tag-card__bg">
           <div class="l-tag-card__content">
@@ -327,10 +329,9 @@
       if (t1 && t1.nodeType === 3) t1.textContent = inp1.value.trim() || 'Your Name';
       if (t2 && t2.nodeType === 3) t2.textContent = inp2.value.trim() || 'Partner';
 
-      // pulse the tag so user knows to scroll down and see it
       var tag = document.getElementById('liveTag');
       tag.classList.remove('l-tag-card--pulse');
-      void tag.offsetWidth; // force reflow to restart animation
+      void tag.offsetWidth;
       tag.classList.add('l-tag-card--pulse');
     }
 
