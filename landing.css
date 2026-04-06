@@ -1160,4 +1160,22 @@ body::after {
   .l-demo-input:focus {
     scroll-margin-top: 80px;
   }
+
+  .l-tag-card {
+    width: 160px;
+    height: 308px;
+    padding-bottom: 80px;
+  }
+
+  .l-tag-card__names {
+    font-size: 11px;
+  }
+
+  .l-tag-card__date {
+    font-size: 7.5px;
+  }
+
+  .l-tag-card__tagline {
+    font-size: 8px;
+  }
 }
