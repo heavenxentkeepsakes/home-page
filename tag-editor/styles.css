@@ -608,11 +608,11 @@ input::placeholder {
 
 /* ── Responsive ───────────────────────────────────────────────────────────── */
 @media (max-width: 780px) {
-  nav {
-    padding: 16px 20px;
+  .l-nav {
+    padding: 18px 20px;
   }
 
-  .nav-links {
+  .l-nav__links li:not(:last-child) {
     display: none;
   }
 
