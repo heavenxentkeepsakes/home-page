@@ -64,7 +64,9 @@
     </div>
 
     <div class="l-hero__right">
-      <span class="bounce-text"><p class="l-demo-label">Try typing your names ↴</p></span>
+      <span class="bounce-text">
+        <p class="l-demo-label">Try typing your names ↴</p>
+      </span>
       <div class="l-tag-wrap">
         <div class="l-tag-card" id="liveTag">
           <img src="tag-sample.png" alt="" class="l-tag-card__bg">
@@ -330,6 +332,15 @@
 
     inp1.addEventListener('input', updateTag);
     inp2.addEventListener('input', updateTag);
+
+    if (window.innerWidth <= 900) {
+      var tagWrap = document.querySelector('.l-tag-wrap');
+
+      inp1.addEventListener('focus', function () { tagWrap.classList.add('l-tag-wrap--sticky'); });
+      inp2.addEventListener('focus', function () { tagWrap.classList.add('l-tag-wrap--sticky'); });
+      inp1.addEventListener('blur', function () { tagWrap.classList.remove('l-tag-wrap--sticky'); });
+      inp2.addEventListener('blur', function () { tagWrap.classList.remove('l-tag-wrap--sticky'); });
+    }
   </script>
 
 </body>
