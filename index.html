@@ -342,13 +342,10 @@
 
       demoInputs.forEach(function (input) {
         input.addEventListener('focus', function () {
-          document.body.style.overflow = 'hidden';
-          document.documentElement.style.overflow = 'hidden';
-        });
-
-        input.addEventListener('blur', function () {
-          document.body.style.overflow = '';
-          document.documentElement.style.overflow = '';
+          setTimeout(function () {
+            var wrap = document.querySelector('.l-hero__right');
+            wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 350);
         });
       });
     }
