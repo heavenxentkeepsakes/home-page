@@ -681,6 +681,20 @@ input::placeholder {
     transform: none;
     margin-bottom: 1rem;
   }
+
+    .l-footer {
+    padding: 36px 24px;
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+
+  .l-footer__links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+
 }
 
 /* Custom dropdown styling */
