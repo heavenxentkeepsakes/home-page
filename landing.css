@@ -315,21 +315,19 @@ body::after {
 }
 
 @keyframes soft-bounce {
+  0%, 10%, 20%, 100% { transform: translateY(0); }
+  5% { transform: translateY(-5px); }
+  15% { transform: translateY(-2px); }
+}
 
-  0%,
-  10%,
-  20%,
-  100% {
-    transform: translateY(0);
-  }
+@keyframes tagPulse {
+  0%   { box-shadow: 0 20px 60px rgba(242, 237, 228, 1); }
+  50%  { box-shadow: 0 0 0 6px rgba(201, 169, 110, 0.25), 0 20px 60px rgba(242, 237, 228, 1); }
+  100% { box-shadow: 0 20px 60px rgba(242, 237, 228, 1); }
+}
 
-  5% {
-    transform: translateY(-5px);
-  }
-
-  15% {
-    transform: translateY(-2px);
-  }
+.l-tag-card--pulse {
+  animation: tagPulse 0.5s ease-out;
 }
 
 /* ── TAG CARD ── */
@@ -1127,25 +1125,17 @@ body::after {
     font-size: 15px;
   }
 
-  .l-tag-wrap--sticky {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 999;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(8px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
-    display: flex;
-    justify-content: center;
-    overflow: hidden;
-    height: 200px;
-    /* controls how much space it actually occupies */
+  .l-hero__right {
+    flex-direction: column-reverse; /* tag below inputs on mobile */
   }
 
-  .l-tag-wrap--sticky #liveTag {
-    transform: scale(0.5);
-    transform-origin: top center;
-    flex-shrink: 0;
+  .l-tag-wrap {
+    margin-bottom: 0;
+    margin-top: 32px;
+  }
+
+  .l-demo-inputs {
+    width: 100%;
+    max-width: 320px;
   }
 }
