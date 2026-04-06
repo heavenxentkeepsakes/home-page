@@ -170,6 +170,7 @@ body::after {
   font-style: italic;
   color: var(--gold-dark);
   display: block;
+    font-size: 0.9em;
 }
 
 .l-hero__body {
@@ -588,6 +589,7 @@ body::after {
 .l-proof__headline em {
   font-style: italic;
   color: var(--gold-dark);
+  font-size: 0.9em;
 }
 
 .l-proof__body {
@@ -1114,18 +1116,6 @@ body::after {
 
   .l-products__count {
     font-size: 10px;
-  }
-
-  .l-footer__brand {
-    font-size: 16px;
-  }
-
-  .l-footer__links a {
-    font-size: 11px;
-  }
-
-  .l-footer__copy {
-    font-size: 11px;
   }
 
   .l-hero__body {
