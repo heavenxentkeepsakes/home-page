@@ -986,6 +986,17 @@ body::after {
   letter-spacing: 0.06em;
 }
 
+.l-demo-input[type="search"]::-webkit-search-decoration,
+.l-demo-input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.l-demo-input[type="search"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 /* ── MOBILE ── */
 @media (max-width: 900px) {
   .l-nav {
