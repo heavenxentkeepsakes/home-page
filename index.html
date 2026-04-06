@@ -2,23 +2,20 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Heavenxent Keepsakes — See Your Names Before You Order</title>
-  <meta name="description"
-    content="The only wedding tag shop where you see your names live — before you commit. 12 exclusive designs. Instant preview. Delivered or downloaded.">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Design Your Tags — Heavenxent Keepsakes</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Outfit:wght@200;300;400;500&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet" href="landing.css">
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 
-<body>
-
+<body class="page-gallery">
   <nav class="l-nav">
     <a href="/" class="l-nav__brand">
-      <img src="logo.png" alt="Heavenxent Keepsakes">
+      <img src="/logo.png" alt="Heavenxent Keepsakes">
     </a>
     <ul class="l-nav__links">
       <li><a href="#products">Products</a></li>
@@ -28,215 +25,17 @@
     </ul>
   </nav>
 
-  <section class="l-hero">
-    <div class="l-hero__left">
-      <p class="l-overline">Your love story, beautifully tagged</p>
-      <h1 class="l-hero__headline">
-        Your names,<br>
-        <em>live, as you type.</em>
-      </h1>
-      <p class="l-hero__body">
-        Watch something magical happen — type your names above and see your wedding tag come to life, letter by letter,
-        exactly as it will be printed. No mockups. No waiting. Just yours, right now.
-      </p>
-      <div class="l-hero__actions">
-        <a href="/tag-editor/index.html" class="l-btn-primary">
-          <span>Start customizing</span>
-          <span>→</span>
-        </a>
-        <a href="#products" class="l-btn-ghost">See all designs</a>
-      </div>
-      <div class="l-hero__stats">
-        <div class="l-stat">
-          <span class="l-stat__num">12</span>
-          <span class="l-stat__label">Exclusive designs</span>
-        </div>
-        <div class="l-stat">
-          <span class="l-stat__num">10+</span>
-          <span class="l-stat__label">Years in business</span>
-        </div>
-        <div class="l-stat">
-          <span class="l-stat__num">∞</span>
-          <span class="l-stat__label">Combinations</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="l-hero__right">
-      <span class="bounce-text">
-        <p class="l-demo-label">Go on — type your names ↓</p>
-      </span>
-      <div class="l-demo-inputs">
-        <div class="l-demo-inputs__row">
-          <input class="l-demo-input" id="inputName1" type="text" placeholder="First name" maxlength="18">
-          <span class="l-demo-inputs__amp">&amp;</span>
-          <input class="l-demo-input" id="inputName2" type="text" placeholder="Partner" maxlength="18">
-        </div>
-        <p class="l-demo-hint">Watch it appear, letter by letter</p>
-      </div>
-      <div class="l-tag-wrap">
-        <div class="l-tag-card" id="liveTag">
-          <img src="tag-sample.png" alt="" class="l-tag-card__bg">
-          <div class="l-tag-card__content">
-            <div class="l-tag-card__names">
-              <span id="name1Display">Your Name</span>
-              <span class="l-tag-card__amp"> &amp; </span>
-              <span id="name2Display">Partner</span>
-            </div>
-            <div class="l-tag-card__divider"></div>
-            <div class="l-tag-card__date">January 01, 2026</div>
-            <div class="l-tag-card__tagline">Forever starts today</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="l-marquee">
-    <div class="l-marquee__track">
-      <span class="l-marquee__item">Live preview <span class="l-marquee__dot"></span></span>
-      <span class="l-marquee__item">12 designs <span class="l-marquee__dot"></span></span>
-      <span class="l-marquee__item">Instant PDF <span class="l-marquee__dot"></span></span>
-      <span class="l-marquee__item">Works on any printer <span class="l-marquee__dot"></span></span>
-      <span class="l-marquee__item">Print-ready files <span class="l-marquee__dot"></span></span>
-      <span class="l-marquee__item">Custom fonts <span class="l-marquee__dot"></span></span>
-      <span class="l-marquee__item">One-time download <span class="l-marquee__dot"></span></span>
-      <span class="l-marquee__item">Live preview <span class="l-marquee__dot"></span></span>
-      <span class="l-marquee__item">12 designs <span class="l-marquee__dot"></span></span>
-      <span class="l-marquee__item">Instant PDF <span class="l-marquee__dot"></span></span>
-      <span class="l-marquee__item">Works on any printer <span class="l-marquee__dot"></span></span>
-      <span class="l-marquee__item">Print-ready files <span class="l-marquee__dot"></span></span>
-      <span class="l-marquee__item">Custom fonts <span class="l-marquee__dot"></span></span>
-      <span class="l-marquee__item">One-time download <span class="l-marquee__dot"></span></span>
+  <div class="container">
+    <section class="gallery-intro">
+      <h1 class="gallery-title">Choose Your Design</h1>
+      <p class="gallery-sub">Each design is fully customizable with your names, date, and personal message.</p>
+    </section>
+    <div class="gallery-grid" id="galleryGrid">
+      <div class="gallery-skeleton"></div>
+      <div class="gallery-skeleton"></div>
+      <div class="gallery-skeleton"></div>
     </div>
   </div>
-
-  <section class="l-proof" id="proof">
-    <div class="l-proof__grid">
-      <div class="l-proof__left">
-        <p class="l-eyebrow">Why it's different</p>
-        <h2 class="l-proof__headline">
-          Most shops make you<br><em>imagine it. We show you.</em>
-        </h2>
-        <p class="l-proof__body">
-          Every other shop shows you someone else's names and asks you to imagine yours. We built something different —
-          a live tag that writes itself as you type, showing you the real thing, with your real names, before you spend
-          a single peso.
-        </p>
-      </div>
-      <div class="l-proof__right">
-        <ul class="l-features">
-          <li class="l-feature">
-            <span class="l-feature__num">✓</span>
-            <div>
-              <strong class="l-feature__title">See before you buy</strong>
-              <p class="l-feature__desc">The live preview is the actual layout that gets sent to print.</p>
-            </div>
-          </li>
-          <li class="l-feature">
-            <span class="l-feature__num">✓</span>
-            <div>
-              <strong class="l-feature__title">Choose your font, live</strong>
-              <p class="l-feature__desc">Switch between font options and watch your tag respond instantly.</p>
-            </div>
-          </li>
-          <li class="l-feature">
-            <span class="l-feature__num">✓</span>
-            <div>
-              <strong class="l-feature__title">PDF generated on the spot</strong>
-              <p class="l-feature__desc">Your print-ready file is uploaded to Drive and emailed to you in minutes.</p>
-            </div>
-          </li>
-          <li class="l-feature">
-            <span class="l-feature__num">✓</span>
-            <div>
-              <strong class="l-feature__title">Trusted for 10+ years</strong>
-              <p class="l-feature__desc">Thousands of couples across the world. Real quality, every time.</p>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <section class="l-process" id="process">
-    <div class="l-process__header">
-      <div>
-        <p class="l-eyebrow">The process</p>
-        <h2 class="l-process__title">From blank to beautiful<br><em>in minutes</em></h2>
-      </div>
-      <a href="/tag-editor/index.html" class="l-process__link">Start now →</a>
-    </div>
-    <div class="l-steps">
-      <div class="l-step">
-        <div class="l-step__num">01</div>
-        <div class="l-step__title">Pick your design</div>
-        <p class="l-step__desc">Browse 12 exclusive layouts. Each one crafted for weddings, each one different.</p>
-      </div>
-      <div class="l-step">
-        <div class="l-step__num">02</div>
-        <div class="l-step__title">Type your names</div>
-        <p class="l-step__desc">Enter your couple name, wedding date, and tagline. Watch the tag update live.</p>
-      </div>
-      <div class="l-step">
-        <div class="l-step__num">03</div>
-        <div class="l-step__title">Choose your font</div>
-        <p class="l-step__desc">Pick from multiple elegant typefaces, each previewed directly on your tag.</p>
-      </div>
-      <div class="l-step">
-        <div class="l-step__num">04</div>
-        <div class="l-step__title">Order or download</div>
-        <p class="l-step__desc">Pay securely, get your PDF emailed, or have us handle printing and delivery.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="l-products" id="products">
-    <div class="l-products__header">
-      <div>
-        <p class="l-eyebrow">Our collection</p>
-        <h2 class="l-products__title">Made for life's<br><em>most meaningful moments</em></h2>
-      </div>
-      <span class="l-products__count">3 product lines</span>
-    </div>
-    <div class="l-products__grid">
-      <a href="/tag-editor/index.html" class="l-product l-product--featured">
-        <span class="l-product__badge">Live now — try it</span>
-        <div class="l-product__name">Wedding Tags</div>
-        <p class="l-product__desc">
-          12 exclusive designs for wedding favors, souvenir bags, and place settings.
-          Personalized with your couple name, wedding date, and tagline.
-          Preview everything live — then order with one click.
-        </p>
-        <div class="l-product__cta">Design yours <span>→</span></div>
-      </a>
-      <div class="l-product l-product--dim">
-        <span class="l-product__badge l-product__badge--soon">Coming October 2025</span>
-        <div class="l-product__name">Christmas Gift Tags</div>
-        <p class="l-product__desc">15 holiday designs for cards and stickers. Personalized with your family name.</p>
-        <div class="l-product__cta l-product__cta--dim">Notify me →</div>
-      </div>
-      <div class="l-product l-product--dim">
-        <span class="l-product__badge l-product__badge--soon">Coming soon</span>
-        <div class="l-product__name">Personalized Envelopes</div>
-        <p class="l-product__desc">Custom printed envelopes for gifts, invitations, and special occasions.</p>
-        <div class="l-product__cta l-product__cta--dim">Notify me →</div>
-      </div>
-    </div>
-  </section>
-
-  <section class="l-cta">
-    <p class="l-cta__eyebrow">Ready?</p>
-    <h2 class="l-cta__title">
-      Your names belong<br>
-      <em>on something beautiful.</em>
-    </h2>
-    <p class="l-cta__sub">Type them in. It takes ten seconds.</p>
-    <a href="/tag-editor/index.html" class="l-btn-primary l-btn-primary--lg">
-      <span>Start designing</span>
-      <span>→</span>
-    </a>
-  </section>
 
   <footer class="l-footer">
     <a href="/" class="l-footer__brand">Heavenxent Keepsakes</a>
@@ -244,100 +43,13 @@
       <li><a href="#products">Products</a></li>
       <li><a href="#process">How it works</a></li>
       <li><a href="/tag-editor/index.html">Design now</a></li>
-      <li><a href="/cdn-cgi/l/email-protection#177f727b7b78577f72766172796f727963677f3974787a">Contact</a></li>
+      <li><a href="mailto:hello@heavenxentph.com">Contact</a></li>
     </ul>
     <p class="l-footer__copy">2025 Heavenxent Keepsakes</p>
   </footer>
 
-  <script>
-    var inp1 = document.getElementById('inputName1');
-    var inp2 = document.getElementById('inputName2');
-    var n1 = document.getElementById('name1Display');
-    var n2 = document.getElementById('name2Display');
-
-    // ── TYPING ANIMATION ──
-    (function () {
-      // Append a blinking cursor span to each name element
-      var cursor1 = document.createElement('span');
-      cursor1.className = 'tag-cursor';
-      cursor1.style.display = 'none';
-      n1.appendChild(cursor1);
-
-      var cursor2 = document.createElement('span');
-      cursor2.className = 'tag-cursor';
-      cursor2.style.display = 'none';
-      n2.appendChild(cursor2);
-
-      // Ensure first child is always a text node
-      function getTextNode(el) {
-        if (!el.childNodes[0] || el.childNodes[0].nodeType !== 3) {
-          el.insertBefore(document.createTextNode(''), el.firstChild);
-        }
-        return el.childNodes[0];
-      }
-
-      function eraseText(el, cursor, cb) {
-        cursor.style.display = 'inline-block';
-        var tn = getTextNode(el);
-        function step() {
-          if (tn.textContent.length > 0) {
-            tn.textContent = tn.textContent.slice(0, -1);
-            setTimeout(step, 65 + Math.random() * 25);
-          } else {
-            setTimeout(cb, 250);
-          }
-        }
-        setTimeout(step, 500);
-      }
-
-      function typeText(el, cursor, word, cb) {
-        var tn = getTextNode(el);
-        tn.textContent = '';
-        var i = 0;
-        function step() {
-          if (i < word.length) {
-            tn.textContent += word[i++];
-            setTimeout(step, 95 + Math.random() * 40);
-          } else {
-            setTimeout(function () {
-              cursor.style.display = 'none';
-              if (cb) cb();
-            }, 700);
-          }
-        }
-        setTimeout(step, 200);
-      }
-
-      // Sequence: erase "Your Name" → type "Ethan" → erase "Partner" → type "Marie"
-      setTimeout(function () {
-        eraseText(n1, cursor1, function () {
-          typeText(n1, cursor1, 'Ethan', function () {
-            eraseText(n2, cursor2, function () {
-              typeText(n2, cursor2, 'Maria', null);
-            });
-          });
-        });
-      }, 1800);
-    })();
-
-    // ── LIVE INPUT UPDATE ──
-    // Works safely alongside the cursor spans injected above
-    function updateTag() {
-      var t1 = n1.childNodes[0];
-      var t2 = n2.childNodes[0];
-      if (t1 && t1.nodeType === 3) t1.textContent = inp1.value.trim() || 'Your Name';
-      if (t2 && t2.nodeType === 3) t2.textContent = inp2.value.trim() || 'Partner';
-
-      var tag = document.getElementById('liveTag');
-      tag.classList.remove('l-tag-card--pulse');
-      void tag.offsetWidth;
-      tag.classList.add('l-tag-card--pulse');
-    }
-
-    inp1.addEventListener('input', updateTag);
-    inp2.addEventListener('input', updateTag);
-  </script>
-
+  <script src="tag-renderer.js"></script>
+  <script src="gallery.js"></script>
 </body>
 
 </html>
