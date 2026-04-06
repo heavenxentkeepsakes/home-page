@@ -577,7 +577,7 @@ body::after {
 
 .l-feature__num {
   font-family: 'Playfair Display', serif;
-  font-size: 11px;
+  font-size: 20px;
   color: var(--gold);
   width: 22px;
   flex-shrink: 0;
@@ -1044,5 +1044,74 @@ body::after {
     flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
+  }
+
+  /* Increase small text for mobile readability */
+  .l-nav__links a {
+    font-size: 12px;
+  }
+
+  .l-overline {
+    font-size: 10px;
+  }
+
+  .l-demo-label {
+    font-size: 10px;
+  }
+
+  .l-demo-hint {
+    font-size: 10px;
+  }
+
+  .l-marquee__item {
+    font-size: 11px;
+  }
+
+  .l-eyebrow {
+    font-size: 10px;
+  }
+
+  .l-product__badge {
+    font-size: 9px;
+  }
+
+  .l-products__count {
+    font-size: 10px;
+  }
+
+  .l-footer__brand {
+    font-size: 16px;
+  }
+
+  .l-footer__links a {
+    font-size: 11px;
+  }
+
+  .l-footer__copy {
+    font-size: 11px;
+  }
+
+  .l-hero__body {
+    font-size: 15px;
+  }
+
+  .l-proof__body {
+    font-size: 14px;
+  }
+
+  .l-feature__desc {
+    font-size: 13px;
+  }
+
+  .l-step__desc {
+    font-size: 13px;
+  }
+
+  .l-product__desc {
+    font-size: 14px;
+  }
+
+  .l-cta__sub {
+    font-size: 15px;
   }
 }
