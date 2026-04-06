@@ -346,7 +346,7 @@
         input.addEventListener('focus', function () {
           setTimeout(function () {
             var wrap = document.querySelector('.l-hero__right');
-            var topPos = wrap.getBoundingClientRect().top + window.pageYOffset - 80;
+            var topPos = wrap.getBoundingClientRect().top + window.pageYOffset;
             window.scrollTo({ top: topPos, behavior: 'smooth' });
           }, 400);
         });
