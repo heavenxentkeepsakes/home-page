@@ -1185,7 +1185,6 @@ body::after {
 
   .l-demo__actions {
     margin-top: 18px;
-    display: flex;
     justify-content: center;
     align-items: center;
   }
