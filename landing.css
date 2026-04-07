@@ -1183,15 +1183,27 @@ body::after {
     font-size: 8px;
   }
 
-   .l-tag-wrap .l-tag-card {
-     display: flex;
-     justify-content: center;
-     align-items: center;
-     flex-direction: column;
-   }
-   
-   .l-tag-wrap .l-tag-card * {
-     margin: 0;
-   }
+  .l-demo__actions {
+    margin-top: 18px;
+    display: flex;
+  }
+
+  .l-tag-wrap .l-tag-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+  }
+
+  .l-tag-wrap .l-tag-card * {
+    margin: 0;
+  }
+
 
 }
