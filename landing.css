@@ -295,6 +295,10 @@ body::after {
   margin-bottom: 18px;
 }
 
+.l-demo__actions {
+  display: none;
+}
+
 @keyframes tagCursorBlink {
 
   0%,
@@ -1178,4 +1182,12 @@ body::after {
   .l-tag-card__tagline {
     font-size: 8px;
   }
+
+  .l-demo__actions {
+    margin-top: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
 }
