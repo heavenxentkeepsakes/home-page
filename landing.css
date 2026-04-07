@@ -1183,10 +1183,15 @@ body::after {
     font-size: 8px;
   }
 
-  .l-demo__actions {
-    margin-top: 18px;
-    justify-content: center;
-    align-items: center;
-  }
+   .l-tag-wrap .l-tag-card {
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     flex-direction: column;
+   }
+   
+   .l-tag-wrap .l-tag-card * {
+     margin: 0;
+   }
 
 }
