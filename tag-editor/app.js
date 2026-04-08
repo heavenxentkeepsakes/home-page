@@ -670,7 +670,7 @@ async function handleBuyPDF() {
     console.error(err);
     alert("Something went wrong. Please try again.");
     const btn = document.getElementById("btnDownload");
-    btn.innerText = "Buy & Download PDF — ₱199";
+    btn.innerText = "Buy & Download PDF — ₱149";
     btn.disabled = false;
   }
 }
