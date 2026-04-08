@@ -82,7 +82,7 @@ export default async function handler(req, res) {
             line_items: [
               {
                 currency: "PHP",
-                amount: type === "PDF" ? 9900 : 19900,
+                amount: type === "PDF" ? 14900 : 19900,
                 name: type === "PDF" ? "PDF Download" : "Print Order",
                 quantity: 1,
               },

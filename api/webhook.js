@@ -62,7 +62,7 @@ export default async function handler(req, res) {
     const type = metadata.type || "PDF";
     const driveFileId = metadata.driveFileId;
     const driveFileUrl = metadata.driveFileUrl;
-    const amount = type === "PDF" ? "₱99" : "₱199";
+    const amount = type === "PDF" ? "₱149" : "₱199";
     const ref = `${type}-${Date.now()}`;
     const date = new Date().toLocaleString("en-PH", { timeZone: "Asia/Manila" });
 
