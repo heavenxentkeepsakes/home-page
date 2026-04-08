@@ -415,7 +415,7 @@ input[type="date"] {
   border-radius: 6px;
   padding: 0.75rem 1rem;
   font-family: "Jost", sans-serif;
-  font-size: 0.9rem;
+  font-size: 16px;
   font-weight: 300;
   color: var(--ink);
   outline: none;
@@ -682,7 +682,7 @@ input::placeholder {
     margin-bottom: 1rem;
   }
 
-    .l-footer {
+  .l-footer {
     padding: 36px 24px;
     flex-direction: column;
     gap: 20px;
@@ -821,6 +821,25 @@ input::placeholder {
   animation: fadeIn 0.3s ease;
 }
 
+/* ── Custom date picker ── */
+.date-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr;
+  gap: 0.5rem;
+}
+
+.date-row .custom-select-trigger {
+  padding: 0.75rem 0.7rem;
+  font-size: 0.85rem;
+}
+
+.date-row #selectedMonthDisplay,
+.date-row #selectedDayDisplay,
+.date-row #selectedYearDisplay {
+  font-size: 0.85rem;
+  color: var(--ink);
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -832,3 +851,4 @@ input::placeholder {
     transform: translateY(0);
   }
 }
+

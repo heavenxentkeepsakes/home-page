@@ -336,6 +336,127 @@ function initDropdown() {
   }
 }
 
+// ─── Custom Date Picker ────────────────────────────────────────────────────────
+const MONTHS = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
+
+let _dateState = { month: null, day: null, year: null };
+
+function _makeDateOption(value, label, selectFn) {
+  const opt = document.createElement('div');
+  opt.className = 'custom-select-option';
+  opt.textContent = label;
+  opt.addEventListener('mouseenter', () => opt.style.background = '#faf6f1');
+  opt.addEventListener('mouseleave', () => opt.style.background = '');
+  opt.addEventListener('click', e => { e.stopPropagation(); selectFn(value, label); });
+  return opt;
+}
+
+function _syncHiddenDate() {
+  const { month, day, year } = _dateState;
+  const field = document.getElementById('wdate');
+  if (field) {
+    // Format as YYYY-MM-DD so _getValues() + the renderer get a consistent string
+    if (month && day && year) {
+      const mm = String(month).padStart(2, '0');
+      const dd = String(day).padStart(2, '0');
+      field.value = `${year}-${mm}-${dd}`;
+    } else {
+      field.value = '';
+    }
+  }
+  updateTag();
+}
+
+function _openDateDropdown(wrapperId, triggerId, optionsId) {
+  // Close all date dropdowns first
+  ['month', 'day', 'year'].forEach(part => {
+    const opts = document.getElementById(`${part}SelectOptions`);
+    const trig = document.getElementById(`${part}SelectTrigger`);
+    if (opts) opts.classList.remove('show');
+    if (trig) trig.classList.remove('open');
+  });
+  const opts = document.getElementById(optionsId);
+  const trig = document.getElementById(triggerId);
+  if (!opts || !trig) return;
+  opts.classList.add('show');
+  trig.classList.add('open');
+  setTimeout(() => {
+    document.addEventListener('click', function closeDate(e) {
+      const wrapper = document.getElementById(wrapperId);
+      if (wrapper && !wrapper.contains(e.target)) {
+        opts.classList.remove('show');
+        trig.classList.remove('open');
+        document.removeEventListener('click', closeDate);
+      }
+    });
+  }, 0);
+}
+
+function initDatePicker() {
+  const monthOpts = document.getElementById('monthSelectOptions');
+  const dayOpts = document.getElementById('daySelectOptions');
+  const yearOpts = document.getElementById('yearSelectOptions');
+
+  if (!monthOpts || !dayOpts || !yearOpts) return;
+
+  // -- Months --
+  MONTHS.forEach((name, i) => {
+    monthOpts.appendChild(_makeDateOption(i + 1, name, (val, label) => {
+      _dateState.month = val;
+      const el = document.getElementById('selectedMonthDisplay');
+      if (el) { el.textContent = label; el.style.color = 'var(--ink)'; }
+      document.getElementById('monthSelectOptions').classList.remove('show');
+      document.getElementById('monthSelectTrigger').classList.remove('open');
+      _syncHiddenDate();
+    }));
+  });
+
+  // -- Days --
+  for (let d = 1; d <= 31; d++) {
+    dayOpts.appendChild(_makeDateOption(d, String(d), (val) => {
+      _dateState.day = val;
+      const el = document.getElementById('selectedDayDisplay');
+      if (el) { el.textContent = val; el.style.color = 'var(--ink)'; }
+      document.getElementById('daySelectOptions').classList.remove('show');
+      document.getElementById('daySelectTrigger').classList.remove('open');
+      _syncHiddenDate();
+    }));
+  }
+
+  // -- Years: current year + next 5, then past 10 --
+  const thisYear = new Date().getFullYear();
+  const years = [];
+  for (let y = thisYear; y <= thisYear + 5; y++) years.push(y);
+  for (let y = thisYear - 1; y >= thisYear - 10; y--) years.push(y);
+  years.forEach(y => {
+    yearOpts.appendChild(_makeDateOption(y, String(y), (val) => {
+      _dateState.year = val;
+      const el = document.getElementById('selectedYearDisplay');
+      if (el) { el.textContent = val; el.style.color = 'var(--ink)'; }
+      document.getElementById('yearSelectOptions').classList.remove('show');
+      document.getElementById('yearSelectTrigger').classList.remove('open');
+      _syncHiddenDate();
+    }));
+  });
+
+  // -- Trigger clicks --
+  document.getElementById('monthSelectTrigger')?.addEventListener('click', e => {
+    e.stopPropagation();
+    _openDateDropdown('monthSelectWrapper', 'monthSelectTrigger', 'monthSelectOptions');
+  });
+  document.getElementById('daySelectTrigger')?.addEventListener('click', e => {
+    e.stopPropagation();
+    _openDateDropdown('daySelectWrapper', 'daySelectTrigger', 'daySelectOptions');
+  });
+  document.getElementById('yearSelectTrigger')?.addEventListener('click', e => {
+    e.stopPropagation();
+    _openDateDropdown('yearSelectWrapper', 'yearSelectTrigger', 'yearSelectOptions');
+  });
+}
+
 async function loadFontsForDesign(design) {
   if (!design || !design.fields) return;
 
@@ -387,6 +508,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     // Populate dropdown after fonts are loaded
     populateFontDropdown();
     initDropdown();
+    initDatePicker();
 
     // Show loading state
     const wrapper = document.getElementById('tagWrapper');
@@ -395,7 +517,7 @@ window.addEventListener('DOMContentLoaded', async () => {
       alert('Error: tagWrapper element not found');
       return;
     }
-    
+
     wrapper.style.opacity = '0.5';
     wrapper.style.transition = 'opacity 0.3s';
     console.log('Wrapper prepared');
@@ -459,7 +581,7 @@ window.addEventListener('DOMContentLoaded', async () => {
       alert('Error: Could not build tag element');
       return;
     }
-    
+
     _tagRoot.id = 'theTag';
     console.log('Tag element created, appending to wrapper...');
     wrapper.innerHTML = '';
@@ -496,9 +618,30 @@ async function _doUpdateTag() {
   if (!_currentDesign || !_tagRoot) return;
   await window.TagRenderer.updateTagElement(_tagRoot, _currentDesign, _getValues(), _photoDataURL);
 
-  // Pulse
+  // Pulse animation
   _tagRoot.classList.remove('updating');
   requestAnimationFrame(() => requestAnimationFrame(() => _tagRoot.classList.add('updating')));
+
+  // ── Sync mobile preview bar ──────────────────────────────────────────────
+  const mobileSlot = document.getElementById('mobilePreviewTag');
+  if (mobileSlot && window.innerWidth <= 780) {
+    // Build a fresh mini-tag (lightweight clone approach)
+    const miniTag = await window.TagRenderer.buildTagElement(_currentDesign, _getValues(), _photoDataURL);
+    if (miniTag) {
+      // Scale it down to fit the 52×96px slot
+      const slotH = 96;
+      const tagH = _currentDesign.tagDimensions.height;
+      const scale = slotH / tagH;
+      miniTag.style.transformOrigin = 'top left';
+      miniTag.style.transform = `scale(${scale})`;
+      miniTag.style.width = _currentDesign.tagDimensions.width + 'px';
+      miniTag.style.height = tagH + 'px';
+      mobileSlot.style.width = Math.round(_currentDesign.tagDimensions.width * scale) + 'px';
+      mobileSlot.style.height = slotH + 'px';
+      mobileSlot.innerHTML = '';
+      mobileSlot.appendChild(miniTag);
+    }
+  }
 }
 
 // ─── Photo upload ─────────────────────────────────────────────────────────────

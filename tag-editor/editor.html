@@ -70,7 +70,44 @@
           <div class="step-num">2</div>
           <div class="step-body">
             <span class="step-label">Wedding Date</span>
-            <input type="date" id="wdate" oninput="updateTag()" />
+            <div class="date-row">
+
+              <!-- Month -->
+              <div class="custom-select" id="monthSelectWrapper">
+                <div class="custom-select-trigger" id="monthSelectTrigger">
+                  <span id="selectedMonthDisplay" style="color:#c5b8af">Month</span>
+                  <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </div>
+                <div class="custom-select-options" id="monthSelectOptions"></div>
+              </div>
+
+              <!-- Day -->
+              <div class="custom-select" id="daySelectWrapper">
+                <div class="custom-select-trigger" id="daySelectTrigger">
+                  <span id="selectedDayDisplay" style="color:#c5b8af">Day</span>
+                  <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </div>
+                <div class="custom-select-options" id="daySelectOptions"></div>
+              </div>
+
+              <!-- Year -->
+              <div class="custom-select" id="yearSelectWrapper">
+                <div class="custom-select-trigger" id="yearSelectTrigger">
+                  <span id="selectedYearDisplay" style="color:#c5b8af">Year</span>
+                  <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </div>
+                <div class="custom-select-options" id="yearSelectOptions"></div>
+              </div>
+
+            </div>
+            <!-- Hidden field that app.js reads via _getValues() -->
+            <input type="hidden" id="wdate" />
           </div>
         </div>
 
