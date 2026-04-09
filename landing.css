@@ -122,7 +122,7 @@ body::after {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 140px 72px 80px 150px;
+  padding: 120px;
   position: relative;
 }
 
@@ -177,7 +177,6 @@ body::after {
   font-size: 14px;
   line-height: 1.9;
   color: var(--ink-muted);
-  max-width: 420px;
   margin-bottom: 44px;
 }
 
@@ -296,7 +295,16 @@ body::after {
 }
 
 .l-demo__actions {
-  display: none;
+  display: flex;      /* Changed from block */
+  justify-content: center;  /* Horizontal centering */
+  align-items: center;      /* Vertical centering (needs container height) */
+  margin-top: 28px;
+  /* Add height if needed, e.g., height: 100px; */
+}
+
+.l-demo__actions a {
+  font-size: 10px;
+  padding: 12px;
 }
 
 @keyframes tagCursorBlink {
@@ -1181,15 +1189,5 @@ body::after {
 
   .l-tag-card__tagline {
     font-size: 8px;
-  }
-
-  .l-demo__actions {
-    display: block;
-    margin-top: 28px;
-  }
-
-  .l-demo__actions a {
-    font-size: 10px;
-    padding: 12px;
   }
 }
