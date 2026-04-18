@@ -1,139 +1,46 @@
-// app.js — Editor page logic (complete fixed version)
 
+// Global state
 let _currentDesign = null;
 let _photoDataURL = null;
-let _tagRoot = null;   // the live tag DOM element
+let _tagRoot = null;
 let _updateTagTimer = null;
-let _fontData = []; // Store font data with display names and families
+let _fontData = [];
 let _isDropdownOpen = false;
+let _cropper = null;
 
-// ─── Font loading helper with actual font file loading ────────────────────────
-const loadedFonts = new Set();
-const loadingFonts = new Map();
+const MAX_CROP_SIZE = 1600;
+const MONTHS = [
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+];
+let _dateState = { month: null, day: null, year: null };
 
-function getFontUrlForFamily(fontFamily) {
-  // Map font families to their Google Fonts URLs
-  const fontMap = {
-    'Bebas Neue': 'https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap',
-    'Barlow Condensed': 'https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&display=swap',
-    'Gilda Display': 'https://fonts.googleapis.com/css2?family=Gilda+Display&display=swap',
-    'Cinzel': 'https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&display=swap',
-    'Lora': 'https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&display=swap',
-    'Literata': 'https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400&display=swap',
-    'Pinyon Script': 'https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap',
-    'Great Vibes': 'https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap',
-    'Inria Serif': 'https://fonts.googleapis.com/css2?family=Inria+Serif:ital,wght@0,400;0,700;1,400&display=swap',
-    'Petit Formal Script': 'https://fonts.googleapis.com/css2?family=Petit+Formal+Script&display=swap',
-    'Source Serif Pro': 'https://fonts.googleapis.com/css2?family=Source+Serif+Pro:ital,wght@0,400;0,600;0,700;1,400&display=swap',
-    'Tangerine': 'https://fonts.googleapis.com/css2?family=Tangerine:wght@400;700&display=swap',
-    'Roboto Condensed': 'https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap',
-    'Parisienne': 'https://fonts.googleapis.com/css2?family=Parisienne&display=swap',
-    'Montserrat': 'https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap',
-    'Alegreya': 'https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,500;0,600;1,400&display=swap',
-    'Open Sans': 'https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap',
-    'Srisakdi': 'https://fonts.googleapis.com/css2?family=Srisakdi:wght@400;700&display=swap',
-    'Cormorant Garamond': 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap',
-    'Glass Antiqua': 'https://fonts.googleapis.com/css2?family=Glass+Antiqua&display=swap',
-    'Noto Sans JP': 'https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;300;400;500;700&display=swap',
-    'Pacifico': 'https://fonts.googleapis.com/css2?family=Pacifico&display=swap',
-    'Pompiere': 'https://fonts.googleapis.com/css2?family=Pompiere&display=swap'
-  };
+// =====================================================
+// FONT MANAGEMENT
+// =====================================================
 
-  // Try to match the font family (might include multiple fonts)
-  for (const [key, url] of Object.entries(fontMap)) {
-    if (fontFamily.includes(key)) {
-      return url;
-    }
-  }
-  return null;
-}
-
-async function loadFontFamily(fontFamily) {
-  if (!fontFamily) return;
-
-  // Extract the main font name
-  const mainFont = fontFamily.split(',')[0].trim().replace(/["']/g, '');
-
-  // Check if already loaded
-  if (loadedFonts.has(mainFont)) return;
-  if (loadingFonts.has(mainFont)) return loadingFonts.get(mainFont);
-
-  const loadPromise = (async () => {
-    try {
-      // Get the font URL
-      const fontUrl = getFontUrlForFamily(mainFont);
-
-      if (fontUrl) {
-        // Create a unique ID for this font link
-        const fontId = `font-${mainFont.replace(/\s+/g, '-').toLowerCase()}`;
-        let link = document.getElementById(fontId);
-
-        if (!link) {
-          link = document.createElement('link');
-          link.id = fontId;
-          link.rel = 'stylesheet';
-          link.href = fontUrl;
-          document.head.appendChild(link);
-
-          // Wait for the stylesheet to load
-          await new Promise((resolve, reject) => {
-            link.onload = resolve;
-            link.onerror = () => reject(new Error(`Failed to load font: ${mainFont}`));
-          });
-        }
-
-        // Wait for the font to be ready
-        if (document.fonts) {
-          await document.fonts.ready;
-          // Force load the specific font with different sizes to ensure it's available
-          await Promise.all([
-            document.fonts.load(`16px "${mainFont}"`),
-            document.fonts.load(`24px "${mainFont}"`),
-            document.fonts.load(`32px "${mainFont}"`)
-          ]).catch(() => null);
-        }
-      }
-
-      loadedFonts.add(mainFont);
-    } catch (err) {
-      console.warn(`Failed to load font: ${mainFont}`, err);
-    }
-  })();
-
-  loadingFonts.set(mainFont, loadPromise);
-  await loadPromise;
-  loadingFonts.delete(mainFont);
-}
-
-// Function to collect all unique fonts from designs.json with their display info
 async function collectAvailableFonts() {
   try {
-    const designs = await fetch('./designs.json').then(r => r.json());
+    const selectedCategory = sessionStorage.getItem('selectedCategory') || 'wedding-tag';
+    const designs = await fetch(`/tag-editor/products/${selectedCategory}.json`).then(r => r.json());
     const fontMap = new Map();
 
     designs.forEach(design => {
-      if (design.fields && design.fields.couple && design.fields.couple.fontFamily) {
-        // Extract the main font name (first in the list)
-        const fullFamily = design.fields.couple.fontFamily;
+      if (design.fields?.name?.fontFamily) {
+        const fullFamily = design.fields.name.fontFamily;
         const mainFont = fullFamily.split(',')[0].trim().replace(/["']/g, '');
 
-        // Store font data
         if (!fontMap.has(mainFont)) {
-          // Get the font weight and style from the design
-          const fontWeight = design.fields.couple.fontWeight || '400';
-          const fontStyle = design.fields.couple.fontStyle || 'normal';
-
           fontMap.set(mainFont, {
             family: mainFont,
             fullFamily: fullFamily,
-            weight: fontWeight,
-            style: fontStyle
+            weight: design.fields.name.fontWeight || '400',
+            style: design.fields.name.fontStyle || 'normal'
           });
         }
       }
     });
 
-    // Convert to array and sort alphabetically
     _fontData = Array.from(fontMap.values()).sort((a, b) => a.family.localeCompare(b.family));
     return _fontData;
   } catch (err) {
@@ -142,48 +49,51 @@ async function collectAvailableFonts() {
   }
 }
 
-// Preload all fonts for the dropdown
 async function preloadAllFonts() {
-  const loadPromises = _fontData.map(font => loadFontFamily(font.family));
+  const loadPromises = _fontData.map(font => TagRenderer.loadFontFamily(font.family));
   await Promise.all(loadPromises);
 }
 
-// Populate the custom dropdown with styled options
+async function loadFontsForDesign(design) {
+  if (!design?.fields) return;
+
+  const fontFamilies = new Set();
+  const fields = design.fields;
+
+  if (fields.name) fontFamilies.add(fields.name.fontFamily);
+  if (fields.date && fields.date.enabled !== false) fontFamilies.add(fields.date.fontFamily);
+  if (fields.tagline && fields.tagline.enabled !== false) fontFamilies.add(fields.tagline.fontFamily);
+  if (fields.photo?.ampFontFamily) fontFamilies.add(fields.photo.ampFontFamily);
+
+  const loadPromises = Array.from(fontFamilies).map(family => TagRenderer.loadFontFamily(family));
+  await Promise.all(loadPromises);
+  await new Promise(resolve => setTimeout(resolve, 100));
+}
+
+// =====================================================
+// FONT DROPDOWN
+// =====================================================
+
 function populateFontDropdown() {
   const optionsContainer = document.getElementById('fontSelectOptions');
   if (!optionsContainer) return;
 
   optionsContainer.innerHTML = '';
-
-  // Create styled options for each font
   _fontData.forEach(font => {
     const option = document.createElement('div');
     option.className = 'custom-select-option';
     option.setAttribute('data-font', font.family);
-    option.setAttribute('data-weight', font.weight);
-    option.setAttribute('data-style', font.style);
-
-    // Apply the font style to the option
     option.style.fontFamily = `"${font.family}", sans-serif`;
     option.style.fontWeight = font.weight;
     option.style.fontStyle = font.style;
     option.style.fontSize = '0.9rem';
     option.style.padding = '10px 12px';
     option.style.cursor = 'pointer';
-    option.style.transition = 'background 0.2s';
     option.style.borderBottom = '1px solid #f0e8dc';
-
     option.textContent = font.family;
 
-    // Hover effect
-    option.addEventListener('mouseenter', () => {
-      option.style.background = '#faf6f1';
-    });
-    option.addEventListener('mouseleave', () => {
-      option.style.background = '';
-    });
-
-    // Click handler
+    option.addEventListener('mouseenter', () => option.style.background = '#faf6f1');
+    option.addEventListener('mouseleave', () => option.style.background = '');
     option.addEventListener('click', (e) => {
       e.stopPropagation();
       selectFont(font.family);
@@ -192,143 +102,86 @@ function populateFontDropdown() {
     optionsContainer.appendChild(option);
   });
 
-  // Set current font display
-  if (_currentDesign && _currentDesign.fields.couple) {
-    const currentFont = _currentDesign.fields.couple.fontFamily.split(',')[0].trim().replace(/["']/g, '');
+  if (_currentDesign?.fields?.name) {
+    const currentFont = _currentDesign.fields.name.fontFamily.split(',')[0].trim().replace(/["']/g, '');
     updateSelectedFontDisplay(currentFont);
   }
 }
 
-// Update the selected font display
 function updateSelectedFontDisplay(fontFamily) {
   const selectedSpan = document.getElementById('selectedFontDisplay');
   if (!selectedSpan) return;
 
-  // Find the font data
   const font = _fontData.find(f => f.family === fontFamily);
-
   if (font) {
     selectedSpan.textContent = font.family;
     selectedSpan.style.fontFamily = `"${font.family}", sans-serif`;
     selectedSpan.style.fontWeight = font.weight;
     selectedSpan.style.fontStyle = font.style;
-  } else if (fontFamily) {
-    selectedSpan.textContent = fontFamily;
-    selectedSpan.style.fontFamily = `"${fontFamily}", sans-serif`;
-    selectedSpan.style.fontWeight = '400';
-    selectedSpan.style.fontStyle = 'normal';
   } else {
-    selectedSpan.textContent = 'Select a font...';
+    selectedSpan.textContent = fontFamily || 'Select a font...';
     selectedSpan.style.fontFamily = 'Jost, sans-serif';
   }
 }
 
-// Toggle dropdown
 function toggleDropdown() {
   const optionsContainer = document.getElementById('fontSelectOptions');
   const trigger = document.getElementById('fontSelectTrigger');
-
   if (!optionsContainer || !trigger) return;
 
   _isDropdownOpen = !_isDropdownOpen;
+  optionsContainer.classList.toggle('show', _isDropdownOpen);
+  trigger.classList.toggle('open', _isDropdownOpen);
 
   if (_isDropdownOpen) {
-    optionsContainer.classList.add('show');
-    trigger.classList.add('open');
-
-    // Close dropdown when clicking outside
-    setTimeout(() => {
-      document.addEventListener('click', closeDropdownOnClickOutside);
-    }, 0);
+    setTimeout(() => document.addEventListener('click', closeDropdownOnClickOutside), 0);
   } else {
-    optionsContainer.classList.remove('show');
-    trigger.classList.remove('open');
     document.removeEventListener('click', closeDropdownOnClickOutside);
   }
 }
 
-// Close dropdown when clicking outside
 function closeDropdownOnClickOutside(event) {
   const wrapper = document.getElementById('fontSelectWrapper');
   if (wrapper && !wrapper.contains(event.target)) {
-    const optionsContainer = document.getElementById('fontSelectOptions');
-    const trigger = document.getElementById('fontSelectTrigger');
-
-    if (optionsContainer && trigger) {
-      optionsContainer.classList.remove('show');
-      trigger.classList.remove('open');
-      _isDropdownOpen = false;
-    }
+    document.getElementById('fontSelectOptions')?.classList.remove('show');
+    document.getElementById('fontSelectTrigger')?.classList.remove('open');
+    _isDropdownOpen = false;
     document.removeEventListener('click', closeDropdownOnClickOutside);
   }
 }
 
-// Select a font
 async function selectFont(fontFamily) {
   if (!_currentDesign || !_tagRoot) return;
 
-  // Close dropdown
-  const optionsContainer = document.getElementById('fontSelectOptions');
-  const trigger = document.getElementById('fontSelectTrigger');
-  if (optionsContainer && trigger) {
-    optionsContainer.classList.remove('show');
-    trigger.classList.remove('open');
-    _isDropdownOpen = false;
-  }
-
-  // Update display
+  document.getElementById('fontSelectOptions')?.classList.remove('show');
+  document.getElementById('fontSelectTrigger')?.classList.remove('open');
+  _isDropdownOpen = false;
   updateSelectedFontDisplay(fontFamily);
 
-  // Show loading indicator on trigger
-  const triggerDiv = document.getElementById('fontSelectTrigger');
-  const originalBackground = triggerDiv.style.background;
-  const originalBorderColor = triggerDiv.style.borderColor;
-  triggerDiv.style.background = '#f0e8dc';
-  triggerDiv.style.borderColor = '#c4956a';
-
   try {
-    // Load the new font if not already loaded
-    await loadFontFamily(fontFamily);
+    await TagRenderer.loadFontFamily(fontFamily);
 
-    // Update the design's couple font, preserving the fallback fonts
-    const originalFontFamily = _currentDesign.fields.couple.fontFamily;
+    const originalFontFamily = _currentDesign.fields.name.fontFamily;
     const fallbackFonts = originalFontFamily.split(',').slice(1).join(',').trim();
-    _currentDesign.fields.couple.fontFamily = `"${fontFamily}", ${fallbackFonts || 'sans-serif'}`;
+    _currentDesign.fields.name.fontFamily = `"${fontFamily}", ${fallbackFonts || 'sans-serif'}`;
 
-    // Update the design's amp font if it exists
-    if (_currentDesign.fields.couple.ampFontFamily) {
-      const originalAmpFont = _currentDesign.fields.couple.ampFontFamily;
+    if (_currentDesign.fields.name.ampFontFamily) {
+      const originalAmpFont = _currentDesign.fields.name.ampFontFamily;
       const ampFallbackFonts = originalAmpFont.split(',').slice(1).join(',').trim();
-      _currentDesign.fields.couple.ampFontFamily = `"${fontFamily}", ${ampFallbackFonts || 'sans-serif'}`;
+      _currentDesign.fields.name.ampFontFamily = `"${fontFamily}", ${ampFallbackFonts || 'sans-serif'}`;
     }
 
-    // Re-render the tag
-    await _doUpdateTag();
-
-    // Visual feedback - success
-    triggerDiv.style.background = '#e8f5e8';
-    setTimeout(() => {
-      triggerDiv.style.background = originalBackground;
-      triggerDiv.style.borderColor = originalBorderColor;
-    }, 300);
+    await doUpdateTag();
   } catch (err) {
     console.error('Failed to change font:', err);
-    triggerDiv.style.background = '#ffe8e8';
-    setTimeout(() => {
-      triggerDiv.style.background = originalBackground;
-      triggerDiv.style.borderColor = originalBorderColor;
-    }, 300);
   }
 }
 
-// Initialize dropdown event listeners
 function initDropdown() {
   const trigger = document.getElementById('fontSelectTrigger');
   if (trigger) {
-    // Remove any existing listeners
     const newTrigger = trigger.cloneNode(true);
     trigger.parentNode.replaceChild(newTrigger, trigger);
-
     newTrigger.addEventListener('click', (e) => {
       e.stopPropagation();
       toggleDropdown();
@@ -336,15 +189,11 @@ function initDropdown() {
   }
 }
 
-// ─── Custom Date Picker ────────────────────────────────────────────────────────
-const MONTHS = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December'
-];
+// =====================================================
+// DATE PICKER
+// =====================================================
 
-let _dateState = { month: null, day: null, year: null };
-
-function _makeDateOption(value, label, selectFn) {
+function makeDateOption(value, label, selectFn) {
   const opt = document.createElement('div');
   opt.className = 'custom-select-option';
   opt.textContent = label;
@@ -354,15 +203,12 @@ function _makeDateOption(value, label, selectFn) {
   return opt;
 }
 
-function _syncHiddenDate() {
+function syncHiddenDate() {
   const { month, day, year } = _dateState;
   const field = document.getElementById('wdate');
   if (field) {
-    // Format as YYYY-MM-DD so _getValues() + the renderer get a consistent string
     if (month && day && year) {
-      const mm = String(month).padStart(2, '0');
-      const dd = String(day).padStart(2, '0');
-      field.value = `${year}-${mm}-${dd}`;
+      field.value = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     } else {
       field.value = '';
     }
@@ -370,19 +216,19 @@ function _syncHiddenDate() {
   updateTag();
 }
 
-function _openDateDropdown(wrapperId, triggerId, optionsId) {
-  // Close all date dropdowns first
+function openDateDropdown(wrapperId, triggerId, optionsId) {
   ['month', 'day', 'year'].forEach(part => {
-    const opts = document.getElementById(`${part}SelectOptions`);
-    const trig = document.getElementById(`${part}SelectTrigger`);
-    if (opts) opts.classList.remove('show');
-    if (trig) trig.classList.remove('open');
+    document.getElementById(`${part}SelectOptions`)?.classList.remove('show');
+    document.getElementById(`${part}SelectTrigger`)?.classList.remove('open');
   });
+
   const opts = document.getElementById(optionsId);
   const trig = document.getElementById(triggerId);
   if (!opts || !trig) return;
+
   opts.classList.add('show');
   trig.classList.add('open');
+
   setTimeout(() => {
     document.addEventListener('click', function closeDate(e) {
       const wrapper = document.getElementById(wrapperId);
@@ -399,444 +245,231 @@ function initDatePicker() {
   const monthOpts = document.getElementById('monthSelectOptions');
   const dayOpts = document.getElementById('daySelectOptions');
   const yearOpts = document.getElementById('yearSelectOptions');
-
   if (!monthOpts || !dayOpts || !yearOpts) return;
 
-  // -- Months --
   MONTHS.forEach((name, i) => {
-    monthOpts.appendChild(_makeDateOption(i + 1, name, (val, label) => {
+    monthOpts.appendChild(makeDateOption(i + 1, name, (val, label) => {
       _dateState.month = val;
       const el = document.getElementById('selectedMonthDisplay');
       if (el) { el.textContent = label; el.style.color = 'var(--ink)'; }
       document.getElementById('monthSelectOptions').classList.remove('show');
       document.getElementById('monthSelectTrigger').classList.remove('open');
-      _syncHiddenDate();
+      syncHiddenDate();
     }));
   });
 
-  // -- Days --
   for (let d = 1; d <= 31; d++) {
-    dayOpts.appendChild(_makeDateOption(d, String(d), (val) => {
+    dayOpts.appendChild(makeDateOption(d, String(d), (val) => {
       _dateState.day = val;
       const el = document.getElementById('selectedDayDisplay');
       if (el) { el.textContent = val; el.style.color = 'var(--ink)'; }
       document.getElementById('daySelectOptions').classList.remove('show');
       document.getElementById('daySelectTrigger').classList.remove('open');
-      _syncHiddenDate();
+      syncHiddenDate();
     }));
   }
 
-  // -- Years: current year + next 5, then past 10 --
   const thisYear = new Date().getFullYear();
+  const startYear = thisYear - 2;  // 2 years before current
+  const endYear = thisYear + 10;   // 10 years after current
   const years = [];
-  for (let y = thisYear; y <= thisYear + 5; y++) years.push(y);
-  for (let y = thisYear - 1; y >= thisYear - 10; y--) years.push(y);
+
+  // Populate in ascending order (oldest to newest)
+  for (let y = startYear; y <= endYear; y++) {
+    years.push(y);
+  }
+
   years.forEach(y => {
-    yearOpts.appendChild(_makeDateOption(y, String(y), (val) => {
+    yearOpts.appendChild(makeDateOption(y, String(y), (val) => {
       _dateState.year = val;
       const el = document.getElementById('selectedYearDisplay');
       if (el) { el.textContent = val; el.style.color = 'var(--ink)'; }
       document.getElementById('yearSelectOptions').classList.remove('show');
       document.getElementById('yearSelectTrigger').classList.remove('open');
-      _syncHiddenDate();
+      syncHiddenDate();
     }));
   });
 
-  // -- Trigger clicks --
   document.getElementById('monthSelectTrigger')?.addEventListener('click', e => {
     e.stopPropagation();
-    _openDateDropdown('monthSelectWrapper', 'monthSelectTrigger', 'monthSelectOptions');
+    openDateDropdown('monthSelectWrapper', 'monthSelectTrigger', 'monthSelectOptions');
   });
   document.getElementById('daySelectTrigger')?.addEventListener('click', e => {
     e.stopPropagation();
-    _openDateDropdown('daySelectWrapper', 'daySelectTrigger', 'daySelectOptions');
+    openDateDropdown('daySelectWrapper', 'daySelectTrigger', 'daySelectOptions');
   });
   document.getElementById('yearSelectTrigger')?.addEventListener('click', e => {
     e.stopPropagation();
-    _openDateDropdown('yearSelectWrapper', 'yearSelectTrigger', 'yearSelectOptions');
+    openDateDropdown('yearSelectWrapper', 'yearSelectTrigger', 'yearSelectOptions');
   });
 }
 
-async function loadFontsForDesign(design) {
-  if (!design || !design.fields) return;
+// =====================================================
+// FORM VALUES & TAG UPDATES
+// =====================================================
 
-  const fontFamilies = new Set();
-  const fields = design.fields;
-
-  if (fields.couple) fontFamilies.add(fields.couple.fontFamily);
-  if (fields.date) fontFamilies.add(fields.date.fontFamily);
-  if (fields.tagline) fontFamilies.add(fields.tagline.fontFamily);
-  if (fields.photo && fields.photo.ampFontFamily) fontFamilies.add(fields.photo.ampFontFamily);
-
-  // Load fonts in parallel
-  const loadPromises = Array.from(fontFamilies).map(family => loadFontFamily(family));
-  await Promise.all(loadPromises);
-
-  // Extra safety: wait for fonts to be fully applied
-  await new Promise(resolve => setTimeout(resolve, 100));
-  await new Promise(resolve => requestAnimationFrame(resolve));
-}
-
-// ─── Bootstrap ────────────────────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', async () => {
-  try {
-    const designId = sessionStorage.getItem('selectedDesignId');
-    console.log('Initializing editor with designId:', designId);
-
-    // Load designs
-    let designs;
-    try {
-      designs = await fetch('./designs.json').then(r => r.json());
-      console.log('Loaded designs:', designs.length);
-    } catch (e) {
-      console.error('Could not load designs.json', e);
-      alert('Error: Could not load designs. Check console.');
-      return;
-    }
-
-    _currentDesign = designs.find(d => d.id === designId) || designs[0];
-    console.log('Current design:', _currentDesign.name);
-
-    // Collect available fonts from all designs
-    await collectAvailableFonts();
-    console.log('Fonts collected');
-
-    // Preload all fonts for the dropdown
-    await preloadAllFonts();
-    console.log('All fonts preloaded');
-
-    // Populate dropdown after fonts are loaded
-    populateFontDropdown();
-    initDropdown();
-    initDatePicker();
-
-    // Show loading state
-    const wrapper = document.getElementById('tagWrapper');
-    if (!wrapper) {
-      console.error('ERROR: tagWrapper element not found!');
-      alert('Error: tagWrapper element not found');
-      return;
-    }
-
-    wrapper.style.opacity = '0.5';
-    wrapper.style.transition = 'opacity 0.3s';
-    console.log('Wrapper prepared');
-
-    // Load the fonts needed for this design
-    await loadFontsForDesign(_currentDesign);
-    console.log('Design fonts loaded');
-
-    // Update design badge
-    const badgeName = document.getElementById('designBadgeName');
-    const metaName = document.getElementById('previewDesignName');
-    if (badgeName) badgeName.textContent = _currentDesign.name;
-    if (metaName) metaName.textContent = _currentDesign.name;
-
-    // Show/hide photo step
-    const photoStep = document.getElementById('photoStep');
-    if (photoStep) {
-      photoStep.style.display = (_currentDesign.fields.photo && _currentDesign.fields.photo.enabled)
-        ? 'flex' : 'none';
-    }
-
-    // Update tagline placeholder and default value
-    const taglineInput = document.getElementById('tagline');
-    if (taglineInput && _currentDesign.fields.tagline && _currentDesign.fields.tagline.defaultValue) {
-      taglineInput.placeholder = _currentDesign.fields.tagline.defaultValue;
-      if (!taglineInput.value) {
-        taglineInput.value = _currentDesign.fields.tagline.defaultValue;
-      }
-    }
-
-    // Load default photo if design has photo enabled
-    if (_currentDesign.fields.photo && _currentDesign.fields.photo.enabled) {
-      try {
-        const res = await fetch('./couple.jpg');
-        const blob = await res.blob();
-        _photoDataURL = await new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onload = (e) => resolve(e.target.result);
-          reader.readAsDataURL(blob);
-        });
-        // Update UI to show photo is loaded
-        const removeBtn = document.getElementById('photoRemoveBtn');
-        const uploadLabel = document.getElementById('photoUploadLabel');
-        if (removeBtn) removeBtn.style.display = 'block';
-        if (uploadLabel) uploadLabel.style.display = 'none';
-      } catch (e) {
-        console.warn('Could not load default couple.jpg:', e);
-      }
-    }
-
-    // Size the wrapper to match the design
-    wrapper.style.width = _currentDesign.tagDimensions.width + 'px';
-    wrapper.style.height = _currentDesign.tagDimensions.height + 'px';
-    console.log(`Wrapper sized to ${_currentDesign.tagDimensions.width}x${_currentDesign.tagDimensions.height}px`);
-
-    // Build and mount the tag element
-    console.log('Building tag element...');
-    _tagRoot = await window.TagRenderer.buildTagElement(_currentDesign, _getValues(), _photoDataURL);
-    if (!_tagRoot) {
-      console.error('ERROR: buildTagElement returned null/undefined!');
-      alert('Error: Could not build tag element');
-      return;
-    }
-
-    _tagRoot.id = 'theTag';
-    console.log('Tag element created, appending to wrapper...');
-    wrapper.innerHTML = '';
-    wrapper.appendChild(_tagRoot);
-    wrapper.style.opacity = '1';
-    console.log('Tag element appended to DOM');
-
-    console.log('Calling _doUpdateTag...');
-    await _doUpdateTag();
-    console.log('Preview ready!');
-  } catch (err) {
-    console.error('FATAL ERROR during initialization:', err);
-    alert('Error: ' + err.message);
-  }
-});
-
-// ─── Read form values ─────────────────────────────────────────────────────────
-function _getValues() {
+function getValues() {
+  const name1El = document.getElementById('name1');
+  const name2El = document.getElementById('name2');
   return {
-    name1: (document.getElementById('name1') || {}).value || '',
-    name2: (document.getElementById('name2') || {}).value || '',
-    date: (document.getElementById('wdate') || {}).value || '',
-    tagline: (document.getElementById('tagline') || {}).value || '',
+    name1: name1El?.value.trim() || name1El?.placeholder || '',
+    name2: name2El?.value.trim() || name2El?.placeholder || '',
+    date: document.getElementById('wdate')?.value || '',
+    tagline: document.getElementById('tagline')?.value || '',
   };
 }
 
-// ─── Live update ──────────────────────────────────────────────────────────────
 function updateTag() {
+  const name1Input = document.getElementById('name1');
+  const name2Input = document.getElementById('name2');
+  const amp = document.querySelector('.ampersand');
+  const nameRow = name1Input?.parentElement;
+
+  if (name2Input && amp && nameRow) {
+    const name2Val = name2Input.value.trim() || name2Input.placeholder.trim();
+    if (name2Val === '') {
+      nameRow.style.gridTemplateColumns = '1fr';
+      amp.style.display = 'none';
+      name2Input.style.display = 'none';
+    } else {
+      nameRow.style.gridTemplateColumns = '1fr auto 1fr';
+      amp.style.display = '';
+      name2Input.style.display = 'block';
+    }
+  }
+
   clearTimeout(_updateTagTimer);
-  _updateTagTimer = setTimeout(_doUpdateTag, 80);
+  _updateTagTimer = setTimeout(() => doUpdateTag(), 80);
 }
 
-async function _doUpdateTag() {
+async function doUpdateTag() {
   if (!_currentDesign || !_tagRoot) return;
-  await window.TagRenderer.updateTagElement(_tagRoot, _currentDesign, _getValues(), _photoDataURL);
+  await TagRenderer.updateTagElement(_tagRoot, _currentDesign, getValues(), _photoDataURL);
 
-  // Pulse animation
   _tagRoot.classList.remove('updating');
   requestAnimationFrame(() => requestAnimationFrame(() => _tagRoot.classList.add('updating')));
+}
 
-  // ── Sync mobile preview bar ──────────────────────────────────────────────
-  const mobileSlot = document.getElementById('mobilePreviewTag');
-  if (mobileSlot && window.innerWidth <= 780) {
-    // Build a fresh mini-tag (lightweight clone approach)
-    const miniTag = await window.TagRenderer.buildTagElement(_currentDesign, _getValues(), _photoDataURL);
-    if (miniTag) {
-      // Scale it down to fit the 52×96px slot
-      const slotH = 96;
-      const tagH = _currentDesign.tagDimensions.height;
-      const scale = slotH / tagH;
-      miniTag.style.transformOrigin = 'top left';
-      miniTag.style.transform = `scale(${scale})`;
-      miniTag.style.width = _currentDesign.tagDimensions.width + 'px';
-      miniTag.style.height = tagH + 'px';
-      mobileSlot.style.width = Math.round(_currentDesign.tagDimensions.width * scale) + 'px';
-      mobileSlot.style.height = slotH + 'px';
-      mobileSlot.innerHTML = '';
-      mobileSlot.appendChild(miniTag);
+// =====================================================
+// PHOTO UPLOAD & CROP
+// =====================================================
+
+async function handlePhotoUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const cropModal = document.getElementById('cropModal');
+  const cropImage = document.getElementById('cropImage');
+  const cropLoading = document.getElementById('cropLoading');
+
+  cropImage.style.display = 'none';
+  cropLoading.style.display = 'flex';
+  cropModal.classList.add('open');
+
+  try {
+    let sourceFile = file;
+    const isHeic = file.type === 'image/heic' || file.type === 'image/heif' ||
+      file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif');
+
+    if (isHeic) {
+      if (typeof HeicTo === 'undefined') throw new Error('HEIC converter not loaded');
+      const jpegBlob = await HeicTo({ blob: file, type: 'image/jpeg', quality: 0.92 });
+      sourceFile = new File([jpegBlob], file.name.replace(/\.heic$/i, '.jpg'), { type: 'image/jpeg' });
     }
+
+    const bitmap = await createImageBitmap(sourceFile);
+    const scale = Math.min(1, MAX_CROP_SIZE / Math.max(bitmap.width, bitmap.height));
+    const w = Math.round(bitmap.width * scale);
+    const h = Math.round(bitmap.height * scale);
+
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    canvas.getContext('2d').drawImage(bitmap, 0, 0, w, h);
+    bitmap.close();
+
+    cropImage.src = canvas.toDataURL('image/jpeg', 0.92);
+    cropImage.onload = () => {
+      cropLoading.style.display = 'none';
+      cropImage.style.display = 'block';
+
+      if (_cropper) { _cropper.destroy(); _cropper = null; }
+
+      _cropper = new Cropper(cropImage, {
+        aspectRatio: _currentDesign.fields.photo.width / _currentDesign.fields.photo.height,
+        viewMode: 2,
+        movable: true,
+        zoomable: true,
+        rotatable: false,
+        minContainerHeight: 200,
+      });
+    };
+  } catch (err) {
+    console.error('Photo load error:', err);
+    cropLoading.innerHTML = `<div style="text-align:center;color:#c4956a;padding:16px;"><p>Could not load this photo.</p></div>`;
   }
 }
 
-// ─── Photo upload ─────────────────────────────────────────────────────────────
-function handlePhotoUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    _photoDataURL = e.target.result;
-    const removeBtn = document.getElementById('photoRemoveBtn');
-    const uploadLabel = document.getElementById('photoUploadLabel');
-    if (removeBtn) removeBtn.style.display = 'block';
-    if (uploadLabel) uploadLabel.style.display = 'none';
-    _doUpdateTag();
-  };
-  reader.readAsDataURL(file);
+function confirmCrop() {
+  if (!_cropper) return;
+
+  const canvas = _cropper.getCroppedCanvas({
+    width: _currentDesign.fields.photo.width * 2,
+    height: _currentDesign.fields.photo.height * 2,
+  });
+
+  _photoDataURL = canvas.toDataURL('image/jpeg', 0.92);
+
+  document.getElementById('photoRemoveBtn').style.display = 'block';
+  document.getElementById('photoUploadLabel').style.display = 'none';
+
+  cancelCrop();
+  doUpdateTag();
+}
+
+function cancelCrop() {
+  if (_cropper) { _cropper.destroy(); _cropper = null; }
+  document.getElementById('cropModal').classList.remove('open');
+  document.getElementById('photoInput').value = '';
 }
 
 function removePhoto() {
   _photoDataURL = null;
-  const photoInput = document.getElementById('photoInput');
-  const removeBtn = document.getElementById('photoRemoveBtn');
-  const uploadLabel = document.getElementById('photoUploadLabel');
 
-  if (photoInput) photoInput.value = '';
-  if (removeBtn) removeBtn.style.display = 'none';
-  if (uploadLabel) uploadLabel.style.display = 'flex';
+  document.getElementById('photoInput').value = '';
+  document.getElementById('photoRemoveBtn').style.display = 'none';
+  document.getElementById('photoUploadLabel').style.display = 'flex';
 
-  // Reload default photo
-  if (_currentDesign.fields.photo && _currentDesign.fields.photo.enabled) {
-    fetch('./couple.jpg')
-      .then(res => res.blob())
-      .then(blob => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          _photoDataURL = e.target.result;
-          _doUpdateTag();
-        };
-        reader.readAsDataURL(blob);
-      })
-      .catch(e => console.warn('Could not reload default couple.jpg:', e));
-  } else {
-    _doUpdateTag();
-  }
-}
-
-// ─── PDF Generation ───────────────────────────────────────────────────────────
-async function generatePDF() {
-  const btn = document.getElementById('btnDownload');
-  const v = _getValues();
-  const n1 = v.name1 || 'Taylor';
-  const n2 = v.name2 || 'Cynthia';
-  const filename = `wedding-tags-${n1}-${n2}-${(_currentDesign || {}).id || 'custom'}`
-    .toLowerCase().replace(/\s+/g, '-') + '.pdf';
-
-  btn.disabled = true;
-  btn.innerHTML = `
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite">
-      <circle cx="12" cy="12" r="10" stroke-opacity="0.25"/>
-      <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/>
-    </svg>
-    Generating PDF…`;
-
-  try {
-    // Ensure fonts are loaded before PDF generation
-    await loadFontsForDesign(_currentDesign);
-
-    try { if (document.fonts?.ready) await document.fonts.ready; } catch (_) { }
-
-    // Build the tag canvas at full size for high-quality PDF
-    const A4_W_MM = 210, A4_H_MM = 297;
-    const COLS = 4, ROWS = 3, MARGIN_MM = 8, GAP_MM = 4;
-
-    const tagW_MM = (A4_W_MM - MARGIN_MM * 2 - GAP_MM * (COLS - 1)) / COLS;
-    const tagH_MM = (A4_H_MM - MARGIN_MM * 2 - GAP_MM * (ROWS - 1)) / ROWS;
-
-    // Build canvas at PDF print size
-    const tagCanvas = await window.TagRenderer.buildTagCanvas(_currentDesign, _getValues(), _photoDataURL);
-
-    // Convert canvas to PNG data URL
-    const imgData = tagCanvas.toDataURL('image/png');
-
-    // Create PDF and add the image to all 12 tag positions
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
-
-    pdf.setFillColor(255, 255, 255);
-    pdf.rect(0, 0, A4_W_MM, A4_H_MM, 'F');
-
-    const ALIAS = 'tag';
-    pdf.addImage(imgData, 'PNG', MARGIN_MM, MARGIN_MM, tagW_MM, tagH_MM, ALIAS, 'NONE');
-    for (let row = 0; row < ROWS; row++) {
-      for (let col = 0; col < COLS; col++) {
-        if (row === 0 && col === 0) continue;
-        pdf.addImage(imgData, 'PNG',
-          MARGIN_MM + col * (tagW_MM + GAP_MM),
-          MARGIN_MM + row * (tagH_MM + GAP_MM),
-          tagW_MM, tagH_MM, ALIAS, 'NONE');
-      }
-    }
-
-    pdf.setFontSize(5);
-    pdf.setTextColor(180, 160, 140);
-    pdf.text(
-      `HeavenXent Keepsakes · ${(_currentDesign || {}).name || 'Custom'} · 12 Custom Wedding Tags · Print at 100% on A4`,
-      A4_W_MM / 2, A4_H_MM - 2.5, { align: 'center' }
-    );
-    pdf.save(filename);
-
-  } catch (err) {
-    console.error('PDF generation failed:', err);
-    alert(`Oops — could not generate the PDF.\n\n${err?.message || ''}`);
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
-        <polyline points="7 10 12 15 17 10"/>
-        <line x1="12" y1="15" x2="12" y2="3"/>
-      </svg>
-      Download PDF — 12 Tags`;
-  }
-}
-
-async function handleBuyPDF() {
-  try {
-    const btn = document.getElementById("btnDownload");
-    btn.innerText = "Preparing your design...";
-    btn.disabled = true;
-
-    // ✅ Keep the preview intact
-    if (!_tagRoot) {
-      console.warn('Tag preview not found!');
-    }
-
-    // ✅ Generate PDF silently (no DOM change)
-    const pdfBlob = await generatePDFBlob();
-
-    const arrayBuffer = await pdfBlob.arrayBuffer();
-    const base64PDF = btoa(
-      new Uint8Array(arrayBuffer)
-        .reduce((data, byte) => data + String.fromCharCode(byte), '')
-    );
-
-    btn.innerText = "Redirecting to checkout...";
-
-    const res = await fetch("https://api.heavenxentph.com/api/checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: "Test User",
-        email: "test@email.com",
-        type: "PDF",
-        pdf: base64PDF
-      })
+  // Change this part - load blank.jpg directly instead of using _currentDesign
+  fetch('blank.jpg')  // Changed from _currentDesign.fields.photo?.defaultImage
+    .then(res => res.blob())
+    .then(blob => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        _photoDataURL = e.target.result;
+        doUpdateTag();
+      };
+      reader.readAsDataURL(blob);
+    })
+    .catch(e => {
+      console.warn('Could not load blank.jpg, using no photo:', e);
+      doUpdateTag();  // Fallback to no photo if blank.jpg doesn't exist
     });
-
-    const data = await res.json();
-
-    console.log("Checkout response:", data);
-
-    if (data.checkout_url) {
-      window.location.href = data.checkout_url;
-    } else {
-      throw new Error("No checkout URL returned");
-    }
-
-  } catch (err) {
-    console.error(err);
-    alert("Something went wrong. Please try again.");
-    const btn = document.getElementById("btnDownload");
-    btn.innerText = "Buy & Download PDF — ₱149";
-    btn.disabled = false;
-  }
 }
 
-//function to generate PDF blob without triggering download
+// =====================================================
+// PDF GENERATION & CHECKOUT
+// =====================================================
 
-async function generatePDFBlob() {
-  // Similar to generatePDF but returns a Blob instead of saving
-  const v = _getValues();
-  const n1 = v.name1 || 'Taylor';
-  const n2 = v.name2 || 'Cynthia';
+let _cachedPDFBlob = null;
 
-  // Build the tag canvas at full size for high-quality PDF
+async function buildPDFBlob(tagCanvas) {
   const A4_W_MM = 210, A4_H_MM = 297;
   const COLS = 4, ROWS = 3, MARGIN_MM = 8, GAP_MM = 4;
-
   const tagW_MM = (A4_W_MM - MARGIN_MM * 2 - GAP_MM * (COLS - 1)) / COLS;
   const tagH_MM = (A4_H_MM - MARGIN_MM * 2 - GAP_MM * (ROWS - 1)) / ROWS;
 
-  const tagCanvas = await window.TagRenderer.buildTagCanvas(_currentDesign, _getValues(), _photoDataURL);
-
   const imgData = tagCanvas.toDataURL('image/png');
-
   const { jsPDF } = window.jspdf;
   const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
 
@@ -848,29 +481,221 @@ async function generatePDFBlob() {
   for (let row = 0; row < ROWS; row++) {
     for (let col = 0; col < COLS; col++) {
       if (row === 0 && col === 0) continue;
-      pdf.addImage(imgData, 'PNG',
-        MARGIN_MM + col * (tagW_MM + GAP_MM),
-        MARGIN_MM + row * (tagH_MM + GAP_MM),
-        tagW_MM, tagH_MM, ALIAS, 'NONE');
+      pdf.addImage(imgData, 'PNG', MARGIN_MM + col * (tagW_MM + GAP_MM), MARGIN_MM + row * (tagH_MM + GAP_MM), tagW_MM, tagH_MM, ALIAS, 'NONE');
     }
   }
 
   pdf.setFontSize(5);
   pdf.setTextColor(180, 160, 140);
-  pdf.text(
-    `HeavenXent Keepsakes · ${(_currentDesign || {}).name || 'Custom'} · 12 Custom Wedding Tags · Print at 100% on A4`,
-    A4_W_MM / 2, A4_H_MM - 2.5, { align: 'center' }
-  );
+  pdf.text(`HeavenXent Keepsakes · ${_currentDesign?.name || 'Custom'} · 12 Custom Wedding Tags · Print at 100% on A4`, A4_W_MM / 2, A4_H_MM - 2.5, { align: 'center' });
 
-  const pdfBlob = pdf.output('blob');
-  return pdfBlob;
+  return pdf.output('blob');
 }
 
+async function openPreviewModal() {
+  const modal = document.getElementById('previewModal');
+  const grid = document.getElementById('a4Grid');
+  const loading = document.getElementById('a4Loading');
+  const nameEl = document.getElementById('modalDesignName');
 
-// Expose functions to global scope
-window.generatePDF = generatePDF;
+  grid.style.display = 'none';
+  grid.innerHTML = '';
+  loading.style.display = 'flex';
+  _cachedPDFBlob = null;
+
+  if (nameEl && _currentDesign) nameEl.textContent = _currentDesign.name || 'Custom';
+
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  try {
+    const tagCanvas = await TagRenderer.buildTagCanvas(_currentDesign, getValues(), _photoDataURL);
+    const imgSrc = tagCanvas.toDataURL('image/png');
+
+    for (let i = 0; i < 12; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'a4-tag-cell';
+      const img = document.createElement('img');
+      img.src = imgSrc;
+      img.alt = 'Tag preview';
+      img.oncontextmenu = () => false;
+      img.ondragstart = () => false;
+      img.style.pointerEvents = 'none';
+      cell.appendChild(img);
+      grid.appendChild(cell);
+    }
+
+    loading.style.display = 'none';
+    grid.style.display = 'grid';
+    _cachedPDFBlob = await buildPDFBlob(tagCanvas);
+  } catch (err) {
+    console.error('Modal render failed:', err);
+    loading.textContent = 'Could not render preview. Please try again.';
+  }
+}
+
+function closePreviewModal(force) {
+  if (force !== true && force && force.target !== document.getElementById('previewModal')) return;
+  document.getElementById('previewModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+async function handleCheckout() {
+  const btn = document.getElementById('btnCheckout');
+  btn.disabled = true;
+  btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/></svg>Redirecting to checkout…`;
+
+  try {
+    let blob = _cachedPDFBlob;
+    if (!blob) {
+      const tagCanvas = await TagRenderer.buildTagCanvas(_currentDesign, getValues(), _photoDataURL);
+      blob = await buildPDFBlob(tagCanvas);
+    }
+
+    const arrayBuffer = await blob.arrayBuffer();
+    const base64PDF = btoa(new Uint8Array(arrayBuffer).reduce((d, b) => d + String.fromCharCode(b), ''));
+
+    const v = getValues();
+    const res = await fetch('https://api.heavenxentph.com/api/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: (v.name1 && v.name2) ? `${v.name1} & ${v.name2}` : 'Guest',
+        email: 'pending@heavenxentph.com',
+        type: 'PDF',
+        pdf: base64PDF
+      })
+    });
+
+    const data = await res.json();
+    if (data.checkout_url) {
+      window.location.href = data.checkout_url;
+    } else {
+      throw new Error('No checkout URL returned');
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Something went wrong. Please try again.');
+    btn.disabled = false;
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Buy & Download PDF — ₱149`;
+  }
+}
+
+// =====================================================
+// INITIALIZATION
+// =====================================================
+
+window.addEventListener('DOMContentLoaded', async () => {
+  console.log("🚀 App initializing...");
+
+  try {
+    const designId = sessionStorage.getItem('selectedDesignId');
+    const selectedCategory = sessionStorage.getItem('selectedCategory') || 'wedding-tag';
+
+    // Load designs
+    const res = await fetch(`/tag-editor/products/${selectedCategory}.json`);
+    if (!res.ok) throw new Error(`Could not load ${selectedCategory}.json`);
+    const designs = await res.json();
+
+    _currentDesign = designs.find(d => d.id === designId) || designs[0];
+    console.log('Design loaded:', _currentDesign.name);
+
+    // Update UI labels
+    const nameStepLabel = document.querySelector('#nameStepLabel');
+    const dateStepLabel = document.querySelector('#dateStepLabel');
+    if (nameStepLabel) nameStepLabel.textContent = _currentDesign.fields.name.label || 'Names';
+    if (dateStepLabel) dateStepLabel.textContent = _currentDesign.fields.date.label || 'Date';
+
+    document.getElementById('name1').placeholder = _currentDesign.fields.name.preset?.name1 || '';
+    document.getElementById('name2').placeholder = _currentDesign.fields.name.preset?.name2 || '';
+
+    const backLink1 = document.querySelector('.back-to-designs');
+    const backLink2 = document.querySelector('.design-badge-change');
+    if (backLink1) backLink1.href = `index.html#/${selectedCategory}`;
+    if (backLink2) backLink2.href = `index.html#/${selectedCategory}`;
+
+    document.getElementById('designBadgeName').textContent = _currentDesign.name;
+    document.getElementById('previewDesignName').textContent = _currentDesign.name;
+
+    const photoStep = document.getElementById('photoStep');
+    if (photoStep) photoStep.style.display = _currentDesign.fields.photo?.enabled ? 'flex' : 'none';
+
+    const dateStep = document.getElementById('dateStep');
+    if (dateStep) dateStep.style.display = _currentDesign.fields.date?.enabled ? 'flex' : 'none';
+
+    const taglineInput = document.getElementById('tagline');
+    if (taglineInput && _currentDesign.fields.tagline?.defaultValue) {
+      taglineInput.placeholder = _currentDesign.fields.tagline.defaultValue;
+      if (!taglineInput.value) taglineInput.value = _currentDesign.fields.tagline.defaultValue;
+    }
+
+
+    // Load fonts
+    await collectAvailableFonts();
+    await preloadAllFonts();
+    await loadFontsForDesign(_currentDesign);
+
+    // Load default photo
+    if (_currentDesign.fields.photo?.enabled && _currentDesign.fields.photo?.defaultImage) {
+      try {
+        const photoRes = await fetch(_currentDesign.fields.photo.defaultImage);
+        const blob = await photoRes.blob();
+        _photoDataURL = await new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onload = e => resolve(e.target.result);
+          reader.readAsDataURL(blob);
+        });
+        document.getElementById('photoRemoveBtn').style.display = 'block';
+        document.getElementById('photoUploadLabel').style.display = 'none';
+      } catch (e) {
+        console.warn('Could not load default photo:', e);
+      }
+    }
+
+    // Initialize UI
+    populateFontDropdown();
+    initDropdown();
+    updateTag();
+
+    // Only initialize date picker if date field is enabled
+    if (_currentDesign.fields.date?.enabled !== false) {
+      initDatePicker();
+    }
+
+    // Render desktop preview
+    const wrapper = document.getElementById('tagWrapper');
+    if (wrapper) {
+      wrapper.style.width = _currentDesign.tagDimensions.width + 'px';
+      wrapper.style.height = _currentDesign.tagDimensions.height + 'px';
+      _tagRoot = await TagRenderer.buildTagElement(_currentDesign, getValues(), _photoDataURL);
+      _tagRoot.id = 'theTag';
+      wrapper.innerHTML = '';
+      wrapper.appendChild(_tagRoot);
+    }
+
+    console.log('✅ App ready!');
+  } catch (err) {
+    console.error('❌ Init error:', err);
+    alert('Error: ' + err.message);
+  }
+});
+
+document.getElementById('tagWrapper').addEventListener('click', function () {
+  if (window.innerWidth <= 780) {
+    document.querySelector('.preview-panel').classList.toggle('zoomed');
+  }
+});
+
+// =====================================================
+// EXPOSE TO WINDOW
+// =====================================================
+
 window.updateTag = updateTag;
-window.handleBuyPDF = handleBuyPDF;
-window.generatePDFBlob = generatePDFBlob;
 window.handlePhotoUpload = handlePhotoUpload;
+window.confirmCrop = confirmCrop;
+window.cancelCrop = cancelCrop;
 window.removePhoto = removePhoto;
+window.handleBuyPDF = openPreviewModal;
+window.closePreviewModal = closePreviewModal;
+window.handleCheckout = handleCheckout;
+

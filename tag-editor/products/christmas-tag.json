@@ -1,0 +1,688 @@
+[
+  {
+    "id": "wt1",
+    "name": "Merry Little Village",
+    "description": "A cozy holiday scene filled with glowing homes and shared joy.",
+    "tagImage": "./christmas-img/tag1.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false
+      },
+      "name": {
+        "label": "Giver's Name (From)",
+        "x": "50%",
+        "y": "90%",
+        "width": "85%",
+        "alignment": "center",
+        "fontFamily": "Bebas Neue, sans-serif",
+        "fontSize": "1.2rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "maxLines": 2,
+        "letterSpacing": "0.05em",
+        "textTransform": "none",
+        "color": "#3a2e28",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1rem",
+        "ampCharacter": "&",
+        "preset": {
+          "name1": "Santos Family",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": false
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "85%",
+        "width": "85%",
+        "alignment": "center",
+        "fontFamily": "Bebas Neue, sans-serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.1em",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "FROM:"
+      }
+    }
+  },
+  {
+    "id": "wt2",
+    "name": "Holiday Script",
+    "description": "A sophisticated, quiet moment of beauty for a classic gift.",
+    "tagImage": "./christmas-img/tag2.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Gilda+Display&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false
+      },
+      "name": {
+        "label": "Giver's Name (From)",
+        "x": "50%",
+        "y": "55%",
+        "width": "88%",
+        "alignment": "center",
+        "fontFamily": "Gilda Display, serif",
+        "fontSize": "1.2rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "maxLines": 2,
+        "letterSpacing": "0.05em",
+        "textTransform": "none",
+        "color": "#3a2e28",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1.5rem",
+        "ampCharacter": "+",
+        "preset": {
+          "name1": "Santos Family",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": false
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "50%",
+        "width": "88%",
+        "alignment": "center",
+        "fontFamily": "Gilda Display, serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.08em",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "From:"
+      }
+    }
+  },
+  {
+    "id": "wt3",
+    "name": "Joyful Gathering",
+    "description": "The heart-filling magic of family coming together at last.",
+    "tagImage": "./christmas-img/tag3.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lora:wght@400;600&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false
+      },
+      "name": {
+        "label": "Giver's Name (From)",
+        "x": "50%",
+        "y": "77%",
+        "width": "76%",
+        "alignment": "center",
+        "fontFamily": "Cinzel, serif",
+        "fontSize": "1.2rem",
+        "fontWeight": "400",
+        "lineHeight": "1.2",
+        "maxLines": 2,
+        "letterSpacing": "0.05em",
+        "textTransform": "none",
+        "color": "#7a5f7b",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1rem",
+        "ampCharacter": "&",
+        "preset": {
+          "name1": "Santos Family",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": false
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "72%",
+        "width": "56%",
+        "alignment": "center",
+        "fontFamily": "Lora, serif",
+        "fontSize": "0.75rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "textTransform": "none",
+        "color": "#735e59",
+        "defaultValue": "From:"
+      }
+    }
+  },
+  {
+    "id": "wt4",
+    "name": "Winter Sketch",
+    "description": "Light, airy strokes with a soft and calming festive charm.",
+    "tagImage": "./christmas-img/tag4.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false
+      },
+      "name": {
+        "label": "Giver's Name (From)",
+        "x": "90%",
+        "y": "68%",
+        "width": "75%",
+        "alignment": "right",
+        "fontFamily": "Literata, serif",
+        "fontSize": "1.1rem",
+        "fontWeight": "400",
+        "lineHeight": "1.2",
+        "maxLines": 2,
+        "letterSpacing": "0",
+        "textTransform": "none",
+        "color": "#2d2d2d",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1.0625rem",
+        "ampCharacter": "&",
+        "preset": {
+          "name1": "Santos Family",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": false
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "90%",
+        "y": "63%",
+        "width": "70%",
+        "alignment": "right",
+        "fontFamily": "Literata, serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.1",
+        "textTransform": "none",
+        "color": "#2d2d2d",
+        "defaultValue": "From:"
+      }
+    }
+  },
+  {
+    "id": "wt5",
+    "name": "Evergreen Wishes",
+    "description": "Classic greens that bring timeless holiday warmth and joy.",
+    "tagImage": "./christmas-img/tag5.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Glass+Antiqua&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false
+      },
+      "name": {
+        "label": "Giver's Name (From)",
+        "x": "50%",
+        "y": "89%",
+        "width": "77%",
+        "alignment": "center",
+        "fontFamily": "Glass Antiqua, serif",
+        "fontSize": "1rem",
+        "fontWeight": "400",
+        "lineHeight": "1",
+        "maxLines": 2,
+        "letterSpacing": "0.05em",
+        "textTransform": "none",
+        "color": "#2d2d2d",
+        "ampColor": "#ffffff",
+        "ampFontSize": "1.5rem",
+        "ampCharacter": "and",
+        "preset": {
+          "name1": "SANTOS FAMILY",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": false
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "85%",
+        "width": "50%",
+        "alignment": "center",
+        "fontFamily": "Glass Antiqua, serif",
+        "fontSize": "0.9rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "textTransform": "uppercase",
+        "color": "#2d2d2d",
+        "defaultValue": "From:"
+      }
+    }
+  },
+  {
+    "id": "wt6",
+    "name": "Petal Whimsy",
+    "description": "Playful florals with a lighthearted and festive touch.",
+    "tagImage": "./christmas-img/tag6.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Petit+Formal+Script&family=Source+Serif+4:wght@400;600&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false
+      },
+      "name": {
+        "label": "Giver's Name (From)",
+        "x": "90%",
+        "y": "83%",
+        "width": "60%",
+        "alignment": "right",
+        "fontFamily": "Petit Formal Script, cursive",
+        "fontSize": "1rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "maxLines": 2,
+        "letterSpacing": "0em",
+        "textTransform": "none",
+        "color": "#3a2e28",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1rem",
+        "ampCharacter": "&",
+        "preset": {
+          "name1": "Santos Family",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": false
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "90%",
+        "y": "77%",
+        "width": "84%",
+        "alignment": "right",
+        "fontFamily": "Source Serif 4, serif",
+        "fontSize": "0.9rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "textTransform": "uppercase",
+        "color": "#5a4a40",
+        "defaultValue": "From:"
+      }
+    }
+  },
+  {
+    "id": "wt7",
+    "name": "Gilded Glow",
+    "description": "A soft golden shimmer inspired by festive evening lights.",
+    "tagImage": "./christmas-img/tag7.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false
+      },
+      "name": {
+        "label": "Giver's Name (From)",
+        "x": "35%",
+        "y": "62%",
+        "width": "62%",
+        "alignment": "center",
+        "fontFamily": "Roboto Condensed, sans-serif",
+        "fontSize": "1rem",
+        "fontWeight": "300",
+        "lineHeight": "1.1",
+        "maxLines": 2,
+        "letterSpacing": "0.05em",
+        "textTransform": "none",
+        "color": "#3a2e28",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1.3125rem",
+        "ampCharacter": "&",
+        "preset": {
+          "name1": "SANTOS FAMILY",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": false
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "35%",
+        "y": "58%",
+        "width": "40%",
+        "alignment": "center",
+        "fontFamily": "Roboto Condensed, sans-serif",
+        "fontSize": "0.9rem",
+        "fontWeight": "300",
+        "lineHeight": "1",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "From:"
+      }
+    }
+  },
+  {
+    "id": "wt8",
+    "name": "Star Lantern",
+    "description": "Spirit of Paskong Pinoy, inspired by glowing holiday stars.",
+    "tagImage": "./christmas-img/tag8.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false
+      },
+      "name": {
+        "label": "Giver's Name (From)",
+        "x": "50%",
+        "y": "88%",
+        "width": "84%",
+        "alignment": "center",
+        "fontFamily": "Open Sans, sans-serif",
+        "fontSize": "1.2rem",
+        "fontWeight": "300",
+        "lineHeight": "1.2",
+        "maxLines": 2,
+        "letterSpacing": "0.05em",
+        "textTransform": "uppercase",
+        "color": "#3a2e28",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1.5rem",
+        "ampCharacter": "&",
+        "preset": {
+          "name1": "Santos Family",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": false
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "84%",
+        "width": "64%",
+        "alignment": "center",
+        "fontFamily": "Open Sans, sans-serif",
+        "fontSize": "0.9rem",
+        "fontWeight": "400",
+        "lineHeight": "1",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "FROM:"
+      }
+    }
+  },
+  {
+    "id": "wt9",
+    "name": "Midnight Spark",
+    "description": "Sleek and luminous, like festive lights in the night sky.",
+    "tagImage": "./christmas-img/tag9.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Parisienne&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false
+      },
+      "name": {
+        "label": "Giver's Name (From)",
+        "x": "50%",
+        "y": "79%",
+        "width": "85%",
+        "alignment": "center",
+        "fontFamily": "Parisienne, cursive",
+        "fontSize": "1.3rem",
+        "fontWeight": "400",
+        "lineHeight": "1",
+        "maxLines": 2,
+        "letterSpacing": "0em",
+        "textTransform": "none",
+        "color": "#3a2e28",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1.3125rem",
+        "ampCharacter": "&",
+        "preset": {
+          "name1": "Santos Family",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": false
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "74%",
+        "width": "65%",
+        "alignment": "center",
+        "fontFamily": "Parisienne, cursive",
+        "fontSize": "1.2rem",
+        "fontWeight": "400",
+        "lineHeight": "1",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "From:"
+      }
+    }
+  },
+  {
+    "id": "wt10",
+    "name": "Blush Wreath",
+    "description": "A soft and welcoming touch of festive greenery and charm.",
+    "tagImage": "./christmas-img/tag10.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Oswald:wght@400&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false
+      },
+      "name": {
+        "label": "Giver's Name (From)",
+        "x": "50%",
+        "y": "90%",
+        "width": "86%",
+        "alignment": "center",
+        "fontFamily": "Oswald, sans-serif",
+        "fontSize": "1rem",
+        "fontWeight": "400",
+        "lineHeight": "1.1",
+        "maxLines": 2,
+        "letterSpacing": "0.02em",
+        "textTransform": "uppercase",
+        "color": "#3a2e28",
+        "ampColor": "#c4956a",
+        "ampFontSize": "0.875rem",
+        "ampCharacter": "&",
+        "preset": {
+          "name1": "SANTOS FAMILY",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": false
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "85%",
+        "width": "60%",
+        "alignment": "center",
+        "fontFamily": "Oswald, sans-serif",
+        "fontSize": "0.9rem",
+        "fontWeight": "400",
+        "lineHeight": "1.1",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "From:"
+      }
+    }
+  },
+  {
+    "id": "wt11",
+    "name": "Sacred Circle",
+    "description": "Calm and meaningful, with a gentle and peaceful spirit.",
+    "tagImage": "./christmas-img/tag11.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false
+      },
+      "name": {
+        "label": "Giver's Name (From)",
+        "x": "50%",
+        "y": "88%",
+        "width": "84%",
+        "alignment": "center",
+        "fontFamily": "Great Vibes, cursive",
+        "fontSize": "1.3rem",
+        "fontWeight": "400",
+        "lineHeight": "1",
+        "maxLines": 2,
+        "letterSpacing": "0",
+        "textTransform": "none",
+        "color": "#3a2e28",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1rem",
+        "ampCharacter": "&",
+        "preset": {
+          "name1": "Santos Family",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": false
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "85%",
+        "width": "50%",
+        "alignment": "center",
+        "fontFamily": "Great Vibes, cursive",
+        "fontSize": "0.85rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "From:"
+      }
+    }
+  },
+  {
+    "id": "wt12",
+    "name": "Frost Bloom",
+    "description": "Crisp and refreshing with a subtle festive winter feel.",
+    "tagImage": "./christmas-img/tag12.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Pompiere&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false
+      },
+      "name": {
+        "label": "Giver's Name (From)",
+        "x": "50%",
+        "y": "89%",
+        "width": "82%",
+        "alignment": "center",
+        "fontFamily": "Pompiere, cursive",
+        "fontSize": "1.2rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "maxLines": 2,
+        "letterSpacing": "0",
+        "textTransform": "none",
+        "color": "#3a2e28",
+        "ampColor": "#7b4628",
+        "ampFontSize": "1rem",
+        "ampCharacter": "&",
+        "preset": {
+          "name1": "Santos Family",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": false
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "85%",
+        "width": "52%",
+        "alignment": "center",
+        "fontFamily": "Pompiere, cursive",
+        "fontSize": "1.1rem",
+        "fontWeight": "400",
+        "lineHeight": "1.2",
+        "textTransform": "none",
+        "color": "#3a2e28",
+        "defaultValue": "From:"
+      }
+    }
+  }
+]

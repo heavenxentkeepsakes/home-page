@@ -1,6 +1,6 @@
 [
   {
-    "id": "1",
+    "id": "wt1",
     "name": "Autumn Bloom",
     "description": "Warm, earthy florals frame your details in seasonal beauty.",
     "tagImage": "./wedding-img/tag1.png",
@@ -9,37 +9,37 @@
       "height": 490
     },
     "fonts": [
-      "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;500;600;700&display=swap"
+      "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;500&display=swap"
     ],
     "fields": {
       "photo": {
-        "enabled": false,
-        "x": "50%",
-        "y": "30%",
-        "width": 80,
-        "height": 80,
-        "shape": "circle",
-        "borderColor": "#c4956a",
-        "borderWidth": 2
+        "enabled": false
       },
-      "couple": {
+      "name": {
+        "label": "Couple's Name",
         "x": "50%",
-        "y": "63%",
+        "y": "61%",
         "width": "85%",
         "alignment": "center",
         "fontFamily": "Bebas Neue, sans-serif",
-        "fontSize": "1.2rem",
-        "fontWeight": "100",
+        "fontSize": "1.4rem",
+        "fontWeight": "400",
         "lineHeight": "1.4",
         "maxLines": 1,
-        "letterSpacing": "0.15em",
+        "letterSpacing": "0.05em",
         "textTransform": "none",
         "color": "#3a2e28",
         "ampColor": "#c4956a",
         "ampFontSize": "1rem",
-        "ampCharacter": "&"
+        "ampCharacter": "&",
+        "preset": {
+          "name1": "Jason",
+          "name2": "Maricar"
+        }
       },
       "date": {
+        "enabled": true,
+        "label": "Wedding Date",
         "x": "50%",
         "y": "70%",
         "width": "85%",
@@ -54,6 +54,7 @@
         "format": "MM | DD | YYYY"
       },
       "tagline": {
+        "enabled": true,
         "x": "50%",
         "y": "73%",
         "width": "85%",
@@ -70,7 +71,7 @@
     }
   },
   {
-    "id": "2",
+    "id": "wt2",
     "name": "Minimal Frame",
     "description": "A clean, modern spotlight on your favorite captured moment.",
     "tagImage": "./wedding-img/tag2.png",
@@ -90,26 +91,34 @@
         "height": 200,
         "shape": "rectangle",
         "borderColor": "#ddd3cc",
-        "borderWidth": 2
+        "borderWidth": 2,
+        "defaultImage": "./wedding-img/couple.jpg"
       },
-      "couple": {
+      "name": {
+        "label": "Couple's Name",
         "x": "50%",
         "y": "70%",
         "width": "88%",
         "alignment": "center",
         "fontFamily": "Gilda Display, serif",
-        "fontSize": "1 rem",
-        "fontWeight": "100",
+        "fontSize": "1.2rem",
+        "fontWeight": "400",
         "lineHeight": "1.4",
         "maxLines": 1,
-        "letterSpacing": "0.1em",
+        "letterSpacing": "0.05em",
         "textTransform": "none",
         "color": "#3a2e28",
         "ampColor": "#c4956a",
         "ampFontSize": "1.5rem",
-        "ampCharacter": "+"
+        "ampCharacter": "+",
+        "preset": {
+          "name1": "Jason",
+          "name2": "Maricar"
+        }
       },
       "date": {
+        "enabled": true,
+        "label": "Wedding Date",
         "x": "50%",
         "y": "77%",
         "width": "88%",
@@ -124,6 +133,7 @@
         "format": "DD / MM / YYYY"
       },
       "tagline": {
+        "enabled": true,
         "x": "50%",
         "y": "82%",
         "width": "88%",
@@ -140,7 +150,7 @@
     }
   },
   {
-    "id": "3",
+    "id": "wt3",
     "name": "Soft Petal",
     "description": "Delicate lavender sprigs bring a touch of garden-fresh elegance.",
     "tagImage": "./wedding-img/tag3.png",
@@ -149,37 +159,37 @@
       "height": 490
     },
     "fonts": [
-      "https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Lora:ital,wght@0,400;0,600;1,400&display=swap"
+      "https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Lora:ital,wght@0,400;0,600&display=swap"
     ],
     "fields": {
       "photo": {
-        "enabled": false,
-        "x": "50%",
-        "y": "28%",
-        "width": 80,
-        "height": 80,
-        "shape": "circle",
-        "borderColor": "#c4956a",
-        "borderWidth": 2
+        "enabled": false
       },
-      "couple": {
+      "name": {
+        "label": "Couple's Name",
         "x": "8%",
         "y": "55%",
         "width": "86%",
         "alignment": "left",
         "fontFamily": "Cinzel, serif",
         "fontSize": "1.6rem",
-        "fontWeight": "100",
+        "fontWeight": "400",
         "lineHeight": "1.4",
         "maxLines": 2,
-        "letterSpacing": "0.1em",
+        "letterSpacing": "0.05em",
         "textTransform": "none",
         "color": "#7a5f7b",
         "ampColor": "#c4956a",
         "ampFontSize": "1rem",
-        "ampCharacter": "&"
+        "ampCharacter": "&",
+        "preset": {
+          "name1": "Jason",
+          "name2": "Maricar"
+        }
       },
       "date": {
+        "enabled": true,
+        "label": "Wedding Date",
         "x": "8%",
         "y": "77%",
         "width": "86%",
@@ -194,6 +204,7 @@
         "format": "MMMM DD, YYYY"
       },
       "tagline": {
+        "enabled": true,
         "x": "8%",
         "y": "83%",
         "width": "56%",
@@ -209,7 +220,7 @@
     }
   },
   {
-    "id": "4",
+    "id": "wt4",
     "name": "Seaside Sketch",
     "description": "Gentle blue watercolor strokes for a light, breezy coastal feel.",
     "tagImage": "./wedding-img/tag4.png",
@@ -229,9 +240,11 @@
         "height": 120,
         "shape": "rectangle",
         "borderColor": "#cad7e2",
-        "borderWidth": 5
+        "borderWidth": 5,
+        "defaultImage": "./wedding-img/couple.jpg"
       },
-      "couple": {
+      "name": {
+        "label": "Couple's Name",
         "x": "50%",
         "y": "26%",
         "width": "87%",
@@ -241,14 +254,20 @@
         "fontWeight": "400",
         "lineHeight": "1.2",
         "maxLines": 2,
-        "letterSpacing": "0.08em",
+        "letterSpacing": "0.05em",
         "textTransform": "none",
         "color": "#1d4d69",
         "ampColor": "#c4956a",
         "ampFontSize": "1.0625rem",
-        "ampCharacter": "&"
+        "ampCharacter": "&",
+        "preset": {
+          "name1": "Jason",
+          "name2": "Maricar"
+        }
       },
       "date": {
+        "enabled": true,
+        "label": "Wedding Date",
         "x": "50%",
         "y": "20%",
         "width": "87%",
@@ -263,6 +282,7 @@
         "format": "MM | DD | YYYY"
       },
       "tagline": {
+        "enabled": true,
         "x": "50%",
         "y": "43%",
         "width": "70%",
@@ -278,7 +298,7 @@
     }
   },
   {
-    "id": "5",
+    "id": "wt5",
     "name": "Forest Arches",
     "description": "Deep botanical greens meet a classic arch for a timeless look.",
     "tagImage": "./wedding-img/tag5.png",
@@ -291,16 +311,10 @@
     ],
     "fields": {
       "photo": {
-        "enabled": false,
-        "x": "50%",
-        "y": "28%",
-        "width": 75,
-        "height": 75,
-        "shape": "circle",
-        "borderColor": "#c4956a",
-        "borderWidth": 2
+        "enabled": false
       },
-      "couple": {
+      "name": {
+        "label": "Couple's Name",
         "x": "50%",
         "y": "52%",
         "width": "65%",
@@ -315,9 +329,15 @@
         "color": "#ffffff",
         "ampColor": "#ffffff",
         "ampFontSize": "1.5rem",
-        "ampCharacter": "and"
+        "ampCharacter": "and",
+        "preset": {
+          "name1": "Jason",
+          "name2": "Maricar"
+        }
       },
       "date": {
+        "enabled": true,
+        "label": "Wedding Date",
         "x": "50%",
         "y": "80%",
         "width": "80%",
@@ -332,6 +352,7 @@
         "format": "DD MMMM, YYYY"
       },
       "tagline": {
+        "enabled": true,
         "x": "50%",
         "y": "34%",
         "width": "50%",
@@ -347,7 +368,7 @@
     }
   },
   {
-    "id": "6",
+    "id": "wt6",
     "name": "Polished Portrait",
     "description": "Traditional typography paired with a generous, centered photo.",
     "tagImage": "./wedding-img/tag6.png",
@@ -367,9 +388,11 @@
         "height": 180,
         "shape": "square",
         "borderColor": "#ffffff",
-        "borderWidth": 0
+        "borderWidth": 0,
+        "defaultImage": "./wedding-img/couple.jpg"
       },
-      "couple": {
+      "name": {
+        "label": "Couple's Name",
         "x": "50%",
         "y": "80%",
         "width": "84%",
@@ -384,9 +407,15 @@
         "color": "#3a2e28",
         "ampColor": "#c4956a",
         "ampFontSize": "1rem",
-        "ampCharacter": "&"
+        "ampCharacter": "&",
+        "preset": {
+          "name1": "Jason",
+          "name2": "Maricar"
+        }
       },
       "date": {
+        "enabled": true,
+        "label": "Wedding Date",
         "x": "50%",
         "y": "90%",
         "width": "84%",
@@ -401,6 +430,7 @@
         "format": "DD / MM / YYYY"
       },
       "tagline": {
+        "enabled": true,
         "x": "50%",
         "y": "28%",
         "width": "84%",
@@ -416,7 +446,7 @@
     }
   },
   {
-    "id": "7",
+    "id": "wt7",
     "name": "Golden Etch",
     "description": "Intricate, shimmering line art for a touch of vintage luxury.",
     "tagImage": "./wedding-img/tag7.png",
@@ -425,20 +455,14 @@
       "height": 490
     },
     "fonts": [
-      "https://fonts.googleapis.com/css2?family=Tangerine:wght@400;700&family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap"
+      "https://fonts.googleapis.com/css2?family=Tangerine:wght@700&family=Roboto+Condensed:wght@300;400&display=swap"
     ],
     "fields": {
       "photo": {
-        "enabled": false,
-        "x": "50%",
-        "y": "30%",
-        "width": 70,
-        "height": 70,
-        "shape": "circle",
-        "borderColor": "#c4956a",
-        "borderWidth": 2
+        "enabled": false
       },
-      "couple": {
+      "name": {
+        "label": "Couple's Name",
         "x": "90%",
         "y": "37%",
         "width": "62%",
@@ -453,9 +477,15 @@
         "color": "#3a2e28",
         "ampColor": "#c4956a",
         "ampFontSize": "1.3125rem",
-        "ampCharacter": "&"
+        "ampCharacter": "&",
+        "preset": {
+          "name1": "Jason",
+          "name2": "Maricar"
+        }
       },
       "date": {
+        "enabled": true,
+        "label": "Wedding Date",
         "x": "90%",
         "y": "58%",
         "width": "82%",
@@ -470,6 +500,7 @@
         "format": "YYYY-MM-DD"
       },
       "tagline": {
+        "enabled": true,
         "x": "90%",
         "y": "28%",
         "width": "40%",
@@ -485,7 +516,7 @@
     }
   },
   {
-    "id": "8",
+    "id": "wt8",
     "name": "Modern Horizon",
     "description": "A sleek, wide-angle layout perfect for landscape photography.",
     "tagImage": "./wedding-img/tag8.png",
@@ -505,9 +536,11 @@
         "height": 150,
         "shape": "rectangle",
         "borderColor": "#ffffff",
-        "borderWidth": 0
+        "borderWidth": 0,
+        "defaultImage": "./wedding-img/couple.jpg"
       },
-      "couple": {
+      "name": {
+        "label": "Couple's Name",
         "x": "50%",
         "y": "72%",
         "width": "85%",
@@ -522,9 +555,15 @@
         "color": "#3a2e28",
         "ampColor": "#c4956a",
         "ampFontSize": "1.3125rem",
-        "ampCharacter": "&"
+        "ampCharacter": "&",
+        "preset": {
+          "name1": "Jason",
+          "name2": "Maricar"
+        }
       },
       "date": {
+        "enabled": true,
+        "label": "Wedding Date",
         "x": "50%",
         "y": "90%",
         "width": "85%",
@@ -539,11 +578,12 @@
         "format": "MM · DD · YYYY"
       },
       "tagline": {
+        "enabled": true,
         "x": "50%",
         "y": "20%",
         "width": "65%",
         "alignment": "center",
-        "fontFamily":  "Parisienne, cursive",
+        "fontFamily": "Parisienne, cursive",
         "fontSize": "1.2rem",
         "fontWeight": "300",
         "lineHeight": "1",
@@ -554,7 +594,7 @@
     }
   },
   {
-    "id": "9",
+    "id": "wt9",
     "name": "Ornate Border",
     "description": "Decorative flourishes that frame your names in royal style.",
     "tagImage": "./wedding-img/tag9.png",
@@ -563,27 +603,29 @@
       "height": 490
     },
     "fonts": [
-       "https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,500;0,600;1,400&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap"
+      "https://fonts.googleapis.com/css2?family=Alegreya:wght@400;500&family=Open+Sans:wght@300;400&display=swap"
     ],
     "fields": {
       "photo": {
         "enabled": true,
-        "x": "50%",
+        "x": "50.5%",
         "y": "30%",
-        "width": 220,
-        "height": 220,
+        "width": 224,
+        "height": 224,
         "shape": "circle",
         "borderColor": "#c4956a",
-        "borderWidth": 0
+        "borderWidth": 0,
+        "defaultImage": "./wedding-img/couple.jpg"
       },
-      "couple": {
+      "name": {
+        "label": "Couple's Name",
         "x": "50%",
         "y": "80%",
         "width": "84%",
         "alignment": "center",
         "fontFamily": "Alegreya, serif",
         "fontSize": "2.5rem",
-        "fontWeight": "200",
+        "fontWeight": "400",
         "lineHeight": "1.4",
         "maxLines": 1,
         "letterSpacing": "0.05em",
@@ -591,9 +633,15 @@
         "color": "#3a2e28",
         "ampColor": "#c4956a",
         "ampFontSize": "1.5rem",
-        "ampCharacter": "&"
+        "ampCharacter": "&",
+        "preset": {
+          "name1": "Jason",
+          "name2": "Maricar"
+        }
       },
       "date": {
+        "enabled": true,
+        "label": "Baptism Date",
         "x": "50%",
         "y": "88%",
         "width": "84%",
@@ -608,6 +656,7 @@
         "format": "MMMM DD, YYYY"
       },
       "tagline": {
+        "enabled": true,
         "x": "50%",
         "y": "92%",
         "width": "64%",
@@ -623,7 +672,7 @@
     }
   },
   {
-    "id": "10",
+    "id": "wt10",
     "name": "Monochrome Leaf",
     "description": "Minimalist black-ink sketches for the modern, understated couple.",
     "tagImage": "./wedding-img/tag10.png",
@@ -632,37 +681,37 @@
       "height": 490
     },
     "fonts": [
-      "https://fonts.googleapis.com/css2?family=Srisakdi:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap"
+      "https://fonts.googleapis.com/css2?family=Srisakdi&family=Cormorant+Garamond:wght@300;400&display=swap"
     ],
     "fields": {
       "photo": {
-        "enabled": false,
-        "x": "50%",
-        "y": "25%",
-        "width": 390,
-        "height": 390,
-        "shape": "circle",
-        "borderColor": "#c4956a",
-        "borderWidth": 3
+        "enabled": false
       },
-      "couple": {
+      "name": {
+        "label": "Couple's Name",
         "x": "50%",
         "y": "37%",
         "width": "86%",
         "alignment": "center",
         "fontFamily": "Srisakdi, cursive",
         "fontSize": "2.7rem",
-        "fontWeight": "500",
+        "fontWeight": "400",
         "lineHeight": "1.1",
         "maxLines": 2,
-        "letterSpacing": "0.1em",
+        "letterSpacing": "0.05em",
         "textTransform": "none",
         "color": "#3a2e28",
         "ampColor": "#c4956a",
         "ampFontSize": "0.875rem",
-        "ampCharacter": "&"
+        "ampCharacter": "&",
+        "preset": {
+          "name1": "Jason",
+          "name2": "Maricar"
+        }
       },
       "date": {
+        "enabled": true,
+        "label": "Wedding Date",
         "x": "50%",
         "y": "75%",
         "width": "86%",
@@ -677,6 +726,7 @@
         "format": "MM | DD | YYYY"
       },
       "tagline": {
+        "enabled": true,
         "x": "50%",
         "y": "65%",
         "width": "60%",
@@ -692,7 +742,7 @@
     }
   },
   {
-    "id": "11",
+    "id": "wt11",
     "name": "Willow Wreath",
     "description": "A soft, circular frame of greenery symbolizing eternal love.",
     "tagImage": "./wedding-img/tag11.png",
@@ -701,7 +751,7 @@
       "height": 490
     },
     "fonts": [
-      "https://fonts.googleapis.com/css2?family=Glass+Antiqua&family=Noto+Sans+JP:wght@100;300;400;500;700&display=swap"
+      "https://fonts.googleapis.com/css2?family=Glass+Antiqua&family=Noto+Sans+JP:wght@300;400&display=swap"
     ],
     "fields": {
       "photo": {
@@ -712,26 +762,34 @@
         "height": 220,
         "shape": "oval",
         "borderColor": "#c4956a",
-        "borderWidth": 0
+        "borderWidth": 0,
+        "defaultImage": "./wedding-img/couple.jpg"
       },
-      "couple": {
+      "name": {
+        "label": "Couple's Name",
         "x": "50%",
-        "y": "71%",
+        "y": "70%",
         "width": "84%",
         "alignment": "center",
         "fontFamily": "Glass Antiqua, cursive",
         "fontSize": "2rem",
-        "fontWeight": "100",
+        "fontWeight": "400",
         "lineHeight": "1",
         "maxLines": 2,
-        "letterSpacing": "0.08em",
+        "letterSpacing": "0",
         "textTransform": "none",
         "color": "#3a2e28",
         "ampColor": "#c4956a",
         "ampFontSize": "1rem",
-        "ampCharacter": "&"
+        "ampCharacter": "&",
+        "preset": {
+          "name1": "Jason",
+          "name2": "Maricar"
+        }
       },
       "date": {
+        "enabled": true,
+        "label": "Wedding Date",
         "x": "50%",
         "y": "87%",
         "width": "84%",
@@ -746,6 +804,7 @@
         "format": "YYYY-MM-DD"
       },
       "tagline": {
+        "enabled": true,
         "x": "50%",
         "y": "91%",
         "width": "50%",
@@ -761,7 +820,7 @@
     }
   },
   {
-    "id": "12",
+    "id": "wt12",
     "name": "Sunset Palms",
     "description": "Tropical warmth and golden tones for your destination celebration.",
     "tagImage": "./wedding-img/tag12.png",
@@ -774,23 +833,17 @@
     ],
     "fields": {
       "photo": {
-        "enabled": false,
-        "x": "50%",
-        "y": "24%",
-        "width": 300,
-        "height": 365,
-        "shape": "circle",
-        "borderColor": "#c4956a",
-        "borderWidth": 2
+        "enabled": false
       },
-      "couple": {
+      "name": {
+        "label": "Couple's Name",
         "x": "50%",
-        "y": "38%",
+        "y": "32%",
         "width": "82%",
         "alignment": "center",
         "fontFamily": "Pacifico, cursive",
         "fontSize": "2.3rem",
-        "fontWeight": "100",
+        "fontWeight": "400",
         "lineHeight": "1.4",
         "maxLines": 2,
         "letterSpacing": "0",
@@ -798,11 +851,17 @@
         "color": "#7b4628",
         "ampColor": "#7b4628",
         "ampFontSize": "1rem",
-        "ampCharacter": "&"
+        "ampCharacter": "&",
+        "preset": {
+          "name1": "Jason",
+          "name2": "Maricar"
+        }
       },
       "date": {
+        "enabled": true,
+        "label": "Wedding Date",
         "x": "50%",
-        "y": "67%",
+        "y": "57%",
         "width": "82%",
         "alignment": "center",
         "fontFamily": "Pompiere, cursive",
@@ -815,14 +874,15 @@
         "format": "DD MMMM, YYYY"
       },
       "tagline": {
+        "enabled": true,
         "x": "50%",
-        "y": "71%",
+        "y": "68%",
         "width": "52%",
         "alignment": "center",
         "fontFamily": "Pompiere, cursive",
-        "fontSize": "0.9rem",
+        "fontSize": "1.1rem",
         "fontWeight": "400",
-        "lineHeight": "1.1",
+        "lineHeight": "1.2",
         "textTransform": "none",
         "color": "#5a4a40",
         "defaultValue": "Thank you for your presence and blessings"

@@ -16,9 +16,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Design Your Tags — Heavenxent Keepsakes</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap"
-    rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Bebas+Neue&family=Cinzel:wght@400;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Gilda+Display&family=Glass+Antiqua&family=Great+Vibes&family=Inria+Serif:ital,wght@0,400;0,700;1,400&family=Literata:ital,opsz,wght@0,7..72,400&family=Lora:ital,wght@0,400;0,600;1,400&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Noto+Sans+JP:wght@100;300;400;500;700&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Pacifico&family=Parisienne&family=Petit+Formal+Script&family=Pinyon+Script&family=Pompiere&family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Source+Serif+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Srisakdi:wght@400;700&family=Tangerine:wght@400;700&display=swap">
   <link rel="stylesheet" href="styles.css" />
 </head>
 
@@ -28,9 +28,9 @@
       <img src="/logo.png" alt="Heavenxent Keepsakes">
     </a>
     <ul class="l-nav__links">
-      <li><a href="#products">Products</a></li>
-      <li><a href="#process">How it works</a></li>
-      <li><a href="#proof">Why us</a></li>
+      <li><a href="/index.html#products">Products</a></li>
+      <li><a href="/index.html#process">How it works</a></li>
+      <li><a href="/index.html#proof">Why us</a></li>
       <li><a href="/tag-editor/index.html" class="l-nav__cta">Design now</a></li>
     </ul>
   </nav>
@@ -40,6 +40,14 @@
       <h1 class="gallery-title">Choose Your Design</h1>
       <p class="gallery-sub">Each design is fully customizable with your names, date, and personal message.</p>
     </section>
+    <div class="gallery-tabs-wrapper">
+      <div class="gallery-tabs" id="galleryTabs">
+        <button class="gallery-tab active" data-category="wedding-tag">Wedding</button>
+        <button class="gallery-tab" data-category="baptism-tag">Baptism</button>
+        <button class="gallery-tab" data-category="christmas-tag">Christmas</button>
+        <!-- Future categories can be added here -->
+      </div>
+    </div>
     <div class="gallery-grid" id="galleryGrid">
       <div class="gallery-skeleton"></div>
       <div class="gallery-skeleton"></div>
@@ -50,12 +58,12 @@
   <footer class="l-footer">
     <a href="/" class="l-footer__brand">Heavenxent Keepsakes</a>
     <ul class="l-footer__links">
-      <li><a href="#products">Products</a></li>
-      <li><a href="#process">How it works</a></li>
-      <li><a href="/tag-editor/index.html">Design now</a></li>
+      <li><a href="/index.html#products">Products</a></li>
+      <li><a href="/index.html#process">How it works</a></li>
+      <li><a href="index.html">Design now</a></li>
       <li><a href="mailto:hello@heavenxentph.com">Contact</a></li>
     </ul>
-    <p class="l-footer__copy">2025 Heavenxent Keepsakes</p>
+    <p class="l-footer__copy">2026 Heavenxent Keepsakes</p>
   </footer>
 
   <script src="tag-renderer.js"></script>

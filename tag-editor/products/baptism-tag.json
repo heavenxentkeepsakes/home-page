@@ -1,0 +1,900 @@
+[
+  {
+    "id": "bt1",
+    "name": "Leafy Lullaby",
+    "description": "Soft dancing eucalyptus leaves frame your little one's name for a fresh, natural feel.",
+    "tagImage": "./baptism-img/tag1.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;500&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false
+      },
+      "name": {
+        "label": "Child's Name",
+        "x": "50%",
+        "y": "47%",
+        "width": "80%",
+        "alignment": "center",
+        "fontFamily": "Bebas Neue, sans-serif",
+        "fontSize": "3.5rem",
+        "fontWeight": "400",
+        "lineHeight": "1",
+        "maxLines": 1,
+        "letterSpacing": "0.15em",
+        "textTransform": "none",
+        "color": "#3a2e28",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1rem",
+        "ampCharacter": "",
+        "preset": {
+          "name1": "JOHN CARLO SANTOS",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": true,
+        "label": "Baptism Date",
+        "x": "50%",
+        "y": "67%",
+        "width": "85%",
+        "alignment": "center",
+        "fontFamily": "Barlow Condensed, sans-serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "500",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.12em",
+        "textTransform": "none",
+        "color": "#6a5a50",
+        "format": "MM | DD | YYYY"
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "71%",
+        "width": "85%",
+        "alignment": "center",
+        "fontFamily": "Barlow Condensed, sans-serif",
+        "fontSize": "0.9rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.1em",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "Thank you for joining us!"
+      }
+    }
+  },
+  {
+    "id": "bt2",
+    "name": "Skyward Grace",
+    "description": "A soft blue floral wreath encircling a classic cross, perfect for a baby boy's baptism.",
+    "tagImage": "./baptism-img/tag2.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Gilda+Display&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false
+      },
+      "name": {
+        "label": "Child's Name",
+        "x": "50%",
+        "y": "78%",
+        "width": "88%",
+        "alignment": "center",
+        "fontFamily": "Gilda Display, serif",
+        "fontSize": "1.5rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "maxLines": 1,
+        "letterSpacing": "0.1em",
+        "textTransform": "none",
+        "color": "#3a2e28",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1.5rem",
+        "ampCharacter": "",
+        "preset": {
+          "name1": "JOHN CARLO",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": true,
+        "label": "Baptism Date",
+        "x": "50%",
+        "y": "84%",
+        "width": "88%",
+        "alignment": "center",
+        "fontFamily": "Gilda Display, serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.1em",
+        "textTransform": "none",
+        "color": "#6a5a50",
+        "format": "DD / MM / YYYY"
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "88%",
+        "width": "78%",
+        "alignment": "center",
+        "fontFamily": "Gilda Display, serif",
+        "fontSize": "0.7rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.08em",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "Thank you for celebrating the baptism of our little one!"
+      }
+    }
+  },
+  {
+    "id": "bt3",
+    "name": "Blushing Grace",
+    "description": "A sweet pink floral wreath framing a timeless cross, designed for a baby girl's baptism.",
+    "tagImage": "./baptism-img/tag3.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Cinzel&family=Lora&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false
+      },
+      "name": {
+        "label": "Child's Name",
+        "x": "50%",
+        "y": "78%",
+        "width": "88%",
+        "alignment": "center",
+        "fontFamily": "Cinzel, serif",
+        "fontSize": "1.6rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "maxLines": 2,
+        "letterSpacing": "0.1em",
+        "textTransform": "none",
+        "color": "#7a5f7b",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1rem",
+        "ampCharacter": "",
+        "preset": {
+          "name1": "SOPHIA JEAN",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": true,
+        "label": "Baptism Date",
+        "x": "50%",
+        "y": "84%",
+        "width": "86%",
+        "alignment": "center",
+        "fontFamily": "Lora, serif",
+        "fontSize": "0.9rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.12em",
+        "textTransform": "none",
+        "color": "#735e59",
+        "format": "MMMM DD, YYYY"
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "88%",
+        "width": "78%",
+        "alignment": "center",
+        "fontFamily": "Lora, serif",
+        "fontSize": "0.75rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "textTransform": "none",
+        "color": "#735e59",
+        "defaultValue": "Thank you for celebrating the baptism of our little one!"
+      }
+    }
+  },
+  {
+    "id": "bt4",
+    "name": "Blueberry Sky",
+    "description": "Dreamy watercolor clouds and a cute photo slot to highlight your favorite little face.",
+    "tagImage": "./baptism-img/tag4.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400&family=Pinyon+Script&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": true,
+        "x": "50%",
+        "y": "58%",
+        "width": 180,
+        "height": 120,
+        "shape": "rectangle",
+        "borderColor": "#cad7e2",
+        "borderWidth": 5,
+        "defaultImage": "./baptism-img/baby-boy.jpg"
+      },
+      "name": {
+        "label": "Child's Name",
+        "x": "50%",
+        "y": "42%",
+        "width": "67%",
+        "alignment": "center",
+        "fontFamily": "Literata, serif",
+        "fontSize": "1.7rem",
+        "fontWeight": "400",
+        "lineHeight": "1.2",
+        "maxLines": 2,
+        "letterSpacing": "0.08em",
+        "textTransform": "none",
+        "color": "#1d4d69",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1.0625rem",
+        "ampCharacter": "",
+        "preset": {
+          "name1": "John Carlo Santos",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": true,
+        "label": "Baptism Date",
+        "x": "50%",
+        "y": "88%",
+        "width": "87%",
+        "alignment": "center",
+        "fontFamily": "Literata, serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.05em",
+        "textTransform": "none",
+        "color": "#1d4d69",
+        "format": "DD MMMM, YYYY"
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "24%",
+        "width": "50%",
+        "alignment": "center",
+        "fontFamily": "Pinyon Script, cursive",
+        "fontSize": "1.2rem",
+        "fontWeight": "400",
+        "lineHeight": "1.3",
+        "textTransform": "none",
+        "color": "#1d4d69",
+        "defaultValue": "Thank you for being part of my Christening day."
+      }
+    }
+  },
+  {
+    "id": "bt5",
+    "name": "Petal Princess",
+    "description": "A bright arch of rosy garden flowers and a golden cross for a sweet spring celebration.",
+    "tagImage": "./baptism-img/tag5.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inria+Serif&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": true,
+        "x": "51%",
+        "y": "35%",
+        "width": 155,
+        "height": 155,
+        "shape": "circle",
+        "borderColor": "#c4956a",
+        "borderWidth": 2,
+        "defaultImage": "./baptism-img/baby-girl.jpg"
+      },
+      "name": {
+        "label": "Child's Name",
+        "x": "50%",
+        "y": "72%",
+        "width": "85%",
+        "alignment": "center",
+        "fontFamily": "Great Vibes, cursive",
+        "fontSize": "2rem",
+        "fontWeight": "400",
+        "lineHeight": "1.25",
+        "maxLines": 2,
+        "letterSpacing": "0em",
+        "textTransform": "none",
+        "color": "#d38f8b",
+        "ampColor": "#ffffff",
+        "ampFontSize": "1.5rem",
+        "ampCharacter": "",
+        "preset": {
+          "name1": "Sophia Jean",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": true,
+        "label": "Baptism Date",
+        "x": "50%",
+        "y": "83%",
+        "width": "80%",
+        "alignment": "center",
+        "fontFamily": "Inria Serif, serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.1em",
+        "textTransform": "none",
+        "color": "#323131",
+        "format": "DD MMMM, YYYY"
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "22%",
+        "width": "50%",
+        "alignment": "center",
+        "fontFamily": "Inria Serif, serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "textTransform": "uppercase",
+        "color": "#323131",
+        "defaultValue": "thank you for attending the christening of"
+      }
+    }
+  },
+  {
+    "id": "bt6",
+    "name": "Honey Bear Hugs",
+    "description": "Cuddly teddy bears and golden accents to highlight your \"berry\" cute little one.",
+    "tagImage": "./baptism-img/tag6.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Petit+Formal+Script&family=Source+Serif+4&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": true,
+        "x": "50%",
+        "y": "14%",
+        "width": 200,
+        "height": 200,
+        "shape": "circle",
+        "borderColor": "#ffffff",
+        "borderWidth": 0,
+        "defaultImage": "./baptism-img/baby-boy.jpg"
+      },
+      "name": {
+        "label": "Child's Name",
+        "x": "50%",
+        "y": "58%",
+        "width": "84%",
+        "alignment": "center",
+        "fontFamily": "Petit Formal Script, cursive",
+        "fontSize": "1.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "maxLines": 1,
+        "letterSpacing": "0em",
+        "textTransform": "none",
+        "color": "#3a2e28",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1rem",
+        "ampCharacter": "",
+        "preset": {
+          "name1": "John Carlo",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": true,
+        "label": "Baptism Date",
+        "x": "50%",
+        "y": "67%",
+        "width": "84%",
+        "alignment": "center",
+        "fontFamily": "Source Serif 4, serif",
+        "fontSize": "0.9rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.1em",
+        "textTransform": "none",
+        "color": "#6a5a50",
+        "format": "MM · DD · YYYY"
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "70%",
+        "y": "75%",
+        "width": "45%",
+        "alignment": "center",
+        "fontFamily": "Petit Formal Script, cursive",
+        "fontSize": "0.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.6",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "Thank you for coming to our son's 1st Birthday and Christening!"
+      }
+    }
+  },
+  {
+    "id": "bt7",
+    "name": "Sun-Kissed Meadow",
+    "description": "Golden etched wildflowers that feel like a warm, peaceful afternoon in a summer field.",
+    "tagImage": "./baptism-img/tag7.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Tangerine:wght@700&family=Roboto+Condensed&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false
+      },
+      "name": {
+        "label": "Child's Name",
+        "x": "90%",
+        "y": "39%",
+        "width": "62%",
+        "alignment": "right",
+        "fontFamily": "Tangerine, cursive",
+        "fontSize": "2.2rem",
+        "fontWeight": "700",
+        "lineHeight": "1",
+        "maxLines": 2,
+        "letterSpacing": "0.05em",
+        "textTransform": "none",
+        "color": "#927e57",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1.3125rem",
+        "ampCharacter": "",
+        "preset": {
+          "name1": "Sophia Jean Ramos",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": true,
+        "label": "Baptism Date",
+        "x": "90%",
+        "y": "58%",
+        "width": "82%",
+        "alignment": "right",
+        "fontFamily": "Roboto Condensed, sans-serif",
+        "fontSize": "0.9rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.12em",
+        "textTransform": "none",
+        "color": "#6a5a50",
+        "format": "YYYY-MM-DD"
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "90%",
+        "y": "24%",
+        "width": "40%",
+        "alignment": "right",
+        "fontFamily": "Roboto Condensed, sans-serif",
+        "fontSize": "1rem",
+        "fontWeight": "400",
+        "lineHeight": "1.2",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "Thank you for witnessing the baptism of"
+      }
+    }
+  },
+  {
+    "id": "bt8",
+    "name": "Picture Perfect",
+    "description": "A clean, modern layout that lets your baby's biggest smile take the center stage.",
+    "tagImage": "./baptism-img/tag8.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Parisienne&family=Montserrat&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": true,
+        "x": "50%",
+        "y": "35%",
+        "width": 220,
+        "height": 150,
+        "shape": "rectangle",
+        "borderColor": "#ffffff",
+        "borderWidth": 0,
+        "defaultImage": "./baptism-img/baby-boy.jpg"
+      },
+      "name": {
+        "label": "Child's Name",
+        "x": "50%",
+        "y": "72%",
+        "width": "65%",
+        "alignment": "center",
+        "fontFamily": "Parisienne, cursive",
+        "fontSize": "2.2rem",
+        "fontWeight": "400",
+        "lineHeight": "1",
+        "maxLines": 2,
+        "letterSpacing": "0em",
+        "textTransform": "none",
+        "color": "#57603c",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1.3125rem",
+        "ampCharacter": "",
+        "preset": {
+          "name1": "John Carlo Santos",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": true,
+        "label": "Baptism Date",
+        "x": "50%",
+        "y": "90%",
+        "width": "85%",
+        "alignment": "center",
+        "fontFamily": "Montserrat, sans-serif",
+        "fontSize": "0.9rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.15em",
+        "textTransform": "none",
+        "color": "#57603c",
+        "format": "DD / MM / YYYY"
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "17%",
+        "width": "65%",
+        "alignment": "center",
+        "fontFamily": "Parisienne, cursive",
+        "fontSize": "1.4rem",
+        "fontWeight": "400",
+        "lineHeight": "1.2",
+        "textTransform": "none",
+        "color": "#57603c",
+        "defaultValue": "Welcome to the Christian World!"
+      }
+    }
+  },
+  {
+    "id": "bt9",
+    "name": "Rainbow Trumpet",
+    "description": "A joyful blue elephant sitting atop a rainbow to celebrate your \"ton\" of joy.",
+    "tagImage": "./baptism-img/tag9.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Srisakdi&family=Cormorant+Garamond&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false,
+        "x": "50%",
+        "y": "25%",
+        "width": 180,
+        "height": 180,
+        "shape": "circle",
+        "borderColor": "#c4956a",
+        "borderWidth": 3,
+        "defaultImage": ""
+      },
+      "name": {
+        "label": "Child's Name",
+        "x": "50%",
+        "y": "39%",
+        "width": "86%",
+        "alignment": "center",
+        "fontFamily": "Srisakdi, cursive",
+        "fontSize": "2.3rem",
+        "fontWeight": "400",
+        "lineHeight": "1.1",
+        "maxLines": 2,
+        "letterSpacing": "0",
+        "textTransform": "none",
+        "color": "#368ab9",
+        "ampColor": "#c4956a",
+        "ampFontSize": "0.875rem",
+        "ampCharacter": "",
+        "preset": {
+          "name1": "John Carlo Santos",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": true,
+        "label": "Baptism Date",
+        "x": "50%",
+        "y": "57%",
+        "width": "86%",
+        "alignment": "center",
+        "fontFamily": "Cormorant Garamond, serif",
+        "fontSize": "1rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.12em",
+        "textTransform": "none",
+        "color": "#6a5a50",
+        "format": "MM | DD | YYYY"
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "25%",
+        "width": "60%",
+        "alignment": "center",
+        "fontFamily": "Cormorant Garamond, serif",
+        "fontSize": "1rem",
+        "fontWeight": "400",
+        "lineHeight": "1.1",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "We are so grateful you could join us for the baptism of our child."
+      }
+    }
+  },
+  {
+    "id": "bt10",
+    "name": "Balloon Adventure",
+    "description": "Floating pink balloons and a sleepy cub taking a trip to the clouds.",
+    "tagImage": "./baptism-img/tag10.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Alegreya&family=Open+Sans&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": true,
+        "x": "50%",
+        "y": "43%",
+        "width": 157,
+        "height": 157,
+        "shape": "circle",
+        "borderColor": "#c4956a",
+        "borderWidth": 0,
+        "defaultImage": "./baptism-img/baby-girl.jpg"
+      },
+      "name": {
+        "label": "Child's Name",
+        "x": "50%",
+        "y": "77%",
+        "width": "84%",
+        "alignment": "center",
+        "fontFamily": "Alegreya, serif",
+        "fontSize": "2rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "maxLines": 1,
+        "letterSpacing": "0.05em",
+        "textTransform": "none",
+        "color": "#3a2e28",
+        "ampColor": "#57603c",
+        "ampFontSize": "1.5rem",
+        "ampCharacter": "",
+        "preset": {
+          "name1": "SOPHIA JEAN",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": true,
+        "label": "Baptism Date",
+        "x": "50%",
+        "y": "85%",
+        "width": "84%",
+        "alignment": "center",
+        "fontFamily": "Open Sans, sans-serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.12em",
+        "textTransform": "uppercase",
+        "color": "#6a5a50",
+        "format": "MMMM DD, YYYY"
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "89%",
+        "width": "64%",
+        "alignment": "center",
+        "fontFamily": "Open Sans, sans-serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.2",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "Thank you for joining in our special day of baptism."
+      }
+    }
+  },
+  {
+    "id": "bt11",
+    "name": "Butterfly Wishes",
+    "description": "Lavender wings and golden stars for a magical design as sweet as a butterfly kiss.",
+    "tagImage": "./baptism-img/tag11.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Glass+Antiqua&family=Noto+Sans+JP&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": true,
+        "x": "50%",
+        "y": "23.7%",
+        "width": 177,
+        "height": 220,
+        "shape": "oval",
+        "borderColor": "#c4956a",
+        "borderWidth": 0,
+        "defaultImage": "./baptism-img/baby-girl.jpg"
+      },
+      "name": {
+        "label": "Child's Name",
+        "x": "50%",
+        "y": "71%",
+        "width": "65%",
+        "alignment": "center",
+        "fontFamily": "Glass Antiqua, serif",
+        "fontSize": "1.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1",
+        "maxLines": 2,
+        "letterSpacing": "0.08em",
+        "textTransform": "none",
+        "color": "#3a2e28",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1rem",
+        "ampCharacter": "",
+        "preset": {
+          "name1": "Sophia Jean Ramos",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": true,
+        "label": "Baptism Date",
+        "x": "50%",
+        "y": "85%",
+        "width": "84%",
+        "alignment": "center",
+        "fontFamily": "Noto Sans JP, sans-serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.1em",
+        "textTransform": "none",
+        "color": "#6a5a50",
+        "format": "YYYY-MM-DD"
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "89%",
+        "width": "70%",
+        "alignment": "center",
+        "fontFamily": "Noto Sans JP, sans-serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.5",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "Much love for sharing in our special baptism day"
+      }
+    }
+  },
+  {
+    "id": "bt12",
+    "name": "Boho Sands",
+    "description": "Peaceful pampas grass and soft palm fronds in a beautiful, trendy terracotta palette.",
+    "tagImage": "./baptism-img/tag12.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Pacifico&family=Pompiere&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false
+      },
+      "name": {
+        "label": "Child's Name",
+        "x": "50%",
+        "y": "35%",
+        "width": "70%",
+        "alignment": "center",
+        "fontFamily": "Pacifico, cursive",
+        "fontSize": "2rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "maxLines": 2,
+        "letterSpacing": "0",
+        "textTransform": "none",
+        "color": "#7b4628",
+        "ampColor": "#7b4628",
+        "ampFontSize": "1rem",
+        "ampCharacter": "",
+        "preset": {
+          "name1": "Sophia Jean Santos",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": true,
+        "label": "Baptism Date",
+        "x": "50%",
+        "y": "57%",
+        "width": "82%",
+        "alignment": "center",
+        "fontFamily": "Pompiere, cursive",
+        "fontSize": "0.9rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.08em",
+        "textTransform": "none",
+        "color": "#6a5a50",
+        "format": "DD MMMM, YYYY"
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "68%",
+        "width": "52%",
+        "alignment": "center",
+        "fontFamily": "Pompiere, cursive",
+        "fontSize": "1rem",
+        "fontWeight": "400",
+        "lineHeight": "1.2",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "We are grateful for your love and time in celebrating this baptism!."
+      }
+    }
+  }
+]
