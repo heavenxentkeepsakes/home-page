@@ -820,6 +820,10 @@ body::after {
   padding: 52px 44px;
 }
 
+.l-product--alternate {
+  background-color: var(--parchment);
+}
+
 .l-product--dim {
   opacity: 0.65;
   cursor: default;
