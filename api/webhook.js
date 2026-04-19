@@ -109,9 +109,25 @@ function verifyPayMongoSignature(req, rawBody) {
 
 // ✅ NEW: Move file from temp folder to final folder after payment
 async function moveFileToFinalFolder(fileId, finalFolderId) {
+  console.log(`🔍 moveFileToFinalFolder called with fileId: "${fileId}"`);
+  console.log(`🔍 finalFolderId: "${finalFolderId}"`);
+
   try {
     const auth = getDriveAuth();
     const drive = google.drive({ version: "v3", auth });
+
+    // First check if file exists
+    try {
+      const fileCheck = await drive.files.get({
+        fileId: fileId,
+        fields: 'id, name, parents'
+      });
+      console.log(`✅ File exists! Name: ${fileCheck.data.name}, Parents: ${fileCheck.data.parents}`);
+    } catch (err) {
+      console.error(`❌ File ${fileId} does not exist or is not accessible`);
+      console.error(`Error details: ${err.message}`);
+      return false;
+    }
 
     // Get current parents
     const file = await drive.files.get({
@@ -120,9 +136,10 @@ async function moveFileToFinalFolder(fileId, finalFolderId) {
     });
 
     const previousParents = file.data.parents || [];
+    console.log(`📁 Current parents: ${previousParents.join(', ')}`);
 
     // Move to final folder
-    await drive.files.update({
+    const updateResult = await drive.files.update({
       fileId: fileId,
       addParents: finalFolderId,
       removeParents: previousParents.join(','),
@@ -130,9 +147,30 @@ async function moveFileToFinalFolder(fileId, finalFolderId) {
     });
 
     console.log(`✅ Moved file ${fileId} to final folder`);
+    console.log(`📁 New parents: ${updateResult.data.parents}`);
     return true;
   } catch (err) {
     console.error("❌ Failed to move file:", err.message);
+    console.error("❌ Full error:", err);
+    return false;
+  }
+}
+
+// ✅ Check if file is already in the correct folder
+async function isFileInFolder(fileId, folderId) {
+  try {
+    const auth = getDriveAuth();
+    const drive = google.drive({ version: "v3", auth });
+
+    const file = await drive.files.get({
+      fileId: fileId,
+      fields: 'parents'
+    });
+
+    const parents = file.data.parents || [];
+    return parents.includes(folderId);
+  } catch (err) {
+    console.error("Error checking file folder:", err.message);
     return false;
   }
 }
@@ -247,12 +285,22 @@ export default async function handler(req, res) {
     const paymentData = event.data.attributes.data.attributes;
     const metadata = paymentData.metadata || {};
 
+    // 🔍 DEBUG: Log full metadata
+    console.log("=== FULL METADATA RECEIVED ===");
+    console.log(JSON.stringify(metadata, null, 2));
+    console.log("==============================");
+
     // Pull from PayMongo billing first, metadata as fallback
     const email = paymentData.billing?.email || metadata.email;
     const name = paymentData.billing?.name || metadata.name || "Customer";
     const type = metadata.type || "PDF";
     const tempFileId = metadata.tempFileId; // ✅ NEW: Get temp file ID
     const fileName = metadata.fileName;
+
+    // 🔍 DEBUG: Log the extracted tempFileId
+    console.log(`📁 Extracted tempFileId from metadata: "${tempFileId}"`);
+    console.log(`📁 Type of tempFileId: ${typeof tempFileId}`);
+
     const amount = type === "PDF" ? "₱149" : "₱199";
     const ref = metadata.ref || `${type}-${Date.now()}`;
     const date = new Date().toLocaleString("en-PH", { timeZone: "Asia/Manila" });
@@ -263,7 +311,7 @@ export default async function handler(req, res) {
     console.log("🔑 Reference:", ref);
     console.log("📁 Temp file ID:", tempFileId);
 
-    // ✅ NEW: Move file from temp folder to final folder
+     // ✅ NEW: Move file from temp folder to final folder
     let finalFileUrl = null;
 
     if (tempFileId) {
@@ -272,18 +320,33 @@ export default async function handler(req, res) {
         : process.env.GOOGLE_DRIVE_FOLDER_ID_PRINT;
 
       if (finalFolderId) {
-        const moved = await moveFileToFinalFolder(tempFileId, finalFolderId);
-        if (moved) {
+        // First check if file is already in the final folder
+        const alreadyInFinal = await isFileInFolder(tempFileId, finalFolderId);
+        
+        if (alreadyInFinal) {
+          console.log(`✅ File ${tempFileId} is already in final folder`);
           finalFileUrl = `https://drive.google.com/file/d/${tempFileId}/view`;
-          console.log("✅ File moved to final folder and URL generated");
         } else {
-          console.warn("⚠️ Failed to move file, but continuing with existing URL if available");
-          // Fallback to metadata URL if move fails
-          finalFileUrl = metadata.driveFileUrl || null;
+          // Try to move it
+          const moved = await moveFileToFinalFolder(tempFileId, finalFolderId);
+          if (moved) {
+            finalFileUrl = `https://drive.google.com/file/d/${tempFileId}/view`;
+            console.log("✅ File moved to final folder and URL generated");
+          } else {
+            console.warn("⚠️ Failed to move file, using existing URL if available");
+            // Fallback to metadata URL if move fails
+            finalFileUrl = metadata.driveFileUrl || null;
+            
+            // If still no URL, use temp folder URL (file might be accessible anyway)
+            if (!finalFileUrl) {
+              finalFileUrl = `https://drive.google.com/file/d/${tempFileId}/view`;
+              console.log("⚠️ Using temp folder URL as fallback");
+            }
+          }
         }
       } else {
         console.warn("⚠️ No final folder configured, using temp file URL");
-        finalFileUrl = metadata.driveFileUrl || `https://drive.google.com/file/d/${tempFileId}/view`;
+        finalFileUrl = `https://drive.google.com/file/d/${tempFileId}/view`;
       }
     } else {
       // Fallback to existing logic for backward compatibility
