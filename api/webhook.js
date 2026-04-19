@@ -4,7 +4,7 @@ import crypto from "crypto";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// ✅ SWITCH TO SERVICE ACCOUNT (no more expired tokens!)
+// Google Auth for Sheets
 function getGoogleAuth() {
   return new google.auth.GoogleAuth({
     scopes: ['https://www.googleapis.com/auth/spreadsheets'],
@@ -15,19 +15,7 @@ function getGoogleAuth() {
   });
 }
 
-// ✅ NEW: Get Drive auth for moving files
-function getDriveAuth() {
-  return new google.auth.GoogleAuth({
-    scopes: ['https://www.googleapis.com/auth/drive'],
-    credentials: {
-      client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-      private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    },
-  });
-}
-
-// ✅ NEW: Verify PayMongo webhook signature
-// ✅ FIXED: Verify PayMongo webhook signature (matches actual PayMongo format)
+// Verify PayMongo webhook signature
 function verifyPayMongoSignature(req, rawBody) {
   const signatureHeader = req.headers['paymongo-signature'];
   const webhookSecret = process.env.PAYMONGO_WEBHOOK_SECRET;
@@ -38,7 +26,6 @@ function verifyPayMongoSignature(req, rawBody) {
   }
 
   try {
-    // Parse the header: "t=123456,te=abcdef,li="
     const parts = signatureHeader.split(',');
     let timestamp = null;
     let signature = null;
@@ -53,29 +40,18 @@ function verifyPayMongoSignature(req, rawBody) {
 
     if (!timestamp || !signature) {
       console.error("❌ Invalid signature header format");
-      console.log("Parsed - timestamp:", timestamp, "signature exists:", !!signature);
       return false;
     }
 
-    console.log("✅ Parsed signature - timestamp:", timestamp);
-    console.log("✅ Parsed signature - first 20 chars:", signature.substring(0, 20) + "...");
-
-    // Create the signed payload: timestamp + "." + raw body
     const signedPayload = `${timestamp}.${rawBody}`;
-
-    // Compute expected signature
     const expectedSignature = crypto
       .createHmac('sha256', webhookSecret)
       .update(signedPayload)
       .digest('hex');
 
-    console.log("Expected signature - first 20 chars:", expectedSignature.substring(0, 20) + "...");
-
-    // Compare signatures
     const signatureBuffer = Buffer.from(signature, 'hex');
     const expectedBuffer = Buffer.from(expectedSignature, 'hex');
 
-    // Check lengths match
     if (signatureBuffer.length !== expectedBuffer.length) {
       console.error("❌ Signature length mismatch");
       return false;
@@ -83,7 +59,6 @@ function verifyPayMongoSignature(req, rawBody) {
 
     const isValid = crypto.timingSafeEqual(signatureBuffer, expectedBuffer);
 
-    // Check timestamp is within 5 minutes
     const now = Math.floor(Date.now() / 1000);
     const timestampNum = parseInt(timestamp);
     const timeDiff = Math.abs(now - timestampNum);
@@ -94,121 +69,19 @@ function verifyPayMongoSignature(req, rawBody) {
     }
 
     if (isValid) {
-      console.log("✅ Webhook signature verified successfully");
+      console.log("✅ Webhook signature verified");
     } else {
-      console.error("❌ Invalid webhook signature - hash mismatch");
+      console.error("❌ Invalid webhook signature");
     }
 
     return isValid;
-
   } catch (err) {
     console.error("❌ Signature verification error:", err.message);
     return false;
   }
 }
 
-// ✅ FIXED: Move file from temp folder to final folder after payment
-async function moveFileToFinalFolder(fileId, finalFolderId) {
-  console.log(`🔍 Attempting to move file ${fileId} to folder ${finalFolderId}`);
-
-  try {
-    const auth = getDriveAuth();
-    const drive = google.drive({ version: "v3", auth });
-
-    // First, verify the file exists and get its current parents
-    const file = await drive.files.get({
-      fileId: fileId,
-      fields: 'id, name, parents'
-    });
-
-    console.log(`✅ File found: ${file.data.name}`);
-    console.log(`📁 Current parents: ${file.data.parents || []}`);
-
-    // Get the current parent (temp folder)
-    const currentParents = file.data.parents || [];
-
-    // Remove from ALL current parents and add to final folder
-    // This is more reliable than removeParents with comma-separated string
-    for (const parentId of currentParents) {
-      await drive.files.update({
-        fileId: fileId,
-        removeParents: parentId,
-        fields: 'id, parents'
-      });
-      console.log(`📁 Removed from parent: ${parentId}`);
-    }
-
-    // Add to final folder
-    const updated = await drive.files.update({
-      fileId: fileId,
-      addParents: finalFolderId,
-      fields: 'id, parents'
-    });
-
-    console.log(`✅ File moved successfully!`);
-    console.log(`📁 New parents: ${updated.data.parents}`);
-
-    return true;
-
-  } catch (err) {
-    console.error("❌ Failed to move file:", err.message);
-    console.error("❌ Error details:", err);
-
-    // Try alternative method: copy and delete
-    console.log("🔄 Trying alternative method: copy to final folder...");
-    try {
-      const auth = getDriveAuth();
-      const drive = google.drive({ version: "v3", auth });
-
-      // Copy the file to final folder
-      const copy = await drive.files.copy({
-        fileId: fileId,
-        requestBody: {
-          parents: [finalFolderId]
-        }
-      });
-
-      console.log(`✅ File copied to final folder with ID: ${copy.data.id}`);
-
-      // Delete the original from temp folder
-      await drive.files.delete({
-        fileId: fileId
-      });
-
-      console.log(`✅ Original file deleted from temp folder`);
-
-      // Update the tempFileId reference (though we can't update PayMongo metadata)
-      console.log(`⚠️ Note: New file ID is ${copy.data.id}, but PayMongo metadata still has old ID`);
-      console.log(`⚠️ Customer will still get correct URL because Drive link works for both`);
-
-      return true;
-    } catch (copyErr) {
-      console.error("❌ Alternative method also failed:", copyErr.message);
-      return false;
-    }
-  }
-}
-
-// ✅ Check if file is already in the correct folder
-async function isFileInFolder(fileId, folderId) {
-  try {
-    const auth = getDriveAuth();
-    const drive = google.drive({ version: "v3", auth });
-
-    const file = await drive.files.get({
-      fileId: fileId,
-      fields: 'parents'
-    });
-
-    const parents = file.data.parents || [];
-    return parents.includes(folderId);
-  } catch (err) {
-    console.error("Error checking file folder:", err.message);
-    return false;
-  }
-}
-
-// ✅ NEW: Check if payment already processed (prevents duplicates)
+// Check if payment already processed (prevents duplicates)
 async function isPaymentAlreadyProcessed(paymentId) {
   try {
     const auth = getGoogleAuth();
@@ -216,15 +89,13 @@ async function isPaymentAlreadyProcessed(paymentId) {
 
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: process.env.GOOGLE_SHEETS_ID,
-      range: "Sheet1!G:G", // Column G stores payment_id
+      range: "Sheet1!H:H",
     });
 
     const rows = response.data.values || [];
-    // Check if payment_id already exists
     return rows.some(row => row[0] === paymentId);
   } catch (err) {
     console.error("⚠️ Error checking for duplicate payment:", err.message);
-    // If we can't check, assume not processed to avoid blocking legitimate payments
     return false;
   }
 }
@@ -236,7 +107,6 @@ async function logToSheets({ date, name, email, type, amount, driveUrl, ref, pay
 
     console.log("📊 Using Spreadsheet ID:", process.env.GOOGLE_SHEETS_ID);
 
-    // Optional: Verify access to spreadsheet first
     try {
       await sheets.spreadsheets.get({
         spreadsheetId: process.env.GOOGLE_SHEETS_ID,
@@ -249,7 +119,7 @@ async function logToSheets({ date, name, email, type, amount, driveUrl, ref, pay
 
     await sheets.spreadsheets.values.append({
       spreadsheetId: process.env.GOOGLE_SHEETS_ID,
-      range: "Sheet1!A:H", // Added H column for payment_id
+      range: "Sheet1!A:H",
       valueInputOption: "USER_ENTERED",
       requestBody: {
         values: [[date, name, email, type, amount, driveUrl, ref, paymentId]],
@@ -262,31 +132,16 @@ async function logToSheets({ date, name, email, type, amount, driveUrl, ref, pay
     console.error("⚠️ Google Sheets logging failed:", err.message);
     console.error("⚠️ Error code:", err.code);
     console.error("⚠️ Error status:", err.status);
-    console.error("⚠️ Spreadsheet ID used:", process.env.GOOGLE_SHEETS_ID);
     return false;
   }
 }
 
 export default async function handler(req, res) {
   console.log("🔥 Webhook hit");
-  console.log("📝 Headers:", JSON.stringify(req.headers, null, 2));
 
-  // ✅ Get raw body for signature verification
   const rawBody = JSON.stringify(req.body);
 
-  // 🔍 DEBUG: Log everything to see what PayMongo is sending
-  console.log("=== WEBHOOK DEBUG START ===");
-  console.log("1. Raw body (first 500 chars):", rawBody.substring(0, 500));
-  console.log("2. paymongo-signature header:", req.headers['paymongo-signature']);
-  console.log("3. All header keys:", Object.keys(req.headers));
-  console.log("4. Any header with 'signature':", Object.keys(req.headers).filter(k => k.toLowerCase().includes('signature')));
-  console.log("5. PAYMONGO_WEBHOOK_SECRET exists:", !!process.env.PAYMONGO_WEBHOOK_SECRET);
-  console.log("=== WEBHOOK DEBUG END ===");
-
-  // ✅ Verify webhook signature
   const isValidSignature = verifyPayMongoSignature(req, rawBody);
-  console.log("🔍 Signature valid result:", isValidSignature);
-
   if (!isValidSignature && process.env.NODE_ENV === "production") {
     console.error("❌ Invalid webhook signature - rejecting request");
     return res.status(401).json({ error: "Invalid signature" });
@@ -305,10 +160,9 @@ export default async function handler(req, res) {
       return res.status(200).json({ received: true });
     }
 
-    const paymentId = event.data.id; // ✅ NEW: Get payment ID for duplicate check
+    const paymentId = event.data.id;
     console.log("💰 Processing payment ID:", paymentId);
 
-    // ✅ NEW: Check for duplicate webhook
     const alreadyProcessed = await isPaymentAlreadyProcessed(paymentId);
     if (alreadyProcessed) {
       console.log(`⚠️ Payment ${paymentId} already processed, skipping duplicate webhook`);
@@ -318,22 +172,11 @@ export default async function handler(req, res) {
     const paymentData = event.data.attributes.data.attributes;
     const metadata = paymentData.metadata || {};
 
-    // 🔍 DEBUG: Log full metadata
-    console.log("=== FULL METADATA RECEIVED ===");
-    console.log(JSON.stringify(metadata, null, 2));
-    console.log("==============================");
-
-    // Pull from PayMongo billing first, metadata as fallback
     const email = paymentData.billing?.email || metadata.email;
     const name = paymentData.billing?.name || metadata.name || "Customer";
     const type = metadata.type || "PDF";
-    const tempFileId = metadata.tempFileId; // ✅ NEW: Get temp file ID
-    const fileName = metadata.fileName;
-
-    // 🔍 DEBUG: Log the extracted tempFileId
-    console.log(`📁 Extracted tempFileId from metadata: "${tempFileId}"`);
-    console.log(`📁 Type of tempFileId: ${typeof tempFileId}`);
-
+    const driveFileUrl = metadata.driveFileUrl;
+    const driveFileId = metadata.driveFileId;
     const amount = type === "PDF" ? "₱149" : "₱199";
     const ref = metadata.ref || `${type}-${Date.now()}`;
     const date = new Date().toLocaleString("en-PH", { timeZone: "Asia/Manila" });
@@ -342,55 +185,20 @@ export default async function handler(req, res) {
     console.log("👤 Customer name:", name);
     console.log("📦 Order type:", type);
     console.log("🔑 Reference:", ref);
-    console.log("📁 Temp file ID:", tempFileId);
 
-    // ✅ NEW: Move file from temp folder to final folder
-    let finalFileUrl = null;
-
-    if (tempFileId) {
-      const finalFolderId = type === "PDF"
-        ? process.env.GOOGLE_DRIVE_FOLDER_ID
-        : process.env.GOOGLE_DRIVE_FOLDER_ID_PRINT;
-
-      if (finalFolderId) {
-        // First check if file is already in the final folder
-        const alreadyInFinal = await isFileInFolder(tempFileId, finalFolderId);
-
-        if (alreadyInFinal) {
-          console.log(`✅ File ${tempFileId} is already in final folder`);
-          finalFileUrl = `https://drive.google.com/file/d/${tempFileId}/view`;
-        } else {
-          // Try to move it
-          const moved = await moveFileToFinalFolder(tempFileId, finalFolderId);
-          if (moved) {
-            finalFileUrl = `https://drive.google.com/file/d/${tempFileId}/view`;
-            console.log("✅ File moved to final folder and URL generated");
-          } else {
-            console.warn("⚠️ Failed to move file, using existing URL if available");
-            // Fallback to metadata URL if move fails
-            finalFileUrl = metadata.driveFileUrl || null;
-
-            // If still no URL, use temp folder URL (file might be accessible anyway)
-            if (!finalFileUrl) {
-              finalFileUrl = `https://drive.google.com/file/d/${tempFileId}/view`;
-              console.log("⚠️ Using temp folder URL as fallback");
-            }
-          }
-        }
-      } else {
-        console.warn("⚠️ No final folder configured, using temp file URL");
-        finalFileUrl = `https://drive.google.com/file/d/${tempFileId}/view`;
-      }
-    } else {
-      // Fallback to existing logic for backward compatibility
-      console.log("⚠️ No tempFileId found, using existing URL logic");
-      finalFileUrl = metadata.driveFileUrl;
-      if (!finalFileUrl && metadata.driveFileId) {
-        finalFileUrl = `https://drive.google.com/file/d/${metadata.driveFileId}/view`;
-      }
+    // Build Drive URL
+    let finalFileUrl = driveFileUrl;
+    if (!finalFileUrl && driveFileId) {
+      finalFileUrl = `https://drive.google.com/file/d/${driveFileId}/view`;
     }
 
-    // Log to Google Sheets with payment ID
+    if (finalFileUrl) {
+      console.log("✅ Drive URL ready:", finalFileUrl);
+    } else {
+      console.warn("⚠️ No Drive URL found in metadata");
+    }
+
+    // Log to Google Sheets
     await logToSheets({
       date,
       name,
@@ -399,10 +207,10 @@ export default async function handler(req, res) {
       amount,
       driveUrl: finalFileUrl || "N/A",
       ref,
-      paymentId, // ✅ NEW: Include payment ID
+      paymentId,
     });
 
-    // Send emails (YOUR EXISTING LOGIC - PRESERVED)
+    // Send emails
     if (email) {
       let customerSubject = "";
       let customerText = "";
@@ -413,7 +221,7 @@ export default async function handler(req, res) {
         customerText = finalFileUrl
           ? `Hi ${name},\n\nYour payment is confirmed and your wedding tag PDF is ready!\n\nDownload here:\n${finalFileUrl}\n\nThank you for your purchase 💖`
           : `Hi ${name},\n\nYour payment is confirmed! Your file is still processing and we will send your download link shortly.\n\nThank you 💖`;
-
+        
         customerHtml = finalFileUrl
           ? `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -444,7 +252,6 @@ export default async function handler(req, res) {
       }
 
       await Promise.all([
-        // Customer email
         resend.emails.send({
           from: "HeavenXent Keepsakes <no-reply@heavenxentph.com>",
           to: email,
@@ -452,8 +259,6 @@ export default async function handler(req, res) {
           text: customerText,
           html: customerHtml,
         }),
-
-        // Owner notification
         resend.emails.send({
           from: "HeavenXent Keepsakes <no-reply@heavenxentph.com>",
           to: "heavenxentkeepsakes@gmail.com",
@@ -487,6 +292,5 @@ export default async function handler(req, res) {
     console.error("❌ Webhook error:", err);
   }
 
-  // Always respond 200 to PayMongo
   return res.status(200).json({ received: true });
 }
