@@ -1,6 +1,7 @@
 {
   "name": "api-backend",
   "version": "1.0.0",
+  "type": "module",
   "dependencies": {
     "googleapis": "^144.0.0",
     "resend": "^4.0.0"
