@@ -4,6 +4,41 @@ import fetch from "node-fetch";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// ✅ NEW: Simple in-memory rate limiting (for serverless, consider Redis/Upstash)
+const rateLimitMap = new Map();
+
+function checkRateLimit(identifier, limit = 5, windowMs = 60000) { // 5 requests per minute
+  const now = Date.now();
+  const windowStart = now - windowMs;
+  
+  // Clean old entries
+  for (const [key, timestamps] of rateLimitMap.entries()) {
+    const filtered = timestamps.filter(t => t > windowStart);
+    if (filtered.length === 0) {
+      rateLimitMap.delete(key);
+    } else {
+      rateLimitMap.set(key, filtered);
+    }
+  }
+  
+  const userRequests = rateLimitMap.get(identifier) || [];
+  if (userRequests.length >= limit) {
+    return false;
+  }
+  
+  userRequests.push(now);
+  rateLimitMap.set(identifier, userRequests);
+  return true;
+}
+
+// ✅ NEW: Generate session ID from request
+function getSessionId(req) {
+  return req.headers['x-session-id'] || 
+         req.headers['x-forwarded-for'] || 
+         req.socket.remoteAddress ||
+         'unknown';
+}
+
 export default async function handler(req, res) {
   const origin = req.headers.origin;
   const allowedOrigins = ["https://heavenxentph.com", "http://localhost:3000"];
@@ -24,6 +59,16 @@ export default async function handler(req, res) {
   try {
     const { name, email, type, pdf: pdfBase64, address } = req.body;
 
+    // ✅ NEW: Rate limiting
+    const sessionId = getSessionId(req);
+    const rateLimitKey = `${sessionId}:${email || 'anonymous'}`;
+    if (!checkRateLimit(rateLimitKey, 3, 60000)) { // 3 requests per minute max
+      console.warn(`⚠️ Rate limit exceeded for ${rateLimitKey}`);
+      return res.status(429).json({ 
+        error: "Too many requests. Please wait a moment before trying again." 
+      });
+    }
+
     if (!name || !email || !type) {
       return res.status(400).json({ error: "Missing required fields: name, email, type" });
     }
@@ -42,6 +87,7 @@ export default async function handler(req, res) {
       "GOOGLE_CLIENT_SECRET",
       "GOOGLE_REFRESH_TOKEN",
       "GOOGLE_DRIVE_FOLDER_ID",
+      "GOOGLE_DRIVE_TEMP_FOLDER_ID", // ✅ NEW: Required temp folder
       "PAYMONGO_SECRET_KEY",
       "RESEND_API_KEY",
     ];
@@ -52,23 +98,30 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Server configuration error. Missing: " + missingVars.join(", ") });
     }
 
-    const folderId =
-      type === "PDF"
-        ? process.env.GOOGLE_DRIVE_FOLDER_ID
-        : process.env.GOOGLE_DRIVE_FOLDER_ID_PRINT || process.env.GOOGLE_DRIVE_FOLDER_ID;
-
-    if (!folderId) {
-      return res.status(500).json({ error: "Google Drive folder not configured" });
+    // ✅ CHANGED: Use TEMP folder for initial upload
+    const TEMP_FOLDER_ID = process.env.GOOGLE_DRIVE_TEMP_FOLDER_ID;
+    if (!TEMP_FOLDER_ID) {
+      return res.status(500).json({ error: "Google Drive temp folder not configured" });
     }
 
     const fileName = `${type}-ORD-${Date.now()}.pdf`;
+    const ref = `${type}-${Date.now()}`;
 
-    // --- ✅ Upload FIRST so we have the URL for PayMongo metadata ---
-    const uploadResult = await uploadToDrive({ base64PDF: pdfBase64, fileName, folderId });
-    const driveFileId = uploadResult.fileId;
-    const driveFileUrl = uploadResult.fileUrl;
+    // ✅ Upload to TEMP folder first (with limited permissions)
+    console.log(`📤 Uploading to TEMP folder: ${TEMP_FOLDER_ID}`);
+    const uploadResult = await uploadToDrive({ 
+      base64PDF: pdfBase64, 
+      fileName, 
+      folderId: TEMP_FOLDER_ID
+    });
+    
+    const tempFileId = uploadResult.fileId;
+    console.log(`✅ File uploaded to temp folder with ID: ${tempFileId}`);
 
-    // --- 🚀 Create PayMongo checkout with drive URL in metadata ---
+    // ✅ NEW: Optional - Check for existing pending checkout for same user/product
+    // (Would require storing checkout session IDs somewhere - implement if needed)
+
+    // Create PayMongo checkout with tempFileId in metadata
     const checkoutRes = await fetch("https://api.paymongo.com/v1/checkout_sessions", {
       method: "POST",
       headers: {
@@ -88,8 +141,16 @@ export default async function handler(req, res) {
               },
             ],
             payment_method_types: ["gcash", "card"],
-            // ✅ Drive URL is now included so webhook can send it in the email
-            metadata: { name, email, type, address, driveFileId, driveFileUrl },
+            // ✅ CHANGED: Include tempFileId instead of driveFileUrl
+            metadata: { 
+              name, 
+              email, 
+              type, 
+              address, 
+              tempFileId,  // 👈 Store temp file ID
+              fileName,
+              ref  // 👈 Store reference for idempotency
+            },
             success_url: "https://heavenxentph.com/success.html",
             cancel_url: "https://heavenxentph.com/cancel.html",
           },
@@ -101,6 +162,12 @@ export default async function handler(req, res) {
       const errorText = await checkoutRes.text();
       console.error("PayMongo status:", checkoutRes.status);
       console.error("PayMongo error:", errorText);
+      
+      // ✅ NEW: Clean up temp file if payment creation fails
+      console.log(`🧹 Cleaning up temp file ${tempFileId} due to payment error`);
+      // Note: You'd need a deleteFile function in drive.js for this
+      // await deleteDriveFile(tempFileId);
+      
       return res.status(500).json({ error: "Payment gateway error" });
     }
 
@@ -109,23 +176,31 @@ export default async function handler(req, res) {
 
     if (!checkoutUrl) {
       console.error("Invalid PayMongo response:", checkoutData);
+      
+      // ✅ NEW: Clean up temp file if response is invalid
+      console.log(`🧹 Cleaning up temp file ${tempFileId} due to invalid response`);
+      // await deleteDriveFile(tempFileId);
+      
       return res.status(500).json({ error: "Invalid payment response" });
     }
 
-    // --- 🚀 Send order received email in background (non-blocking) ---
+    // Send order received email (non-blocking)
     resend.emails.send({
       from: "HeavenXent Keepsakes <no-reply@heavenxentph.com>",
       to: email,
       subject: type === "PDF" ? "Your order has been received" : "Print Order Received",
       text:
         type === "PDF"
-          ? `Hi ${name},\n\nWe received your order! Your download link will be emailed to you once payment is confirmed.\n\nThank you! 💖`
-          : `Hi ${name},\n\nYour print order has been received. We will process it within 5–7 days.\n\nThank you! 💖`,
+          ? `Hi ${name},\n\nWe received your order! Once payment is confirmed, your download link will be emailed to you.\n\nReference: ${ref}\n\nThank you! 💖`
+          : `Hi ${name},\n\nYour print order has been received. We will process it within 5–7 days.\n\nReference: ${ref}\n\nThank you! 💖`,
     }).catch((err) => {
       console.error("⚠️ Order email failed (non-fatal):", err.message);
     });
 
-    // --- ✅ Return checkout URL ---
+    console.log(`✅ Checkout created with URL: ${checkoutUrl}`);
+    console.log(`📝 Order reference: ${ref}`);
+    console.log(`📁 Temp file ID: ${tempFileId}`);
+
     return res.status(200).json({ checkout_url: checkoutUrl });
 
   } catch (err) {

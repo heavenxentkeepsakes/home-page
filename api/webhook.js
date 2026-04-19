@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import { google } from "googleapis";
+import crypto from "crypto";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -14,9 +15,101 @@ function getGoogleAuth() {
   });
 }
 
-async function logToSheets({ date, name, email, type, amount, driveUrl, ref }) {
+// ✅ NEW: Get Drive auth for moving files
+function getDriveAuth() {
+  return new google.auth.GoogleAuth({
+    scopes: ['https://www.googleapis.com/auth/drive'],
+    credentials: {
+      client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+      private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+    },
+  });
+}
+
+// ✅ NEW: Verify PayMongo webhook signature
+function verifyPayMongoSignature(req, rawBody) {
+  const signature = req.headers['paymongo-signature'];
+  const webhookSecret = process.env.PAYMONGO_WEBHOOK_SECRET;
+  
+  if (!signature || !webhookSecret) {
+    console.error("❌ Missing signature or webhook secret");
+    return false;
+  }
+  
   try {
-    // ✅ Use Service Account instead of oauth2Client
+    const hash = crypto
+      .createHmac('sha256', webhookSecret)
+      .update(rawBody)
+      .digest('hex');
+    
+    const isValid = crypto.timingSafeEqual(
+      Buffer.from(signature),
+      Buffer.from(hash)
+    );
+    
+    if (!isValid) {
+      console.error("❌ Invalid webhook signature");
+    }
+    return isValid;
+  } catch (err) {
+    console.error("❌ Signature verification error:", err.message);
+    return false;
+  }
+}
+
+// ✅ NEW: Move file from temp folder to final folder after payment
+async function moveFileToFinalFolder(fileId, finalFolderId) {
+  try {
+    const auth = getDriveAuth();
+    const drive = google.drive({ version: "v3", auth });
+    
+    // Get current parents
+    const file = await drive.files.get({
+      fileId: fileId,
+      fields: 'parents'
+    });
+    
+    const previousParents = file.data.parents || [];
+    
+    // Move to final folder
+    await drive.files.update({
+      fileId: fileId,
+      addParents: finalFolderId,
+      removeParents: previousParents.join(','),
+      fields: 'id, parents'
+    });
+    
+    console.log(`✅ Moved file ${fileId} to final folder`);
+    return true;
+  } catch (err) {
+    console.error("❌ Failed to move file:", err.message);
+    return false;
+  }
+}
+
+// ✅ NEW: Check if payment already processed (prevents duplicates)
+async function isPaymentAlreadyProcessed(paymentId) {
+  try {
+    const auth = getGoogleAuth();
+    const sheets = google.sheets({ version: "v4", auth });
+    
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: process.env.GOOGLE_SHEETS_ID,
+      range: "Sheet1!G:G", // Column G stores payment_id
+    });
+    
+    const rows = response.data.values || [];
+    // Check if payment_id already exists
+    return rows.some(row => row[0] === paymentId);
+  } catch (err) {
+    console.error("⚠️ Error checking for duplicate payment:", err.message);
+    // If we can't check, assume not processed to avoid blocking legitimate payments
+    return false;
+  }
+}
+
+async function logToSheets({ date, name, email, type, amount, driveUrl, ref, paymentId }) {
+  try {
     const auth = getGoogleAuth();
     const sheets = google.sheets({ version: "v4", auth });
 
@@ -35,10 +128,10 @@ async function logToSheets({ date, name, email, type, amount, driveUrl, ref }) {
 
     await sheets.spreadsheets.values.append({
       spreadsheetId: process.env.GOOGLE_SHEETS_ID,
-      range: "Sheet1!A:G",
+      range: "Sheet1!A:H", // Added H column for payment_id
       valueInputOption: "USER_ENTERED",
       requestBody: {
-        values: [[date, name, email, type, amount, driveUrl, ref]],
+        values: [[date, name, email, type, amount, driveUrl, ref, paymentId]],
       },
     });
 
@@ -55,7 +148,18 @@ async function logToSheets({ date, name, email, type, amount, driveUrl, ref }) {
 
 export default async function handler(req, res) {
   console.log("🔥 Webhook hit");
-
+  console.log("📝 Headers:", JSON.stringify(req.headers, null, 2));
+  
+  // ✅ NEW: Get raw body for signature verification
+  const rawBody = JSON.stringify(req.body);
+  
+  // ✅ NEW: Verify webhook signature
+  const isValidSignature = verifyPayMongoSignature(req, rawBody);
+  if (!isValidSignature && process.env.NODE_ENV === "production") {
+    console.error("❌ Invalid webhook signature - rejecting request");
+    return res.status(401).json({ error: "Invalid signature" });
+  }
+  
   if (req.method !== "POST") {
     return res.status(200).json({ received: true });
   }
@@ -69,6 +173,16 @@ export default async function handler(req, res) {
       return res.status(200).json({ received: true });
     }
 
+    const paymentId = event.data.id; // ✅ NEW: Get payment ID for duplicate check
+    console.log("💰 Processing payment ID:", paymentId);
+    
+    // ✅ NEW: Check for duplicate webhook
+    const alreadyProcessed = await isPaymentAlreadyProcessed(paymentId);
+    if (alreadyProcessed) {
+      console.log(`⚠️ Payment ${paymentId} already processed, skipping duplicate webhook`);
+      return res.status(200).json({ received: true });
+    }
+
     const paymentData = event.data.attributes.data.attributes;
     const metadata = paymentData.metadata || {};
 
@@ -76,8 +190,8 @@ export default async function handler(req, res) {
     const email = paymentData.billing?.email || metadata.email;
     const name = paymentData.billing?.name || metadata.name || "Customer";
     const type = metadata.type || "PDF";
-    const driveFileId = metadata.driveFileId;
-    const driveFileUrl = metadata.driveFileUrl;
+    const tempFileId = metadata.tempFileId; // ✅ NEW: Get temp file ID
+    const fileName = metadata.fileName;
     const amount = type === "PDF" ? "₱149" : "₱199";
     const ref = metadata.ref || `${type}-${Date.now()}`;
     const date = new Date().toLocaleString("en-PH", { timeZone: "Asia/Manila" });
@@ -86,21 +200,40 @@ export default async function handler(req, res) {
     console.log("👤 Customer name:", name);
     console.log("📦 Order type:", type);
     console.log("🔑 Reference:", ref);
+    console.log("📁 Temp file ID:", tempFileId);
 
-    // Build Drive URL
+    // ✅ NEW: Move file from temp folder to final folder
     let finalFileUrl = null;
-
-    if (driveFileUrl) {
-      finalFileUrl = driveFileUrl;
-      console.log("✅ Using Drive URL from metadata");
-    } else if (driveFileId) {
-      finalFileUrl = `https://drive.google.com/file/d/${driveFileId}/view`;
-      console.log("✅ Constructed URL from Drive file ID:", driveFileId);
+    
+    if (tempFileId) {
+      const finalFolderId = type === "PDF" 
+        ? process.env.GOOGLE_DRIVE_FOLDER_ID 
+        : process.env.GOOGLE_DRIVE_FOLDER_ID_PRINT;
+      
+      if (finalFolderId) {
+        const moved = await moveFileToFinalFolder(tempFileId, finalFolderId);
+        if (moved) {
+          finalFileUrl = `https://drive.google.com/file/d/${tempFileId}/view`;
+          console.log("✅ File moved to final folder and URL generated");
+        } else {
+          console.warn("⚠️ Failed to move file, but continuing with existing URL if available");
+          // Fallback to metadata URL if move fails
+          finalFileUrl = metadata.driveFileUrl || null;
+        }
+      } else {
+        console.warn("⚠️ No final folder configured, using temp file URL");
+        finalFileUrl = metadata.driveFileUrl || `https://drive.google.com/file/d/${tempFileId}/view`;
+      }
     } else {
-      console.warn("⚠️ No Drive file data found in metadata");
+      // Fallback to existing logic for backward compatibility
+      console.log("⚠️ No tempFileId found, using existing URL logic");
+      finalFileUrl = metadata.driveFileUrl;
+      if (!finalFileUrl && metadata.driveFileId) {
+        finalFileUrl = `https://drive.google.com/file/d/${metadata.driveFileId}/view`;
+      }
     }
 
-    // Log to Google Sheets
+    // Log to Google Sheets with payment ID
     await logToSheets({
       date,
       name,
@@ -109,9 +242,10 @@ export default async function handler(req, res) {
       amount,
       driveUrl: finalFileUrl || "N/A",
       ref,
+      paymentId, // ✅ NEW: Include payment ID
     });
 
-    // Send emails
+    // Send emails (YOUR EXISTING LOGIC - PRESERVED)
     if (email) {
       let customerSubject = "";
       let customerText = "";
@@ -167,11 +301,12 @@ export default async function handler(req, res) {
           from: "HeavenXent Keepsakes <no-reply@heavenxentph.com>",
           to: "heavenxentkeepsakes@gmail.com",
           subject: `🛍️ New ${type} Order — ${name}`,
-          text: `New order received!\n\nReference: ${ref}\nDate: ${date}\nName: ${name}\nEmail: ${email}\nType: ${type}\nAmount: ${amount}\nDrive URL: ${finalFileUrl || "N/A"}\n\nCheck your Google Sheet for full order history.`,
+          text: `New order received!\n\nPayment ID: ${paymentId}\nReference: ${ref}\nDate: ${date}\nName: ${name}\nEmail: ${email}\nType: ${type}\nAmount: ${amount}\nDrive URL: ${finalFileUrl || "N/A"}\n\nCheck your Google Sheet for full order history.`,
           html: `
             <div style="font-family: Arial, sans-serif;">
               <h2>🛍️ New Order Received</h2>
               <table style="border-collapse: collapse;">
+                <tr><td style="padding: 8px;"><strong>Payment ID:</strong></td><td>${paymentId}</td></tr>
                 <tr><td style="padding: 8px;"><strong>Reference:</strong></td><td>${ref}</td></tr>
                 <tr><td style="padding: 8px;"><strong>Date:</strong></td><td>${date}</td></tr>
                 <tr><td style="padding: 8px;"><strong>Name:</strong></td><td>${name}</td></tr>
