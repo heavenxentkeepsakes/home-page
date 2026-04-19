@@ -28,29 +28,69 @@ function getDriveAuth() {
 
 // ✅ NEW: Verify PayMongo webhook signature
 function verifyPayMongoSignature(req, rawBody) {
-  const signature = req.headers['paymongo-signature'];
+  const signatureHeader = req.headers['paymongo-signature'];
   const webhookSecret = process.env.PAYMONGO_WEBHOOK_SECRET;
-  
-  if (!signature || !webhookSecret) {
+
+  if (!signatureHeader || !webhookSecret) {
     console.error("❌ Missing signature or webhook secret");
     return false;
   }
-  
+
   try {
-    const hash = crypto
+    // PayMongo sends: "t=1700000000,v1=abc123def456..."
+    // Parse the header
+    const pairs = signatureHeader.split(',');
+    let timestamp = null;
+    let signature = null;
+
+    for (const pair of pairs) {
+      const [key, value] = pair.split('=');
+      if (key === 't') timestamp = value;
+      if (key === 'v1') signature = value;
+    }
+
+    if (!timestamp || !signature) {
+      console.error("❌ Invalid signature header format");
+      return false;
+    }
+
+    // Create the signed payload: timestamp + "." + raw body
+    const signedPayload = `${timestamp}.${rawBody}`;
+
+    // Compute expected signature
+    const expectedSignature = crypto
       .createHmac('sha256', webhookSecret)
-      .update(rawBody)
+      .update(signedPayload)
       .digest('hex');
-    
-    const isValid = crypto.timingSafeEqual(
-      Buffer.from(signature),
-      Buffer.from(hash)
-    );
-    
-    if (!isValid) {
+
+    // Use timingSafeEqual - convert both to buffers
+    const signatureBuffer = Buffer.from(signature, 'hex');
+    const expectedBuffer = Buffer.from(expectedSignature, 'hex');
+
+    // Check lengths match before timingSafeEqual
+    if (signatureBuffer.length !== expectedBuffer.length) {
+      console.error("❌ Signature length mismatch");
+      return false;
+    }
+
+    const isValid = crypto.timingSafeEqual(signatureBuffer, expectedBuffer);
+
+    // Also check timestamp is within 5 minutes (prevent replay attacks)
+    const now = Math.floor(Date.now() / 1000);
+    const timestampNum = parseInt(timestamp);
+    if (Math.abs(now - timestampNum) > 300) {
+      console.error("❌ Webhook timestamp too old");
+      return false;
+    }
+
+    if (isValid) {
+      console.log("✅ Webhook signature verified");
+    } else {
       console.error("❌ Invalid webhook signature");
     }
+
     return isValid;
+
   } catch (err) {
     console.error("❌ Signature verification error:", err.message);
     return false;
@@ -62,15 +102,15 @@ async function moveFileToFinalFolder(fileId, finalFolderId) {
   try {
     const auth = getDriveAuth();
     const drive = google.drive({ version: "v3", auth });
-    
+
     // Get current parents
     const file = await drive.files.get({
       fileId: fileId,
       fields: 'parents'
     });
-    
+
     const previousParents = file.data.parents || [];
-    
+
     // Move to final folder
     await drive.files.update({
       fileId: fileId,
@@ -78,7 +118,7 @@ async function moveFileToFinalFolder(fileId, finalFolderId) {
       removeParents: previousParents.join(','),
       fields: 'id, parents'
     });
-    
+
     console.log(`✅ Moved file ${fileId} to final folder`);
     return true;
   } catch (err) {
@@ -92,12 +132,12 @@ async function isPaymentAlreadyProcessed(paymentId) {
   try {
     const auth = getGoogleAuth();
     const sheets = google.sheets({ version: "v4", auth });
-    
+
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: process.env.GOOGLE_SHEETS_ID,
       range: "Sheet1!G:G", // Column G stores payment_id
     });
-    
+
     const rows = response.data.values || [];
     // Check if payment_id already exists
     return rows.some(row => row[0] === paymentId);
@@ -149,17 +189,28 @@ async function logToSheets({ date, name, email, type, amount, driveUrl, ref, pay
 export default async function handler(req, res) {
   console.log("🔥 Webhook hit");
   console.log("📝 Headers:", JSON.stringify(req.headers, null, 2));
-  
+
   // ✅ NEW: Get raw body for signature verification
+  // ✅ Get raw body for signature verification
   const rawBody = JSON.stringify(req.body);
-  
-  // ✅ NEW: Verify webhook signature
+
+  // Debug: Log what we received
+  console.log("🔍 Signature header:", req.headers['paymongo-signature']);
+  console.log("🔍 WEBHOOK_SECRET exists:", !!process.env.PAYMONGO_WEBHOOK_SECRET);
+
+  // ✅ Verify webhook signature
   const isValidSignature = verifyPayMongoSignature(req, rawBody);
+  console.log("🔍 Signature valid:", isValidSignature);
+
   if (!isValidSignature && process.env.NODE_ENV === "production") {
     console.error("❌ Invalid webhook signature - rejecting request");
     return res.status(401).json({ error: "Invalid signature" });
   }
-  
+
+  if (!isValidSignature && process.env.NODE_ENV !== "production") {
+    console.warn("⚠️ Development mode: Accepting invalid signature");
+  }
+
   if (req.method !== "POST") {
     return res.status(200).json({ received: true });
   }
@@ -175,7 +226,7 @@ export default async function handler(req, res) {
 
     const paymentId = event.data.id; // ✅ NEW: Get payment ID for duplicate check
     console.log("💰 Processing payment ID:", paymentId);
-    
+
     // ✅ NEW: Check for duplicate webhook
     const alreadyProcessed = await isPaymentAlreadyProcessed(paymentId);
     if (alreadyProcessed) {
@@ -204,12 +255,12 @@ export default async function handler(req, res) {
 
     // ✅ NEW: Move file from temp folder to final folder
     let finalFileUrl = null;
-    
+
     if (tempFileId) {
-      const finalFolderId = type === "PDF" 
-        ? process.env.GOOGLE_DRIVE_FOLDER_ID 
+      const finalFolderId = type === "PDF"
+        ? process.env.GOOGLE_DRIVE_FOLDER_ID
         : process.env.GOOGLE_DRIVE_FOLDER_ID_PRINT;
-      
+
       if (finalFolderId) {
         const moved = await moveFileToFinalFolder(tempFileId, finalFolderId);
         if (moved) {
@@ -256,7 +307,7 @@ export default async function handler(req, res) {
         customerText = finalFileUrl
           ? `Hi ${name},\n\nYour payment is confirmed and your wedding tag PDF is ready!\n\nDownload here:\n${finalFileUrl}\n\nThank you for your purchase 💖`
           : `Hi ${name},\n\nYour payment is confirmed! Your file is still processing and we will send your download link shortly.\n\nThank you 💖`;
-        
+
         customerHtml = finalFileUrl
           ? `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
