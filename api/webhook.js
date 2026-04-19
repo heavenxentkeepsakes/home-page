@@ -190,25 +190,25 @@ export default async function handler(req, res) {
   console.log("🔥 Webhook hit");
   console.log("📝 Headers:", JSON.stringify(req.headers, null, 2));
 
-  // ✅ NEW: Get raw body for signature verification
   // ✅ Get raw body for signature verification
   const rawBody = JSON.stringify(req.body);
 
-  // Debug: Log what we received
-  console.log("🔍 Signature header:", req.headers['paymongo-signature']);
-  console.log("🔍 WEBHOOK_SECRET exists:", !!process.env.PAYMONGO_WEBHOOK_SECRET);
+  // 🔍 DEBUG: Log everything to see what PayMongo is sending
+  console.log("=== WEBHOOK DEBUG START ===");
+  console.log("1. Raw body (first 500 chars):", rawBody.substring(0, 500));
+  console.log("2. paymongo-signature header:", req.headers['paymongo-signature']);
+  console.log("3. All header keys:", Object.keys(req.headers));
+  console.log("4. Any header with 'signature':", Object.keys(req.headers).filter(k => k.toLowerCase().includes('signature')));
+  console.log("5. PAYMONGO_WEBHOOK_SECRET exists:", !!process.env.PAYMONGO_WEBHOOK_SECRET);
+  console.log("=== WEBHOOK DEBUG END ===");
 
   // ✅ Verify webhook signature
   const isValidSignature = verifyPayMongoSignature(req, rawBody);
-  console.log("🔍 Signature valid:", isValidSignature);
+  console.log("🔍 Signature valid result:", isValidSignature);
 
   if (!isValidSignature && process.env.NODE_ENV === "production") {
     console.error("❌ Invalid webhook signature - rejecting request");
     return res.status(401).json({ error: "Invalid signature" });
-  }
-
-  if (!isValidSignature && process.env.NODE_ENV !== "production") {
-    console.warn("⚠️ Development mode: Accepting invalid signature");
   }
 
   if (req.method !== "POST") {
