@@ -27,6 +27,7 @@ function getDriveAuth() {
 }
 
 // ✅ NEW: Verify PayMongo webhook signature
+// ✅ FIXED: Verify PayMongo webhook signature (matches actual PayMongo format)
 function verifyPayMongoSignature(req, rawBody) {
   const signatureHeader = req.headers['paymongo-signature'];
   const webhookSecret = process.env.PAYMONGO_WEBHOOK_SECRET;
@@ -37,22 +38,27 @@ function verifyPayMongoSignature(req, rawBody) {
   }
 
   try {
-    // PayMongo sends: "t=1700000000,v1=abc123def456..."
-    // Parse the header
-    const pairs = signatureHeader.split(',');
+    // Parse the header: "t=123456,te=abcdef,li="
+    const parts = signatureHeader.split(',');
     let timestamp = null;
     let signature = null;
 
-    for (const pair of pairs) {
-      const [key, value] = pair.split('=');
-      if (key === 't') timestamp = value;
-      if (key === 'v1') signature = value;
+    for (const part of parts) {
+      if (part.startsWith('t=')) {
+        timestamp = part.substring(2);
+      } else if (part.startsWith('te=')) {
+        signature = part.substring(3);
+      }
     }
 
     if (!timestamp || !signature) {
       console.error("❌ Invalid signature header format");
+      console.log("Parsed - timestamp:", timestamp, "signature exists:", !!signature);
       return false;
     }
+
+    console.log("✅ Parsed signature - timestamp:", timestamp);
+    console.log("✅ Parsed signature - first 20 chars:", signature.substring(0, 20) + "...");
 
     // Create the signed payload: timestamp + "." + raw body
     const signedPayload = `${timestamp}.${rawBody}`;
@@ -63,11 +69,13 @@ function verifyPayMongoSignature(req, rawBody) {
       .update(signedPayload)
       .digest('hex');
 
-    // Use timingSafeEqual - convert both to buffers
+    console.log("Expected signature - first 20 chars:", expectedSignature.substring(0, 20) + "...");
+
+    // Compare signatures
     const signatureBuffer = Buffer.from(signature, 'hex');
     const expectedBuffer = Buffer.from(expectedSignature, 'hex');
 
-    // Check lengths match before timingSafeEqual
+    // Check lengths match
     if (signatureBuffer.length !== expectedBuffer.length) {
       console.error("❌ Signature length mismatch");
       return false;
@@ -75,18 +83,20 @@ function verifyPayMongoSignature(req, rawBody) {
 
     const isValid = crypto.timingSafeEqual(signatureBuffer, expectedBuffer);
 
-    // Also check timestamp is within 5 minutes (prevent replay attacks)
+    // Check timestamp is within 5 minutes
     const now = Math.floor(Date.now() / 1000);
     const timestampNum = parseInt(timestamp);
-    if (Math.abs(now - timestampNum) > 300) {
-      console.error("❌ Webhook timestamp too old");
+    const timeDiff = Math.abs(now - timestampNum);
+
+    if (timeDiff > 300) {
+      console.error(`❌ Webhook timestamp too old: ${timeDiff} seconds difference`);
       return false;
     }
 
     if (isValid) {
-      console.log("✅ Webhook signature verified");
+      console.log("✅ Webhook signature verified successfully");
     } else {
-      console.error("❌ Invalid webhook signature");
+      console.error("❌ Invalid webhook signature - hash mismatch");
     }
 
     return isValid;
