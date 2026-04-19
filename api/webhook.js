@@ -192,7 +192,7 @@ export default async function handler(req, res) {
     }
 
   } catch (err) {
-    console.error("❌ Webhook error:", err);
+    console.error("❌ Webhook error: ", err);
   }
 
   // Always respond 200 to PayMongo
