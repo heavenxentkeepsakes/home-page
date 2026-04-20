@@ -1,15 +1,16 @@
 import { google } from "googleapis";
 import { Readable } from "stream";
 
-const oauth2Client = new google.auth.OAuth2(
-  process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  "https://developers.google.com/oauthplayground"
-);
-
-oauth2Client.setCredentials({
-  refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
-});
+// Use service account instead of OAuth2 refresh token
+function getDriveAuth() {
+  return new google.auth.GoogleAuth({
+    scopes: ['https://www.googleapis.com/auth/drive.file'],
+    credentials: {
+      client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+      private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+    },
+  });
+}
 
 export async function uploadToDrive({ base64PDF, fileName, folderId }) {
   try {
@@ -26,8 +27,9 @@ export async function uploadToDrive({ base64PDF, fileName, folderId }) {
     const buffer = Buffer.from(base64PDF, "base64");
     const stream = Readable.from(buffer);
 
-    // --- 2. Drive client using OAuth2 ---
-    const drive = google.drive({ version: "v3", auth: oauth2Client });
+    // --- 2. Drive client using Service Account ---
+    const auth = getDriveAuth();
+    const drive = google.drive({ version: "v3", auth });
 
     // --- 3. Upload file ---
     const response = await drive.files.create({
@@ -45,7 +47,7 @@ export async function uploadToDrive({ base64PDF, fileName, folderId }) {
     const fileId = response.data.id;
     if (!fileId) throw new Error("Upload failed: No file ID returned");
 
-    // --- 4. Make file public ---
+    // --- 4. Make file publicly accessible ---
     await drive.permissions.create({
       fileId,
       requestBody: {
