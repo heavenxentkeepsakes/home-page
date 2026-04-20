@@ -80,8 +80,9 @@ export default async function handler(req, res) {
     }
 
     const requiredEnvVars = [
-      "GOOGLE_SERVICE_ACCOUNT_EMAIL",
-      "GOOGLE_PRIVATE_KEY",
+      "GOOGLE_CLIENT_ID",
+      "GOOGLE_CLIENT_SECRET",
+      "GOOGLE_REFRESH_TOKEN",
       "GOOGLE_DRIVE_FOLDER_ID",
       "PAYMONGO_SECRET_KEY",
       "RESEND_API_KEY",
