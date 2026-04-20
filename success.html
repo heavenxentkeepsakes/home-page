@@ -1,16 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Payment Confirmed · Heavenxent Keepsakes</title>
+  <title>Payment Status · Heavenxent Keepsakes</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@200;300;400;500;600&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet" href="landing.css">
-  <!-- Simple payment status checker (URL params + localStorage) -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  
   <style>
     * {
       margin: 0;
@@ -28,15 +24,13 @@
       flex-direction: column;
     }
 
-    /* refined success page — matches landing aesthetic */
     .success-container {
       max-width: 680px;
       margin: 0 auto;
-      padding: 3rem 1.5rem 4rem;
+      padding: 2rem 1.5rem 4rem;
       width: 100%;
     }
 
-    /* card / glassmorphic elegance */
     .success-card {
       background: #ffffff;
       border-radius: 2rem;
@@ -56,7 +50,7 @@
       align-items: center;
       justify-content: center;
       margin: 0 auto 1.5rem;
-      box-shadow: 0 6px 12px -8px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 6px 12px -8px rgba(0,0,0,0.05);
     }
 
     .checkmark-svg {
@@ -80,6 +74,11 @@
       font-family: 'Outfit', monospace;
     }
 
+    .status-badge.pending {
+      background: #fff0db;
+      color: #b45f1b;
+    }
+
     h1 {
       font-family: 'Playfair Display', serif;
       font-size: 2.2rem;
@@ -98,7 +97,6 @@
       padding-bottom: 6px;
     }
 
-    /* real order details panel */
     .order-details-panel {
       background: #fefaf5;
       border-radius: 1.5rem;
@@ -134,6 +132,9 @@
       color: #2b2a27;
       font-family: 'Outfit', monospace;
       font-size: 1rem;
+      word-break: break-all;
+      text-align: right;
+      max-width: 60%;
     }
 
     .payment-status {
@@ -165,10 +166,6 @@
       justify-content: center;
       flex-wrap: wrap;
       border-left: 4px solid #c7aa7a;
-    }
-
-    .email-icon {
-      font-size: 1.3rem;
     }
 
     .btn-group {
@@ -215,288 +212,256 @@
       border-color: #bba88c;
     }
 
+    .download-link {
+      display: inline-block;
+      background: #c4956a;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 40px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      margin-top: 8px;
+      transition: 0.2s;
+    }
+
+    .download-link:hover {
+      background: #a87b52;
+      transform: translateY(-2px);
+    }
+
     .footnote {
-      margin-top: 2.5rem;
+      margin-top: 2rem;
       font-size: 0.75rem;
       color: #aa9e8e;
       text-align: center;
     }
 
-    .loader-dots:after {
-      content: ' .';
-      animation: dots 1.2s steps(5, end) infinite;
+    .loader {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #e0d5c8;
+      border-top-color: #c4956a;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
     }
 
-    @keyframes dots {
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
 
-      0%,
-      20% {
-        content: '.';
-      }
+    .loading-text {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 2rem;
+    }
 
-      40% {
-        content: '..';
-      }
-
-      60%,
-      100% {
-        content: '...';
-      }
+    .error-message {
+      background: #fff0f0;
+      border-left: 4px solid #d9534f;
+      padding: 1rem;
+      border-radius: 12px;
+      margin: 1rem 0;
     }
 
     @media (max-width: 500px) {
-      .success-card {
-        padding: 1.8rem;
-      }
-
-      h1 {
-        font-size: 1.8rem;
-      }
-
-      .detail-row {
-        flex-direction: column;
-        gap: 5px;
-      }
-
-      .detail-value {
-        font-size: 0.95rem;
-      }
+      .success-card { padding: 1.8rem; }
+      h1 { font-size: 1.8rem; }
+      .detail-row { flex-direction: column; gap: 5px; }
+      .detail-value { text-align: left; max-width: 100%; }
     }
   </style>
 </head>
-
 <body>
 
-  <nav class="l-nav">
-    <a href="/" class="l-nav__brand">
-      <img src="logo.png" alt="Heavenxent Keepsakes">
-    </a>
-    <ul class="l-nav__links">
-      <li><a href="#products">Products</a></li>
-      <li><a href="#process">How it works</a></li>
-      <li><a href="#proof">Why us</a></li>
-      <li><a href="/tag-editor/index.html" class="l-nav__cta">Design now</a></li>
-    </ul>
-  </nav>
-  <div class="success-container">
-    <div class="success-card" id="successCard">
-      <!-- dynamic content will be injected here with real order status -->
-      <div id="dynamicStatusContent">
-        <!-- loading state (will be replaced) -->
-        <div class="icon-illustration">
-          <svg class="checkmark-svg" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        </div>
-        <div class="status-badge">✓ Payment verified</div>
-        <h1>Your keepsake is<span style="font-style: italic;"> being prepared</span></h1>
-        <p class="subhead">We received your order — your magic is on the way</p>
-        <div class="order-details-panel" id="orderDetailsPanel">
-          <div style="text-align: center; padding: 1rem;">Loading your order details<span class="loader-dots"></span>
-          </div>
-        </div>
+<nav style="padding: 1.2rem 2rem; max-width: 1280px; margin: 0 auto; width: 100%; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+  <a href="/" style="font-family: 'Playfair Display', serif; font-weight: 600; font-size: 1.4rem; text-decoration: none; color: #1e2a1c;">Heavenxent Keepsakes</a>
+  <div style="display: flex; gap: 18px;">
+    <a href="/tag-editor/index.html" style="text-decoration: none; color: #5b4b3a; font-weight: 400;">Design studio</a>
+    <a href="/#products" style="text-decoration: none; color: #5b4b3a;">Collection</a>
+  </div>
+</nav>
+
+<div class="success-container">
+  <div class="success-card" id="successCard">
+    <div id="dynamicStatusContent">
+      <div class="loading-text">
+        <div class="loader"></div>
+        <span>Verifying your payment status...</span>
       </div>
     </div>
   </div>
+</div>
 
-  <footer
-    style="margin-top: auto; text-align: center; padding: 2rem 1rem 2rem; border-top: 1px solid #f0e5db; font-size: 0.8rem; color: #ad9f8d;">
-    <p>✨ Heavenxent Keepsakes — where your love becomes art ✨</p>
-    <p style="margin-top: 0.5rem;">Need help? <a
-        href="/cdn-cgi/l/email-protection#68001d040c1b28001d0b1c1d06001b0d0c1c461b1d"
-        style="color:#7a6852;">hello@heavenxentph.com</a></p>
-  </footer>
+<footer style="margin-top: auto; text-align: center; padding: 2rem 1rem 2rem; border-top: 1px solid #f0e5db; font-size: 0.8rem; color: #ad9f8d;">
+  <p>✨ Heavenxent Keepsakes — where your love becomes art ✨</p>
+  <p style="margin-top: 0.5rem;">Need help? <a href="/cdn-cgi/l/email-protection#6d051821091e2d05180e19180503180e0f1f431e18" style="color:#7a6852;">hello@heavenxentph.com</a></p>
+</footer>
 
-  <script>
-    (function () {
-      // ------------------------------------------------------------------
-      // REAL PAYMENT STATUS LOGIC: 
-      // 1. reads sessionStorage / localStorage for the most recent order metadata
-      //    (stored from the checkout page after payment init)
-      // 2. If not found, try to parse URL query parameters (?session_id or ?order_ref)
-      // 3. If still none, display a smart "just paid" confirmation with generic details,
-      //    but with the ability to show last cached order from editor.
-      // 4. Additionally, we simulate a lightweight API check to PayMongo status 
-      //    IF we have a session ID (optional, but adds realism). 
-      //    For simplicity + security, we fetch a lightweight status endpoint if provided.
-      //    The checkout.js normally sends metadata; we can query an endpoint if needed.
-      // ------------------------------------------------------------------
+<script>
+  (function() {
+    // Helper: get URL parameters
+    function getUrlParams() {
+      const params = new URLSearchParams(window.location.search);
+      return {
+        sessionId: params.get('session_id'),
+        paymentId: params.get('payment_id'),
+        ref: params.get('ref'),
+        orderRef: params.get('order_ref')
+      };
+    }
 
-      const statusContainer = document.getElementById("dynamicStatusContent");
-      const detailsPanel = document.getElementById("orderDetailsPanel");
-
-      // Helper: get order info from different sources
-      function getStoredOrderInfo() {
-        try {
-          // 1. latest order from localStorage (set by tag-editor after creating checkout)
-          const rawOrder = localStorage.getItem("heavenxent_last_order");
-          if (rawOrder) {
-            const order = JSON.parse(rawOrder);
-            if (order && (order.email || order.name || order.type || order.ref)) {
-              return { source: "localStorage", data: order };
-            }
-          }
-          // 2. sessionStorage backup
-          const sessionOrder = sessionStorage.getItem("pending_checkout_order");
-          if (sessionOrder) {
-            const order = JSON.parse(sessionOrder);
-            if (order && (order.email || order.name)) return { source: "session", data: order };
-          }
-          // 3. URL params ?ref=...&email=...
-          const urlParams = new URLSearchParams(window.location.search);
-          const ref = urlParams.get('ref') || urlParams.get('order_ref');
-          const emailParam = urlParams.get('email');
-          const typeParam = urlParams.get('type');
-          if (ref || emailParam) {
-            return {
-              source: "url",
-              data: {
-                ref: ref || "ORD-" + Date.now(),
-                email: emailParam || (localStorage.getItem("order_email") || "customer@example.com"),
-                type: typeParam || (localStorage.getItem("order_type") || "PDF"),
-                name: urlParams.get('name') || localStorage.getItem("order_name") || "Valued Couple"
-              }
-            };
-          }
-          // 4. last cached from editor interaction (if any)
-          const cachedName = localStorage.getItem("last_couple_name");
-          const cachedEmail = localStorage.getItem("last_customer_email");
-          if (cachedEmail) {
-            return {
-              source: "cached",
-              data: {
-                name: cachedName || "Dear Couple",
-                email: cachedEmail,
-                type: localStorage.getItem("last_order_type") || "PDF",
-                ref: "REF" + Math.floor(Math.random() * 10000)
-              }
-            };
-          }
-        } catch (e) { console.warn("storage read error", e); }
-        return null;
-      }
-
-      // helper to format date nicely
-      function formatDate() {
-        const d = new Date();
-        return d.toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' });
-      }
-
-      // get payment status & order details - hybrid (realistic)
-      // we'll also optionally try to fetch from a hidden endpoint if needed.
-      async function fetchPaymentStatus(orderInfo) {
-        // Default status: paid (since they landed on success page, it's typically post-payment)
-        // But to add realism, we try to query an internal check endpoint if available,
-        // or just simulate real data from stored order metadata.
-        let status = "paid";
-        let paymentMethod = "Card / GCash";
-        let amountPHP = 0;
-        let orderType = orderInfo?.data?.type || "PDF";
-        let customerName = orderInfo?.data?.name || "Our Valued Couple";
-        let customerEmail = orderInfo?.data?.email || "customer@heavenxent.com";
-        let orderRef = orderInfo?.data?.ref || ("HK-" + Math.floor(Math.random() * 9000 + 1000));
-
-        // determine amount based on type
-        if (orderType === "PDF") amountPHP = 14900;
-        else if (orderType === "Print") amountPHP = 19900;
-        else amountPHP = 14900; // fallback
-
-        // optional: if we have a session id from url ?session_id=cs_xxxx we can call paymongo status
-        const sessionId = new URLSearchParams(window.location.search).get('session_id');
-        if (sessionId && sessionId.startsWith("cs_")) {
-          // try to call our own /api/check-status endpoint (if exists) to reflect real status
-          // but to not break, we'll do a lightweight fetch if endpoint exists, else just simulate paid.
-          try {
-            const response = await fetch(`/api/check-payment-status?session_id=${sessionId}`, {
-              method: 'GET',
-              headers: { 'Content-Type': 'application/json' }
-            });
-            if (response.ok) {
-              const statusData = await response.json();
-              if (statusData.payment_status === 'paid') {
-                status = "paid";
-                paymentMethod = statusData.payment_method || "GCash/Card";
-                if (statusData.amount) amountPHP = statusData.amount;
-                if (statusData.ref) orderRef = statusData.ref;
-              } else if (statusData.payment_status === 'pending') {
-                status = "pending";
-              }
-            }
-          } catch (err) {
-            console.log("status check endpoint not active, using local order data");
-          }
+    // Helper: get stored order info from localStorage
+    function getStoredOrderInfo() {
+      try {
+        const lastOrder = localStorage.getItem("heavenxent_last_order");
+        if (lastOrder) {
+          return JSON.parse(lastOrder);
         }
+        const pendingOrder = sessionStorage.getItem("pending_checkout_order");
+        if (pendingOrder) {
+          return JSON.parse(pendingOrder);
+        }
+      } catch(e) {}
+      return null;
+    }
 
-        return {
-          status, // "paid" or "pending"
-          paymentMethod,
-          amount: amountPHP,
-          orderType: orderType === "PDF" ? "📄 Digital PDF (instant download)" : "🖨️ Premium Print + Delivery",
-          customerName,
-          customerEmail,
-          orderRef,
-          orderDate: formatDate()
-        };
+    // Fetch payment status from your backend API
+    // This endpoint should check Google Sheets for payment confirmation
+    async function fetchPaymentStatusFromAPI(paymentId, sessionId, email) {
+      try {
+        // Build query params
+        const queryParams = new URLSearchParams();
+        if (paymentId) queryParams.append('payment_id', paymentId);
+        if (sessionId) queryParams.append('session_id', sessionId);
+        if (email) queryParams.append('email', email);
+        
+        const response = await fetch(`/api/check-order-status?${queryParams.toString()}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          return data;
+        }
+      } catch (error) {
+        console.log('API endpoint not available, using fallback');
       }
+      return null;
+    }
 
-      // Render dynamic success UI with real order data
-      function renderSuccessUI(paymentDetails) {
-        const isPaid = paymentDetails.status === "paid";
-        const statusBadgeHtml = isPaid
-          ? `<span class="status-badge"><span>✓</span> Payment confirmed · ${paymentDetails.paymentMethod}</span>`
-          : `<span class="status-badge pending-status"><span>⏳</span> Payment pending · we'll notify you</span>`;
+    // Fallback: display order info from local storage while waiting for webhook
+    function getFallbackOrderInfo() {
+      const urlParams = getUrlParams();
+      const stored = getStoredOrderInfo();
+      
+      // Try to extract from localStorage that checkout.js might have saved
+      const checkoutData = localStorage.getItem('last_checkout_data');
+      let checkoutInfo = null;
+      if (checkoutData) {
+        try {
+          checkoutInfo = JSON.parse(checkoutData);
+        } catch(e) {}
+      }
+      
+      return {
+        name: stored?.name || checkoutInfo?.name || urlParams.get('name') || "Valued Couple",
+        email: stored?.email || checkoutInfo?.email || urlParams.get('email') || "",
+        type: stored?.type || checkoutInfo?.type || "PDF",
+        ref: urlParams.ref || urlParams.orderRef || stored?.ref || ("HK-" + Math.floor(Math.random() * 9000 + 1000)),
+        driveFileUrl: stored?.driveFileUrl || checkoutInfo?.driveFileUrl || null,
+        paymentId: urlParams.paymentId || urlParams.sessionId || null
+      };
+    }
 
-        const mainTitle = isPaid
-          ? `Your keepsake is<span style="font-style: italic;"> being prepared</span>`
-          : `We're holding your design<span style="font-style: italic;"> for you</span>`;
+    // Render UI based on real payment data
+    function renderOrderUI(orderData, isFromAPI = false) {
+      const isPaid = orderData.status === 'paid' || orderData.payment_status === 'paid';
+      const isPending = orderData.status === 'pending' || orderData.payment_status === 'pending';
+      const isWaiting = !isPaid && !isPending;
+      
+      let statusBadgeHtml = '';
+      if (isPaid) {
+        statusBadgeHtml = `<span class="status-badge"><span>✓</span> Payment confirmed · ${orderData.payment_method || 'Card/GCash'}</span>`;
+      } else if (isPending) {
+        statusBadgeHtml = `<span class="status-badge pending"><span>⏳</span> Payment processing · we'll notify you</span>`;
+      } else {
+        statusBadgeHtml = `<span class="status-badge pending"><span>🔄</span> Verifying payment</span>`;
+      }
+      
+      const mainTitle = isPaid 
+        ? `Your keepsake is<span style="font-style: italic;"> being prepared</span>`
+        : `We're holding your design<span style="font-style: italic;"> for you</span>`;
+      
+      const subText = isPaid
+        ? "Payment successful — your order is now being processed."
+        : isPending
+        ? "Your payment is being verified. You'll receive your download link within minutes."
+        : "We're confirming your payment. This usually takes just a moment.";
 
-        const subText = isPaid
-          ? "Payment successful — your PDF or print order is now in production."
-          : "We noticed your payment is still processing. Once completed, you'll receive your download link within minutes.";
-
-        const emailNoticeHtml = isPaid ? `
-        <div class="email-notice">
-          <span class="email-icon">📧</span>
-          <span>We’ve emailed your order confirmation to <strong>${escapeHtml(paymentDetails.customerEmail)}</strong>. 
-          ${paymentDetails.orderType.includes("PDF") ? 'Your download link will arrive shortly after verification.' : 'Print orders are shipped within 5–7 business days.'}</span>
-        </div>
-      ` : `
-        <div class="email-notice">
-          <span class="email-icon">⏳</span>
-          <span>No worries — we sent a pending order receipt to <strong>${escapeHtml(paymentDetails.customerEmail)}</strong>. Once payment reflects, we'll deliver your files instantly.</span>
-        </div>
-      `;
-
-        // Build order details row
-        const orderRows = `
+      // Build order details
+      const amountPHP = orderData.amount || (orderData.type === "PDF" ? 14900 : 19900);
+      const orderTypeDisplay = orderData.type === "PDF" ? "📄 Digital PDF (instant download)" : "🖨️ Premium Print + Delivery";
+      const orderDate = orderData.date || new Date().toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' });
+      
+      let orderRows = `
         <div class="detail-row">
           <span class="detail-label">Order reference</span>
-          <span class="detail-value">${escapeHtml(paymentDetails.orderRef)}</span>
+          <span class="detail-value">${escapeHtml(orderData.ref || orderData.order_ref || 'N/A')}</span>
         </div>
         <div class="detail-row">
           <span class="detail-label">Order type</span>
-          <span class="detail-value">${escapeHtml(paymentDetails.orderType)}</span>
+          <span class="detail-value">${orderTypeDisplay}</span>
         </div>
         <div class="detail-row">
           <span class="detail-label">Total amount</span>
-          <span class="detail-value">₱ ${paymentDetails.amount.toLocaleString()}</span>
+          <span class="detail-value">₱ ${amountPHP.toLocaleString()}</span>
         </div>
         <div class="detail-row">
           <span class="detail-label">Purchaser</span>
-          <span class="detail-value">${escapeHtml(paymentDetails.customerName)}</span>
+          <span class="detail-value">${escapeHtml(orderData.name)}</span>
         </div>
         <div class="detail-row">
           <span class="detail-label">Date</span>
-          <span class="detail-value">${escapeHtml(paymentDetails.orderDate)}</span>
+          <span class="detail-value">${orderDate}</span>
         </div>
         <div class="detail-row">
           <span class="detail-label">Payment status</span>
-          <span class="detail-value"><span class="${isPaid ? 'payment-status' : 'payment-status pending-status'}">${isPaid ? '✓ Successful' : '⏳ Awaiting confirmation'}</span></span>
+          <span class="detail-value"><span class="payment-status ${isPaid ? '' : 'pending-status'}">${isPaid ? '✓ Successful' : (isPending ? '⏳ Awaiting confirmation' : '🔄 Verifying')}</span></span>
         </div>
       `;
-
-        const actionButtons = `
+      
+      // Add Drive download link if available and paid
+      let downloadSection = '';
+      if (isPaid && orderData.driveFileUrl && orderData.type === 'PDF') {
+        downloadSection = `
+          <div style="margin: 1rem 0; text-align: center;">
+            <a href="${orderData.driveFileUrl}" target="_blank" class="download-link">
+              📎 Download Your PDF Now
+            </a>
+            <p style="font-size: 0.7rem; color: #888; margin-top: 8px;">Link also sent to your email</p>
+          </div>
+        `;
+      }
+      
+      let emailNoticeHtml = '';
+      if (orderData.email) {
+        emailNoticeHtml = `
+          <div class="email-notice">
+            <span class="email-icon">📧</span>
+            <span>Confirmation sent to <strong>${escapeHtml(orderData.email)}</strong>. 
+            ${isPaid && orderData.type === 'PDF' ? 'Check your inbox for your download link.' : 'We\'ll email you once everything is ready.'}</span>
+          </div>
+        `;
+      }
+      
+      const actionButtons = `
         <div class="btn-group">
           <a href="/tag-editor/index.html" class="btn-primary">
             <span>✨ Create another design</span>
@@ -506,10 +471,17 @@
           </a>
         </div>
       `;
-
-        const extraNote = !isPaid ? `<div class="footnote" style="margin-top: 1rem;">💡 If you already paid via GCash or card, your payment will be verified within a few minutes. The download link will be sent to your email automatically.</div>` : `<div class="footnote" style="margin-top: 1rem;">✨ Need your files? Check your inbox (and spam folder) — your print-ready keepsake is on its way.</div>`;
-
-        const fullHtml = `
+      
+      let extraNote = '';
+      if (isPaid && orderData.type === 'PDF') {
+        extraNote = `<div class="footnote">💡 Can't find the email? Check your spam folder, or <a href="/cdn-cgi/l/email-protection" style="color: #c4956a;">contact us</a> and we'll resend your download link.</div>`;
+      } else if (isPaid && orderData.type !== 'PDF') {
+        extraNote = `<div class="footnote">🖨️ Print orders are processed within 5-7 business days. You'll receive a shipping confirmation once ready.</div>`;
+      } else {
+        extraNote = `<div class="footnote">⏳ Payments usually reflect within 1-2 minutes. The page will update automatically once confirmed.</div>`;
+      }
+      
+      const fullHtml = `
         <div class="icon-illustration">
           <svg class="checkmark-svg" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="${isPaid ? 'M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z' : 'M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z'}" />
@@ -521,93 +493,117 @@
         <div class="order-details-panel">
           ${orderRows}
         </div>
+        ${downloadSection}
         ${emailNoticeHtml}
         ${actionButtons}
         ${extraNote}
       `;
-
-        statusContainer.innerHTML = fullHtml;
-      }
-
-      // Helper to escape html
-      function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, function (m) {
-          if (m === '&') return '&amp;';
-          if (m === '<') return '&lt;';
-          if (m === '>') return '&gt;';
-          return m;
-        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function (c) {
-          return c;
-        });
-      }
-
-      // main: get order info, enhance with realistic status
-      async function initSuccess() {
-        // show skeleton load
-        detailsPanel.innerHTML = '<div style="text-align: center; padding: 1rem;">🔍 Verifying payment details<span class="loader-dots"></span></div>';
-
-        let stored = getStoredOrderInfo();
-
-        // If nothing stored, we still construct a meaningful "just purchased" context
-        // with info possibly from PayMongo redirect metadata (PayMongo sends session_id as param sometimes)
-        const urlSession = new URLSearchParams(window.location.search).get('session_id');
-        if (!stored && urlSession) {
-          stored = { source: "paymongo_redirect", data: { ref: urlSession.slice(-8), email: localStorage.getItem("order_email") || "recent@order.com", type: localStorage.getItem("order_type") || "PDF", name: localStorage.getItem("order_name") || "New Couple" } };
-        }
-
-        if (!stored) {
-          // last fallback: use generic data but with beautiful wedding context
-          stored = {
-            source: "graceful_fallback",
-            data: {
-              name: "Cherished Couple",
-              email: "hello@heavenxentph.com",
-              type: "PDF",
-              ref: "HX-" + Math.floor(Math.random() * 8999 + 1000)
-            }
-          };
-        }
-
-        const paymentInfo = await fetchPaymentStatus(stored);
-        // additional polish: if we can get from localStorage the last design type
-        try {
-          const editorLast = localStorage.getItem("last_editor_state");
-          if (editorLast && !paymentInfo.orderType) {
-            const parsed = JSON.parse(editorLast);
-            if (parsed.productType) paymentInfo.orderType = parsed.productType === "pdf" ? "📄 Digital PDF (instant download)" : "🖨️ Premium Print + Delivery";
+      
+      document.getElementById("dynamicStatusContent").innerHTML = fullHtml;
+      
+      // Auto-refresh if pending (poll every 5 seconds for up to 2 minutes)
+      if (isPending && !isFromAPI) {
+        let attempts = 0;
+        const maxAttempts = 24; // 2 minutes
+        const pollInterval = setInterval(async () => {
+          attempts++;
+          if (attempts >= maxAttempts) {
+            clearInterval(pollInterval);
+            return;
           }
-        } catch (e) { }
-
-        renderSuccessUI(paymentInfo);
-
-        // store order details for consistency after refresh (so that future reload still reflects)
-        if (stored && stored.data) {
-          localStorage.setItem("heavenxent_last_order", JSON.stringify({
-            ...stored.data,
-            last_status: paymentInfo.status,
-            timestamp: Date.now()
-          }));
-        }
-
-        // additional: if order is PDF, optionally preload a message about download link
-        if (paymentInfo.orderType.includes("PDF") && paymentInfo.status === "paid") {
-          // optional show download hint
-          const downloadHint = document.createElement('div');
-          downloadHint.className = 'footnote';
-          downloadHint.style.marginTop = '12px';
-          downloadHint.style.fontSize = '0.8rem';
-          downloadHint.innerHTML = '📎 <strong>Download link will be sent to your email</strong> — if you don’t see it within 5 minutes, check spam or contact us.';
-          const existing = document.querySelector('.footnote:last-of-type');
-          if (existing && !existing.innerHTML.includes('Download link')) existing.insertAdjacentElement('afterend', downloadHint);
-        }
+          const freshStatus = await fetchPaymentStatusFromAPI(orderData.paymentId, null, orderData.email);
+          if (freshStatus && (freshStatus.status === 'paid' || freshStatus.payment_status === 'paid')) {
+            clearInterval(pollInterval);
+            renderOrderUI(freshStatus, true);
+          }
+        }, 5000);
       }
-
-      initSuccess();
-
-      // optional: listen to postMessage if the editor iframe needed (but not necessary)
-    })();
-  </script>
+    }
+    
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+      });
+    }
+    
+    // Main initialization
+    async function init() {
+      const urlParams = getUrlParams();
+      const storedInfo = getFallbackOrderInfo();
+      
+      // Try to fetch real status from API
+      let apiData = null;
+      if (urlParams.sessionId || urlParams.paymentId || storedInfo.paymentId) {
+        apiData = await fetchPaymentStatusFromAPI(
+          urlParams.paymentId || storedInfo.paymentId,
+          urlParams.sessionId,
+          storedInfo.email
+        );
+      }
+      
+      if (apiData && (apiData.status === 'paid' || apiData.payment_status === 'paid' || apiData.found === true)) {
+        // Real data from API (Google Sheets / webhook)
+        renderOrderUI(apiData, true);
+        
+        // Store for future reference
+        localStorage.setItem("heavenxent_last_order", JSON.stringify(apiData));
+      } else if (storedInfo) {
+        // Show fallback UI with pending status, indicating we're waiting for webhook
+        renderOrderUI({
+          ...storedInfo,
+          status: 'pending',
+          payment_status: 'pending'
+        }, false);
+        
+        // Poll for webhook completion
+        let pollCount = 0;
+        const maxPolls = 30; // 30 seconds
+        const pollTimer = setInterval(async () => {
+          pollCount++;
+          const checkResult = await fetchPaymentStatusFromAPI(
+            urlParams.paymentId || storedInfo.paymentId,
+            urlParams.sessionId,
+            storedInfo.email
+          );
+          if (checkResult && (checkResult.status === 'paid' || checkResult.payment_status === 'paid')) {
+            clearInterval(pollTimer);
+            renderOrderUI(checkResult, true);
+            localStorage.setItem("heavenxent_last_order", JSON.stringify(checkResult));
+          } else if (pollCount >= maxPolls) {
+            clearInterval(pollTimer);
+            // Still pending, show message
+            const pendingDiv = document.querySelector('.order-details-panel');
+            if (pendingDiv) {
+              const note = document.createElement('div');
+              note.style.marginTop = '1rem';
+              note.style.padding = '0.75rem';
+              note.style.background = '#fff8f0';
+              note.style.borderRadius = '12px';
+              note.style.fontSize = '0.8rem';
+              note.innerHTML = '💡 Payment still processing? No worries — we received your order. An email will be sent once confirmed. You can close this page.';
+              pendingDiv.parentNode.insertBefore(note, pendingDiv.nextSibling);
+            }
+          }
+        }, 3000);
+      } else {
+        // No data at all - show generic success with helpful message
+        renderOrderUI({
+          name: "Valued Customer",
+          email: "",
+          type: "PDF",
+          ref: "Order received",
+          status: "pending",
+          payment_status: "pending"
+        }, false);
+      }
+    }
+    
+    init();
+  })();
+</script>
 </body>
-
 </html>
