@@ -216,12 +216,12 @@
       display: inline-block;
       background: #c4956a;
       color: white;
-      padding: 10px 20px;
+      padding: 12px 24px;
       border-radius: 40px;
       text-decoration: none;
       font-weight: 500;
       font-size: 0.9rem;
-      margin-top: 8px;
+      margin: 8px 0;
       transition: 0.2s;
     }
 
@@ -265,6 +265,23 @@
       padding: 1rem;
       border-radius: 12px;
       margin: 1rem 0;
+      text-align: left;
+    }
+
+    .refresh-btn {
+      background: none;
+      border: 1px solid #dacdbd;
+      padding: 6px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.75rem;
+      margin-top: 10px;
+      transition: 0.2s;
+    }
+
+    .refresh-btn:hover {
+      background: #f5efe8;
     }
 
     @media (max-width: 500px) {
@@ -298,48 +315,41 @@
 
 <footer style="margin-top: auto; text-align: center; padding: 2rem 1rem 2rem; border-top: 1px solid #f0e5db; font-size: 0.8rem; color: #ad9f8d;">
   <p>✨ Heavenxent Keepsakes — where your love becomes art ✨</p>
-  <p style="margin-top: 0.5rem;">Need help? <a href="/cdn-cgi/l/email-protection#6d051821091e2d05180e19180503180e0f1f431e18" style="color:#7a6852;">hello@heavenxentph.com</a></p>
+  <p style="margin-top: 0.5rem;">Need help? <a href="/cdn-cgi/l/email-protection#70180118100730001d0b1c1d0600190f0e1e5e0107" style="color:#7a6852;">hello@heavenxentph.com</a></p>
 </footer>
 
 <script>
   (function() {
-    // Helper: get URL parameters
-    function getUrlParams() {
-      const params = new URLSearchParams(window.location.search);
-      return {
-        sessionId: params.get('session_id'),
-        paymentId: params.get('payment_id'),
-        ref: params.get('ref'),
-        orderRef: params.get('order_ref')
-      };
-    }
-
-    // Helper: get stored order info from localStorage
-    function getStoredOrderInfo() {
+    // Get order reference from URL (passed by PayMongo redirect)
+    const urlParams = new URLSearchParams(window.location.search);
+    let orderRef = urlParams.get('ref');
+    const orderEmail = urlParams.get('email');
+    const orderName = urlParams.get('name');
+    const orderType = urlParams.get('type');
+    
+    // Also check for PayMongo's session_id as fallback
+    const sessionId = urlParams.get('session_id');
+    
+    console.log('Order Reference from URL:', orderRef);
+    console.log('Session ID:', sessionId);
+    
+    let pollInterval = null;
+    let pollCount = 0;
+    const MAX_POLLS = 40; // 40 seconds max polling
+    
+    // Function to check payment status from webhook data
+    async function checkPaymentStatus(ref, email) {
       try {
-        const lastOrder = localStorage.getItem("heavenxent_last_order");
-        if (lastOrder) {
-          return JSON.parse(lastOrder);
+        let url = `/api/check-order-status?`;
+        if (ref) {
+          url += `ref=${encodeURIComponent(ref)}`;
+        } else if (email) {
+          url += `email=${encodeURIComponent(email)}`;
+        } else {
+          url += `session_id=${encodeURIComponent(sessionId)}`;
         }
-        const pendingOrder = sessionStorage.getItem("pending_checkout_order");
-        if (pendingOrder) {
-          return JSON.parse(pendingOrder);
-        }
-      } catch(e) {}
-      return null;
-    }
-
-    // Fetch payment status from your backend API
-    // This endpoint should check Google Sheets for payment confirmation
-    async function fetchPaymentStatusFromAPI(paymentId, sessionId, email) {
-      try {
-        // Build query params
-        const queryParams = new URLSearchParams();
-        if (paymentId) queryParams.append('payment_id', paymentId);
-        if (sessionId) queryParams.append('session_id', sessionId);
-        if (email) queryParams.append('email', email);
         
-        const response = await fetch(`/api/check-order-status?${queryParams.toString()}`, {
+        const response = await fetch(url, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
@@ -348,51 +358,46 @@
         
         if (response.ok) {
           const data = await response.json();
+          console.log('Payment status response:', data);
           return data;
+        } else {
+          console.log('API returned error:', response.status);
+          return null;
         }
       } catch (error) {
-        console.log('API endpoint not available, using fallback');
+        console.log('Error checking payment status:', error);
+        return null;
       }
+    }
+    
+    // Function to get order info from localStorage (set by checkout.js)
+    function getLocalOrderInfo() {
+      try {
+        // Check for stored order info
+        const stored = localStorage.getItem('heavenxent_last_order');
+        if (stored) {
+          return JSON.parse(stored);
+        }
+        
+        // Also check session storage
+        const session = sessionStorage.getItem('pending_checkout_order');
+        if (session) {
+          return JSON.parse(session);
+        }
+      } catch(e) {}
       return null;
     }
-
-    // Fallback: display order info from local storage while waiting for webhook
-    function getFallbackOrderInfo() {
-      const urlParams = getUrlParams();
-      const stored = getStoredOrderInfo();
-      
-      // Try to extract from localStorage that checkout.js might have saved
-      const checkoutData = localStorage.getItem('last_checkout_data');
-      let checkoutInfo = null;
-      if (checkoutData) {
-        try {
-          checkoutInfo = JSON.parse(checkoutData);
-        } catch(e) {}
-      }
-      
-      return {
-        name: stored?.name || checkoutInfo?.name || urlParams.get('name') || "Valued Couple",
-        email: stored?.email || checkoutInfo?.email || urlParams.get('email') || "",
-        type: stored?.type || checkoutInfo?.type || "PDF",
-        ref: urlParams.ref || urlParams.orderRef || stored?.ref || ("HK-" + Math.floor(Math.random() * 9000 + 1000)),
-        driveFileUrl: stored?.driveFileUrl || checkoutInfo?.driveFileUrl || null,
-        paymentId: urlParams.paymentId || urlParams.sessionId || null
-      };
-    }
-
-    // Render UI based on real payment data
-    function renderOrderUI(orderData, isFromAPI = false) {
+    
+    // Render the order status UI
+    function renderOrderUI(orderData) {
       const isPaid = orderData.status === 'paid' || orderData.payment_status === 'paid';
-      const isPending = orderData.status === 'pending' || orderData.payment_status === 'pending';
-      const isWaiting = !isPaid && !isPending;
+      const isPending = !isPaid;
       
       let statusBadgeHtml = '';
       if (isPaid) {
         statusBadgeHtml = `<span class="status-badge"><span>✓</span> Payment confirmed · ${orderData.payment_method || 'Card/GCash'}</span>`;
-      } else if (isPending) {
-        statusBadgeHtml = `<span class="status-badge pending"><span>⏳</span> Payment processing · we'll notify you</span>`;
       } else {
-        statusBadgeHtml = `<span class="status-badge pending"><span>🔄</span> Verifying payment</span>`;
+        statusBadgeHtml = `<span class="status-badge pending"><span>⏳</span> Payment processing · we'll notify you</span>`;
       }
       
       const mainTitle = isPaid 
@@ -401,14 +406,16 @@
       
       const subText = isPaid
         ? "Payment successful — your order is now being processed."
-        : isPending
-        ? "Your payment is being verified. You'll receive your download link within minutes."
-        : "We're confirming your payment. This usually takes just a moment.";
+        : "Your payment is being verified. This usually takes less than a minute.";
 
-      // Build order details
-      const amountPHP = orderData.amount || (orderData.type === "PDF" ? 14900 : 19900);
+      // Format amount
+      let amountPHP = orderData.amount;
+      if (!amountPHP) {
+        amountPHP = orderData.type === "PDF" ? 14900 : 19900;
+      }
+      
       const orderTypeDisplay = orderData.type === "PDF" ? "📄 Digital PDF (instant download)" : "🖨️ Premium Print + Delivery";
-      const orderDate = orderData.date || new Date().toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' });
+      const orderDate = orderData.date || new Date().toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
       
       let orderRows = `
         <div class="detail-row">
@@ -433,13 +440,13 @@
         </div>
         <div class="detail-row">
           <span class="detail-label">Payment status</span>
-          <span class="detail-value"><span class="payment-status ${isPaid ? '' : 'pending-status'}">${isPaid ? '✓ Successful' : (isPending ? '⏳ Awaiting confirmation' : '🔄 Verifying')}</span></span>
+          <span class="detail-value"><span class="payment-status ${isPaid ? '' : 'pending-status'}">${isPaid ? '✓ Successful' : '⏳ Awaiting confirmation'}</span></span>
         </div>
       `;
       
-      // Add Drive download link if available and paid
+      // Add download link if PDF and paid
       let downloadSection = '';
-      if (isPaid && orderData.driveFileUrl && orderData.type === 'PDF') {
+      if (isPaid && orderData.type === 'PDF' && orderData.driveFileUrl) {
         downloadSection = `
           <div style="margin: 1rem 0; text-align: center;">
             <a href="${orderData.driveFileUrl}" target="_blank" class="download-link">
@@ -461,6 +468,17 @@
         `;
       }
       
+      let manualRefreshButton = '';
+      if (!isPaid) {
+        manualRefreshButton = `
+          <div style="margin-top: 1rem;">
+            <button onclick="window.location.reload()" class="refresh-btn">
+              ↻ Check status again
+            </button>
+          </div>
+        `;
+      }
+      
       const actionButtons = `
         <div class="btn-group">
           <a href="/tag-editor/index.html" class="btn-primary">
@@ -478,7 +496,7 @@
       } else if (isPaid && orderData.type !== 'PDF') {
         extraNote = `<div class="footnote">🖨️ Print orders are processed within 5-7 business days. You'll receive a shipping confirmation once ready.</div>`;
       } else {
-        extraNote = `<div class="footnote">⏳ Payments usually reflect within 1-2 minutes. The page will update automatically once confirmed.</div>`;
+        extraNote = `<div class="footnote">⏳ Payments usually reflect within 1-2 minutes. This page will update automatically once confirmed.</div>`;
       }
       
       const fullHtml = `
@@ -495,28 +513,17 @@
         </div>
         ${downloadSection}
         ${emailNoticeHtml}
+        ${manualRefreshButton}
         ${actionButtons}
         ${extraNote}
       `;
       
       document.getElementById("dynamicStatusContent").innerHTML = fullHtml;
       
-      // Auto-refresh if pending (poll every 5 seconds for up to 2 minutes)
-      if (isPending && !isFromAPI) {
-        let attempts = 0;
-        const maxAttempts = 24; // 2 minutes
-        const pollInterval = setInterval(async () => {
-          attempts++;
-          if (attempts >= maxAttempts) {
-            clearInterval(pollInterval);
-            return;
-          }
-          const freshStatus = await fetchPaymentStatusFromAPI(orderData.paymentId, null, orderData.email);
-          if (freshStatus && (freshStatus.status === 'paid' || freshStatus.payment_status === 'paid')) {
-            clearInterval(pollInterval);
-            renderOrderUI(freshStatus, true);
-          }
-        }, 5000);
+      // If paid, stop polling
+      if (isPaid && pollInterval) {
+        clearInterval(pollInterval);
+        pollInterval = null;
       }
     }
     
@@ -532,76 +539,90 @@
     
     // Main initialization
     async function init() {
-      const urlParams = getUrlParams();
-      const storedInfo = getFallbackOrderInfo();
-      
-      // Try to fetch real status from API
-      let apiData = null;
-      if (urlParams.sessionId || urlParams.paymentId || storedInfo.paymentId) {
-        apiData = await fetchPaymentStatusFromAPI(
-          urlParams.paymentId || storedInfo.paymentId,
-          urlParams.sessionId,
-          storedInfo.email
-        );
+      // First, check if we have order reference from URL
+      if (!orderRef && !orderEmail && !sessionId) {
+        // No order info in URL - try to get from localStorage
+        const localOrder = getLocalOrderInfo();
+        if (localOrder && localOrder.ref) {
+          orderRef = localOrder.ref;
+          console.log('Using stored order reference:', orderRef);
+        } else {
+          // No order info at all - show error but still helpful
+          document.getElementById("dynamicStatusContent").innerHTML = `
+            <div class="error-message">
+              <strong>⚠️ Order information not found</strong>
+              <p style="margin-top: 8px;">Your payment was successful, but we couldn't find your order details.</p>
+              <p style="margin-top: 8px;">Please check your email for your order confirmation and download link.</p>
+              <p style="margin-top: 8px;">If you haven't received anything within 5 minutes, please contact our support team.</p>
+            </div>
+            <div class="btn-group">
+              <a href="/" class="btn-primary">← Back to home</a>
+              <a href="/tag-editor/index.html" class="btn-outline">Create new design</a>
+            </div>
+          `;
+          return;
+        }
       }
       
-      if (apiData && (apiData.status === 'paid' || apiData.payment_status === 'paid' || apiData.found === true)) {
-        // Real data from API (Google Sheets / webhook)
-        renderOrderUI(apiData, true);
-        
-        // Store for future reference
-        localStorage.setItem("heavenxent_last_order", JSON.stringify(apiData));
-      } else if (storedInfo) {
-        // Show fallback UI with pending status, indicating we're waiting for webhook
+      // First check: query the API
+      let orderData = await checkPaymentStatus(orderRef, orderEmail);
+      
+      if (orderData && orderData.status === 'paid') {
+        // Payment confirmed! Show success UI
+        renderOrderUI(orderData);
+      } else if (orderData && orderData.status === 'pending') {
+        // Payment still pending - show pending UI and start polling
         renderOrderUI({
-          ...storedInfo,
+          ref: orderRef,
+          email: orderEmail,
+          name: orderName || 'Valued Customer',
+          type: orderType || 'PDF',
           status: 'pending',
           payment_status: 'pending'
-        }, false);
+        });
         
-        // Poll for webhook completion
-        let pollCount = 0;
-        const maxPolls = 30; // 30 seconds
-        const pollTimer = setInterval(async () => {
+        // Start polling every 3 seconds
+        pollInterval = setInterval(async () => {
           pollCount++;
-          const checkResult = await fetchPaymentStatusFromAPI(
-            urlParams.paymentId || storedInfo.paymentId,
-            urlParams.sessionId,
-            storedInfo.email
-          );
-          if (checkResult && (checkResult.status === 'paid' || checkResult.payment_status === 'paid')) {
-            clearInterval(pollTimer);
-            renderOrderUI(checkResult, true);
-            localStorage.setItem("heavenxent_last_order", JSON.stringify(checkResult));
-          } else if (pollCount >= maxPolls) {
-            clearInterval(pollTimer);
-            // Still pending, show message
-            const pendingDiv = document.querySelector('.order-details-panel');
-            if (pendingDiv) {
-              const note = document.createElement('div');
-              note.style.marginTop = '1rem';
-              note.style.padding = '0.75rem';
-              note.style.background = '#fff8f0';
-              note.style.borderRadius = '12px';
-              note.style.fontSize = '0.8rem';
-              note.innerHTML = '💡 Payment still processing? No worries — we received your order. An email will be sent once confirmed. You can close this page.';
-              pendingDiv.parentNode.insertBefore(note, pendingDiv.nextSibling);
+          const newData = await checkPaymentStatus(orderRef, orderEmail);
+          if (newData && newData.status === 'paid') {
+            clearInterval(pollInterval);
+            renderOrderUI(newData);
+          } else if (pollCount >= MAX_POLLS) {
+            clearInterval(pollInterval);
+            // Still pending after max polls, but don't show error - just let user refresh manually
+            const refreshNote = document.querySelector('.refresh-btn');
+            if (refreshNote) {
+              refreshNote.style.display = 'inline-block';
             }
           }
         }, 3000);
       } else {
-        // No data at all - show generic success with helpful message
+        // No data yet - show pending with order info from URL
         renderOrderUI({
-          name: "Valued Customer",
-          email: "",
-          type: "PDF",
-          ref: "Order received",
-          status: "pending",
-          payment_status: "pending"
-        }, false);
+          ref: orderRef,
+          email: orderEmail,
+          name: orderName || 'Valued Customer',
+          type: orderType || 'PDF',
+          status: 'pending',
+          payment_status: 'pending'
+        });
+        
+        // Start polling
+        pollInterval = setInterval(async () => {
+          pollCount++;
+          const newData = await checkPaymentStatus(orderRef, orderEmail);
+          if (newData && newData.status === 'paid') {
+            clearInterval(pollInterval);
+            renderOrderUI(newData);
+          } else if (pollCount >= MAX_POLLS) {
+            clearInterval(pollInterval);
+          }
+        }, 3000);
       }
     }
     
+    // Start the app
     init();
   })();
 </script>

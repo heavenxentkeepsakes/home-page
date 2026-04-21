@@ -1,3 +1,4 @@
+// checkout.js - updated success_url with order reference
 import { uploadToDrive } from "./drive.js";
 import { Resend } from "resend";
 import fetch from "node-fetch";
@@ -147,7 +148,8 @@ export default async function handler(req, res) {
               fileName,
               ref
             },
-            success_url: "https://heavenxentph.com/success.html",
+            // IMPORTANT: Pass order reference in success URL
+            success_url: `https://heavenxentph.com/success.html?ref=${encodeURIComponent(ref)}&email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}&type=${type}`,
             cancel_url: "https://heavenxentph.com/cancel.html",
           },
         },
@@ -168,6 +170,28 @@ export default async function handler(req, res) {
       console.error("Invalid PayMongo response:", checkoutData);
       return res.status(500).json({ error: "Invalid payment response" });
     }
+
+    // Store order info temporarily (for 15 minutes) so success page can retrieve it
+    // Using a simple in-memory store - for production, use Redis or similar
+    const orderStore = global.orderStore || new Map();
+    global.orderStore = orderStore;
+    orderStore.set(ref, {
+      name,
+      email,
+      type,
+      ref,
+      driveFileUrl,
+      driveFileId,
+      fileName,
+      createdAt: Date.now()
+    });
+    
+    // Clean up old entries after 15 minutes
+    setTimeout(() => {
+      if (orderStore.has(ref)) {
+        orderStore.delete(ref);
+      }
+    }, 15 * 60 * 1000);
 
     // Send order received email (non-blocking)
     resend.emails.send({
