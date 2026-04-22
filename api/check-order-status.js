@@ -17,7 +17,6 @@ function getGoogleAuth() {
 }
 
 export default async function handler(req, res) {
-  // Enable CORS
   const origin = req.headers.origin;
   const allowedOrigins = ["https://heavenxentph.com", "http://localhost:3000"];
   if (allowedOrigins.includes(origin)) {
@@ -39,7 +38,7 @@ export default async function handler(req, res) {
     
     console.log("🔍 Checking order status for:", { payment_id, session_id, email, ref });
     
-    // First, check in-memory store (from checkout.js)
+    // Check in-memory store first
     const inMemoryOrder = global.orderStore?.get(ref);
     if (inMemoryOrder) {
       console.log("✅ Found order in memory:", inMemoryOrder);
@@ -54,7 +53,6 @@ export default async function handler(req, res) {
         if (auth) {
           const sheets = google.sheets({ version: "v4", auth });
           
-          // Get all orders from Sheet
           const response = await sheets.spreadsheets.values.get({
             spreadsheetId: process.env.GOOGLE_SHEETS_ID,
             range: "Sheet1!A:H",
@@ -63,7 +61,7 @@ export default async function handler(req, res) {
           const rows = response.data.values || [];
           console.log(`📊 Found ${rows.length} rows in Google Sheets`);
           
-          if (rows.length > 0) {
+          if (rows.length > 1) {
             // Headers: Date, Name, Email, Type, Amount, DriveUrl, Ref, PaymentId
             for (let i = 1; i < rows.length; i++) {
               const row = rows[i];
@@ -76,19 +74,19 @@ export default async function handler(req, res) {
                   (payment_id && rowPaymentId === payment_id) ||
                   (session_id && rowPaymentId === session_id)) {
                 
-                // Parse amount - remove ₱ symbol and convert to number
-                let amount = row[4] || "₱149";
-                let amountValue = 14900;
-                if (amount.includes("149")) amountValue = 14900;
-                if (amount.includes("199")) amountValue = 19900;
+                // Parse amount from sheet (should be like "₱149" or "₱199")
+                let amountDisplay = row[4] || "₱149";
+                let amountCents = 14900;
+                if (amountDisplay.includes("199")) amountCents = 19900;
+                if (amountDisplay.includes("149")) amountCents = 14900;
                 
                 sheetOrder = {
                   date: row[0],
                   name: row[1],
                   email: row[2],
                   type: row[3],
-                  amount: amountValue,
-                  amountDisplay: row[4],
+                  amount: amountCents,  // Store in cents
+                  amountDisplay: amountDisplay,
                   driveFileUrl: row[5],
                   ref: row[6],
                   paymentId: row[7],
@@ -96,7 +94,7 @@ export default async function handler(req, res) {
                   payment_status: "paid",
                   source: "google_sheets"
                 };
-                console.log("✅ Found paid order in Google Sheets:", sheetOrder);
+                console.log("✅ Found PAID order in Google Sheets:", sheetOrder);
                 break;
               }
             }
@@ -107,7 +105,7 @@ export default async function handler(req, res) {
       }
     }
     
-    // If found in Google Sheets (paid), return that
+    // If found in Google Sheets (paid), return that immediately
     if (sheetOrder) {
       return res.status(200).json(sheetOrder);
     }
@@ -118,7 +116,7 @@ export default async function handler(req, res) {
         ...inMemoryOrder,
         status: "pending",
         payment_status: "pending",
-        message: "Payment received, processing confirmation..."
+        message: "Payment received, waiting for bank confirmation..."
       });
     }
     
@@ -131,11 +129,10 @@ export default async function handler(req, res) {
         type: null,
         status: "pending",
         payment_status: "pending",
-        message: "Awaiting payment confirmation from PayMongo..."
+        message: "Awaiting payment confirmation..."
       });
     }
     
-    // No data found at all
     return res.status(200).json({
       status: "not_found",
       payment_status: "unknown",

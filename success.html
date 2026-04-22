@@ -79,6 +79,11 @@
       color: #b45f1b;
     }
 
+    .status-badge.paid {
+      background: #eaf6e6;
+      color: #1b5e2a;
+    }
+
     h1 {
       font-family: 'Playfair Display', serif;
       font-size: 2.2rem;
@@ -138,7 +143,6 @@
     }
 
     .payment-status {
-      background: #eaf6e6;
       border-radius: 40px;
       padding: 6px 14px;
       font-size: 0.8rem;
@@ -146,10 +150,14 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
+    }
+
+    .payment-status.paid {
+      background: #eaf6e6;
       color: #1b5e2a;
     }
 
-    .payment-status.pending-status {
+    .payment-status.pending {
       background: #fff0db;
       color: #b45f1b;
     }
@@ -259,15 +267,6 @@
       padding: 2rem;
     }
 
-    .error-message {
-      background: #fff0f0;
-      border-left: 4px solid #d9534f;
-      padding: 1rem;
-      border-radius: 12px;
-      margin: 1rem 0;
-      text-align: left;
-    }
-
     .refresh-btn {
       background: none;
       border: 1px solid #dacdbd;
@@ -282,29 +281,6 @@
 
     .refresh-btn:hover {
       background: #f5efe8;
-    }
-
-    .progress-bar {
-      width: 100%;
-      height: 4px;
-      background: #f0e5db;
-      border-radius: 2px;
-      margin: 20px 0;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      width: 0%;
-      height: 100%;
-      background: #c4956a;
-      animation: progress 10s ease-in-out infinite;
-      border-radius: 2px;
-    }
-
-    @keyframes progress {
-      0% { width: 0%; }
-      50% { width: 70%; }
-      100% { width: 90%; }
     }
 
     @media (max-width: 500px) {
@@ -332,16 +308,13 @@
         <div class="loader"></div>
         <span>Verifying your payment status...</span>
       </div>
-      <div class="progress-bar">
-        <div class="progress-fill"></div>
-      </div>
     </div>
   </div>
 </div>
 
 <footer style="margin-top: auto; text-align: center; padding: 2rem 1rem 2rem; border-top: 1px solid #f0e5db; font-size: 0.8rem; color: #ad9f8d;">
   <p>✨ Heavenxent Keepsakes — where your love becomes art ✨</p>
-  <p style="margin-top: 0.5rem;">Need help? <a href="/cdn-cgi/l/email-protection#e28a978e8691a28a978196978c8a91878696cc9197" style="color:#7a6852;">hello@heavenxentph.com</a></p>
+  <p style="margin-top: 0.5rem;">Need help? <a href="/cdn-cgi/l/email-protection" style="color:#7a6852;">hello@heavenxentph.com</a></p>
 </footer>
 
 <script>
@@ -366,15 +339,6 @@
         if (!orderName) orderName = parsed.name;
         if (!orderType) orderType = parsed.type;
       }
-      
-      const checkoutData = localStorage.getItem('last_checkout_data');
-      if (checkoutData) {
-        const parsed = JSON.parse(checkoutData);
-        console.log('📦 Found checkout data:', parsed);
-        if (!orderRef) orderRef = parsed.ref;
-        if (!orderName) orderName = parsed.name;
-        if (!orderType) orderType = parsed.type;
-      }
     } catch(e) {}
     
     // Default values if still missing
@@ -382,13 +346,14 @@
     if (!orderName) orderName = orderEmail ? orderEmail.split('@')[0] : 'Valued Customer';
     if (!orderRef) orderRef = 'HK-' + Math.floor(Math.random() * 10000);
     
-    // Correct amount based on type
-    const correctAmount = orderType === 'PDF' ? 14900 : 19900;
-    const amountDisplay = orderType === 'PDF' ? '₱149.00' : '₱199.00';
+    // Convert cents to pesos (14900 cents = ₱149.00)
+    const correctAmountCents = orderType === 'PDF' ? 14900 : 19900;
+    const correctAmountPesos = (correctAmountCents / 100).toFixed(2);
+    const amountDisplay = `₱${correctAmountPesos}`;
     
     let pollInterval = null;
     let pollCount = 0;
-    const MAX_POLLS = 20; // 60 seconds max
+    const MAX_POLLS = 30; // 90 seconds max
     
     // Check payment status from your API
     async function checkPaymentStatus() {
@@ -431,31 +396,50 @@
       });
     }
     
+    // Convert cents to pesos display
+    function formatAmount(cents) {
+      if (!cents) return amountDisplay;
+      const pesos = (cents / 100).toFixed(2);
+      return `₱${pesos}`;
+    }
+    
     // Render the order status UI
     function renderOrderUI(orderData) {
       const isPaid = orderData?.status === 'paid' || orderData?.payment_status === 'paid';
       const driveUrl = orderData?.driveFileUrl || null;
-      const paidAmount = orderData?.amount || correctAmount;
-      const paidAmountDisplay = orderData?.amountDisplay || amountDisplay;
+      
+      // Get amount in pesos (convert from cents if needed)
+      let amountValue = correctAmountCents;
+      let amountDisplayText = amountDisplay;
+      
+      if (orderData?.amount) {
+        // If amount is in cents (like 14900), convert to pesos
+        if (orderData.amount > 1000) {
+          amountValue = orderData.amount;
+          amountDisplayText = formatAmount(orderData.amount);
+        } else {
+          amountDisplayText = `₱${orderData.amount.toFixed(2)}`;
+        }
+      }
+      
       const customerName = orderData?.name || orderName;
       const customerEmail = orderData?.email || orderEmail;
       const orderReference = orderData?.ref || orderRef;
       const orderDate = orderData?.date || getCurrentDate();
       
       let statusBadgeHtml = '';
+      let mainTitle = '';
+      let subText = '';
+      
       if (isPaid) {
-        statusBadgeHtml = `<span class="status-badge"><span>✓</span> Payment confirmed · Card/GCash</span>`;
+        statusBadgeHtml = `<span class="status-badge paid"><span>✓</span> Payment confirmed</span>`;
+        mainTitle = `Thank you for your<span style="font-style: italic;"> purchase!</span>`;
+        subText = "Your payment has been confirmed. Your order is now ready.";
       } else {
-        statusBadgeHtml = `<span class="status-badge pending"><span>⏳</span> Payment processing · verifying with bank</span>`;
+        statusBadgeHtml = `<span class="status-badge pending"><span>⏳</span> Payment received - processing</span>`;
+        mainTitle = `Payment received!<span style="font-style: italic;"> Finalizing your order</span>`;
+        subText = "We've received your payment and are now preparing your order. This will only take a moment.";
       }
-      
-      const mainTitle = isPaid 
-        ? `Your keepsake is<span style="font-style: italic;"> ready</span>`
-        : `Payment received!<span style="font-style: italic;"> Finalizing your order</span>`;
-      
-      const subText = isPaid
-        ? "Your payment has been confirmed. Your order is now ready."
-        : "We've received your payment and are now processing your order. This will only take a moment.";
 
       const orderTypeDisplay = orderType === "PDF" ? "📄 Digital PDF (instant download)" : "🖨️ Premium Print + Delivery";
       
@@ -470,7 +454,7 @@
         </div>
         <div class="detail-row">
           <span class="detail-label">Total amount</span>
-          <span class="detail-value">₱ ${(isPaid ? paidAmount : correctAmount).toLocaleString()}</span>
+          <span class="detail-value">${amountDisplayText}</span>
         </div>
         <div class="detail-row">
           <span class="detail-label">Purchaser</span>
@@ -482,7 +466,7 @@
         </div>
         <div class="detail-row">
           <span class="detail-label">Payment status</span>
-          <span class="detail-value"><span class="payment-status ${isPaid ? '' : 'pending-status'}">${isPaid ? '✓ Successful' : '⏳ Processing'}</span></span>
+          <span class="detail-value"><span class="payment-status ${isPaid ? 'paid' : 'pending'}">${isPaid ? '✓ Paid' : '⏳ Processing'}</span></span>
         </div>
       `;
       
@@ -547,7 +531,7 @@
       } else if (isPaid && orderType !== 'PDF') {
         extraNote = `<div class="footnote">🖨️ Print orders are processed within 5-7 business days. You'll receive a shipping confirmation once ready.</div>`;
       } else {
-        extraNote = `<div class="footnote">⏳ Your payment is being verified by the bank. This usually takes less than a minute. The page will update automatically.</div>`;
+        extraNote = `<div class="footnote">⏳ Your payment is being verified. This usually takes less than a minute. The page will update automatically once confirmed.</div>`;
       }
       
       const fullHtml = `
@@ -588,30 +572,19 @@
       });
     }
     
-    // Main initialization - immediately show order received with correct amount
+    // Check if payment was already confirmed via webhook
     async function init() {
-      // First, immediately show order received with correct data
-      renderOrderUI({
-        status: 'pending',
-        payment_status: 'pending',
-        name: orderName,
-        email: orderEmail,
-        ref: orderRef,
-        amount: correctAmount
-      });
-      
-      // Then try to check for real payment status
-      let apiData = await checkPaymentStatus();
+      // First, try to get real status from API
+      const apiData = await checkPaymentStatus();
       
       if (apiData && (apiData.status === 'paid' || apiData.payment_status === 'paid')) {
-        // Payment confirmed!
+        // Payment already confirmed!
+        console.log('✅ Payment confirmed from API');
         renderOrderUI(apiData);
-      } else if (apiData && apiData.status === 'pending') {
-        // Still pending, start polling
-        renderOrderUI(apiData);
-        startPolling();
       } else {
-        // No API response or not found, still show pending and poll
+        // Show pending UI and start polling
+        console.log('⏳ Waiting for payment confirmation...');
+        renderOrderUI({ status: 'pending' });
         startPolling();
       }
     }
@@ -621,16 +594,20 @@
       
       pollInterval = setInterval(async () => {
         pollCount++;
+        console.log(`🔍 Polling payment status (attempt ${pollCount}/${MAX_POLLS})`);
+        
         const apiData = await checkPaymentStatus();
         
         if (apiData && (apiData.status === 'paid' || apiData.payment_status === 'paid')) {
+          console.log('✅ Payment confirmed via polling!');
           clearInterval(pollInterval);
           pollInterval = null;
           renderOrderUI(apiData);
         } else if (pollCount >= MAX_POLLS) {
+          console.log('⏰ Max polling attempts reached');
           clearInterval(pollInterval);
           pollInterval = null;
-          // Still pending after max polls, add a manual refresh message
+          // Still pending after max polls, add a message
           const refreshBtn = document.querySelector('.refresh-btn');
           if (refreshBtn) {
             refreshBtn.style.display = 'inline-block';
