@@ -3,112 +3,101 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Payment Status · Heavenxent Keepsakes</title>
+  <title>Payment · Heavenxent Keepsakes</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
   
   <style>
-    * {
+    /* ============================================
+       HEAVENXENT — SITE STYLES (aligned)
+       ============================================ */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
+    }
+
+    :root {
+      --cream: #faf7f2;
+      --warm-white: #fffef9;
+      --parchment: #f2ede4;
+      --soft: #e8ddd4;
+      --gold: #c9a96e;
+      --gold-light: #e8d5b0;
+      --gold-dark: #9a7a45;
+      --ink: #1a1714;
+      --ink-soft: #3d3830;
+      --ink-muted: #7a7268;
+      --border: rgba(201, 169, 110, 0.25);
     }
 
     body {
-      background: #fbf9f5;
       font-family: 'Outfit', sans-serif;
-      color: #1e1b1a;
-      line-height: 1.4;
+      font-weight: 300;
+      background: var(--cream);
+      color: var(--ink);
+      overflow-x: hidden;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
+    /* subtle grain overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+    }
+
     .success-container {
-      max-width: 680px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem 4rem;
+      max-width: 560px;
+      margin: 2rem auto;
+      padding: 0 1.5rem 2rem;
       width: 100%;
+      flex: 1;
+      display: flex;
+      align-items: center;
     }
 
     .success-card {
-      background: #ffffff;
-      border-radius: 2rem;
-      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.02);
-      padding: 2.5rem 2rem;
-      text-align: center;
-      transition: all 0.2s ease;
-      border: 1px solid rgba(226, 210, 190, 0.4);
-    }
-
-    .icon-illustration {
-      width: 88px;
-      height: 88px;
-      background: #eef6e8;
-      border-radius: 100px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1.5rem;
-      box-shadow: 0 6px 12px -8px rgba(0,0,0,0.05);
-    }
-
-    .checkmark-svg {
-      width: 48px;
-      height: 48px;
-      color: #2c6e2f;
-    }
-
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: #f0f3ea;
-      padding: 6px 16px;
-      border-radius: 60px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      letter-spacing: 0.3px;
-      color: #2a5c2e;
-      margin-bottom: 1.25rem;
-      font-family: 'Outfit', monospace;
-    }
-
-    .status-badge.pending {
-      background: #fff0db;
-      color: #b45f1b;
-    }
-
-    .status-badge.paid {
-      background: #eaf6e6;
-      color: #1b5e2a;
+      background: var(--warm-white);
+      border-radius: 1.75rem;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.02);
+      padding: 2rem 2rem 2.2rem;
+      width: 100%;
+      border: 1px solid var(--border);
     }
 
     h1 {
       font-family: 'Playfair Display', serif;
-      font-size: 2.2rem;
-      font-weight: 600;
-      letter-spacing: -0.3px;
-      color: #1e2a1c;
-      margin-bottom: 0.75rem;
+      font-size: 1.9rem;
+      font-weight: 400;
+      letter-spacing: -0.2px;
+      color: var(--ink);
+      margin-bottom: 0.4rem;
+      line-height: 1.2;
     }
 
     .subhead {
-      font-size: 1.05rem;
-      color: #4b4b44;
-      margin-bottom: 2rem;
-      border-bottom: 1px solid #f0e7db;
+      font-size: 0.85rem;
+      color: var(--ink-muted);
+      margin-bottom: 1.6rem;
+      border-bottom: 1px solid var(--border);
       display: inline-block;
-      padding-bottom: 6px;
+      padding-bottom: 5px;
     }
 
     .order-details-panel {
-      background: #fefaf5;
-      border-radius: 1.5rem;
-      padding: 1.5rem;
-      margin: 1.8rem 0 2rem;
-      text-align: left;
-      border: 1px solid #f3e9df;
+      background: var(--cream);
+      border-radius: 1.2rem;
+      padding: 1.2rem 1.2rem;
+      margin: 1rem 0 1.2rem;
+      border: 1px solid var(--border);
     }
 
     .detail-row {
@@ -116,8 +105,8 @@
       justify-content: space-between;
       align-items: baseline;
       flex-wrap: wrap;
-      padding: 12px 0;
-      border-bottom: 1px dashed #ede3d7;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--border);
     }
 
     .detail-row:last-child {
@@ -125,31 +114,30 @@
     }
 
     .detail-label {
-      font-weight: 500;
-      color: #7f6e5c;
-      font-size: 0.85rem;
+      font-weight: 400;
+      color: var(--ink-muted);
+      font-size: 0.7rem;
       letter-spacing: 0.3px;
       text-transform: uppercase;
     }
 
     .detail-value {
-      font-weight: 500;
-      color: #2b2a27;
-      font-family: 'Outfit', monospace;
-      font-size: 1rem;
-      word-break: break-all;
+      font-weight: 400;
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+      word-break: break-word;
       text-align: right;
       max-width: 60%;
     }
 
     .payment-status {
       border-radius: 40px;
-      padding: 6px 14px;
-      font-size: 0.8rem;
-      font-weight: 600;
+      padding: 4px 12px;
+      font-size: 0.7rem;
+      font-weight: 500;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
     }
 
     .payment-status.paid {
@@ -162,95 +150,126 @@
       color: #b45f1b;
     }
 
-    .email-notice {
-      background: #faf7f2;
+    .info-note {
+      background: var(--parchment);
       border-radius: 1rem;
-      padding: 1rem 1.2rem;
-      margin: 1.5rem 0;
-      font-size: 0.9rem;
+      padding: 0.7rem 1rem;
+      margin: 0.8rem 0;
+      font-size: 0.75rem;
       display: flex;
-      gap: 12px;
+      gap: 10px;
       align-items: center;
       justify-content: center;
       flex-wrap: wrap;
-      border-left: 4px solid #c7aa7a;
+      border-left: 3px solid var(--gold);
+      color: var(--ink-soft);
     }
 
+    /* BUTTONS — exact match to site */
     .btn-group {
       display: flex;
-      gap: 1rem;
+      gap: 1.2rem;
       justify-content: center;
       flex-wrap: wrap;
-      margin-top: 1.8rem;
+      margin: 1.4rem 0 0.5rem;
     }
 
     .btn-primary {
-      background: #1e1b1a;
-      color: white;
-      padding: 0.85rem 1.8rem;
-      border-radius: 2rem;
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 0.9rem;
-      transition: 0.2s;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      border: 1px solid #1e1b1a;
+      gap: 10px;
+      padding: 11px 26px;
+      background: var(--ink);
+      color: var(--cream);
+      text-decoration: none;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      transition: background 0.3s, gap 0.3s;
+      border-radius: 0;
     }
 
     .btn-primary:hover {
-      background: #3b2e28;
-      transform: translateY(-2px);
+      background: var(--gold-dark);
+      gap: 16px;
     }
 
     .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 26px;
       background: transparent;
-      border: 1px solid #dacdbd;
-      padding: 0.85rem 1.6rem;
-      border-radius: 2rem;
+      color: var(--ink-muted);
       text-decoration: none;
-      font-weight: 500;
-      color: #3e3a36;
-      transition: 0.2s;
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+      transition: color 0.25s, border-color 0.25s;
+      border-radius: 0;
     }
 
     .btn-outline:hover {
-      background: #f5efe8;
-      border-color: #bba88c;
+      color: var(--gold-dark);
+      border-color: var(--gold);
     }
 
     .download-link {
-      display: inline-block;
-      background: #c4956a;
-      color: white;
-      padding: 12px 24px;
-      border-radius: 40px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 26px;
+      background: var(--gold);
+      color: var(--ink);
       text-decoration: none;
+      font-size: 10px;
       font-weight: 500;
-      font-size: 0.9rem;
-      margin: 8px 0;
-      transition: 0.2s;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      transition: background 0.3s, gap 0.3s;
+      border-radius: 0;
     }
 
     .download-link:hover {
-      background: #a87b52;
-      transform: translateY(-2px);
+      background: var(--gold-light);
+      gap: 14px;
+    }
+
+    .refresh-btn {
+      background: none;
+      border: none;
+      font-size: 0.7rem;
+      color: var(--gold-dark);
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      text-decoration: underline;
+      letter-spacing: 0.06em;
+      margin-top: 8px;
+      transition: opacity 0.2s;
+    }
+
+    .refresh-btn:hover {
+      opacity: 0.7;
     }
 
     .footnote {
-      margin-top: 2rem;
-      font-size: 0.75rem;
-      color: #aa9e8e;
+      margin-top: 1.4rem;
+      font-size: 0.68rem;
+      color: var(--ink-muted);
       text-align: center;
+      border-top: 1px solid var(--border);
+      padding-top: 1rem;
     }
 
     .loader {
       display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 2px solid #e0d5c8;
-      border-top-color: #c4956a;
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--soft);
+      border-top-color: var(--gold);
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
@@ -259,67 +278,61 @@
       to { transform: rotate(360deg); }
     }
 
-    .loading-text {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      padding: 2rem;
+    .loading-state {
+      text-align: center;
+      padding: 2rem 1rem;
     }
 
-    .refresh-btn {
-      background: none;
-      border: 1px solid #dacdbd;
-      padding: 6px 12px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.75rem;
-      margin-top: 10px;
-      transition: 0.2s;
+    .loading-state span {
+      color: var(--ink-muted);
+      font-size: 0.85rem;
     }
 
-    .refresh-btn:hover {
-      background: #f5efe8;
+    footer {
+      margin-top: auto;
+      text-align: center;
+      padding: 1.2rem 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.7rem;
+      color: var(--ink-muted);
+    }
+
+    footer a {
+      color: var(--gold-dark);
+      text-decoration: none;
     }
 
     @media (max-width: 500px) {
-      .success-card { padding: 1.8rem; }
-      h1 { font-size: 1.8rem; }
-      .detail-row { flex-direction: column; gap: 5px; }
+      .success-card { padding: 1.5rem; }
+      h1 { font-size: 1.6rem; }
+      .detail-row { flex-direction: column; gap: 4px; }
       .detail-value { text-align: left; max-width: 100%; }
+      .btn-primary, .btn-outline, .download-link { padding: 9px 20px; font-size: 9px; }
     }
   </style>
 </head>
 <body>
 
-<nav style="padding: 1.2rem 2rem; max-width: 1280px; margin: 0 auto; width: 100%; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-  <a href="/" style="font-family: 'Playfair Display', serif; font-weight: 600; font-size: 1.4rem; text-decoration: none; color: #1e2a1c;">Heavenxent Keepsakes</a>
-  <div style="display: flex; gap: 18px;">
-    <a href="/tag-editor/index.html" style="text-decoration: none; color: #5b4b3a; font-weight: 400;">Design studio</a>
-    <a href="/#products" style="text-decoration: none; color: #5b4b3a;">Collection</a>
-  </div>
-</nav>
-
 <div class="success-container">
   <div class="success-card" id="successCard">
-    <div id="dynamicStatusContent">
-      <div class="loading-text">
-        <div class="loader"></div>
-        <span>Verifying your payment status...</span>
+    <div id="dynamicContent">
+      <!-- loading state -->
+      <div class="loading-state">
+        <div class="loader" style="margin-bottom: 12px;"></div>
+        <span>Verifying payment status...</span>
       </div>
     </div>
   </div>
 </div>
 
-<footer style="margin-top: auto; text-align: center; padding: 2rem 1rem 2rem; border-top: 1px solid #f0e5db; font-size: 0.8rem; color: #ad9f8d;">
+<footer>
   <p>✨ Heavenxent Keepsakes — where your love becomes art ✨</p>
-  <p style="margin-top: 0.5rem;">Need help? <a href="/cdn-cgi/l/email-protection" style="color:#7a6852;">hello@heavenxentph.com</a></p>
+  <p style="margin-top: 0.3rem;">Need help? <a href="/cdn-cgi/l/email-protection#6d0c1f081e1f2d0a0303190c03190c190e08430e0200">hello@heavenxentph.com</a></p>
 </footer>
 
 <script>
   (function() {
-    // Get order information from URL parameters
+    // ---- get URL parameters ----
     const urlParams = new URLSearchParams(window.location.search);
     let orderRef = urlParams.get('ref');
     const orderEmail = urlParams.get('email');
@@ -327,242 +340,69 @@
     let orderType = urlParams.get('type');
     const sessionId = urlParams.get('session_id');
     
-    console.log('📦 Order Data from URL:', { orderRef, orderEmail, orderName, orderType, sessionId });
-    
-    // Also check localStorage for order data
+    // localStorage fallback (minimal)
     try {
       const lastOrder = localStorage.getItem('heavenxent_last_order');
-      if (lastOrder) {
+      if (lastOrder && !orderRef) {
         const parsed = JSON.parse(lastOrder);
-        console.log('📦 Found order in localStorage:', parsed);
         if (!orderRef) orderRef = parsed.ref;
         if (!orderName) orderName = parsed.name;
         if (!orderType) orderType = parsed.type;
       }
     } catch(e) {}
     
-    // Default values if still missing
+    // defaults
     if (!orderType) orderType = 'PDF';
-    if (!orderName) orderName = orderEmail ? orderEmail.split('@')[0] : 'Valued Customer';
+    if (!orderName) orderName = orderEmail ? orderEmail.split('@')[0] : 'Customer';
     if (!orderRef) orderRef = 'HK-' + Math.floor(Math.random() * 10000);
     
-    // Convert cents to pesos (14900 cents = ₱149.00)
-    const correctAmountCents = orderType === 'PDF' ? 14900 : 19900;
-    const correctAmountPesos = (correctAmountCents / 100).toFixed(2);
-    const amountDisplay = `₱${correctAmountPesos}`;
+    const isPrintOrder = (orderType !== 'PDF');
+    const amountCents = isPrintOrder ? 19900 : 14900;
+    const amountDisplay = `₱${(amountCents / 100).toFixed(2)}`;
+    const orderTypeLabel = isPrintOrder ? "🖨️ Premium Print" : "📄 Digital PDF";
     
     let pollInterval = null;
-    let pollCount = 0;
-    const MAX_POLLS = 30; // 90 seconds max
+    let pollAttempts = 0;
+    const MAX_POLL = 25; // 75 seconds
     
-    // Check payment status from your API
-    async function checkPaymentStatus() {
+    // ---- API fetch ----
+    async function fetchOrderStatus() {
       try {
-        let url = `https://api.heavenxentph.com/api/check-order-status?`;
+        let apiUrl = 'https://api.heavenxentph.com/api/check-order-status?';
         if (orderRef) {
-          url += `ref=${encodeURIComponent(orderRef)}`;
+          apiUrl += `ref=${encodeURIComponent(orderRef)}`;
         } else if (orderEmail) {
-          url += `email=${encodeURIComponent(orderEmail)}`;
+          apiUrl += `email=${encodeURIComponent(orderEmail)}`;
         } else if (sessionId) {
-          url += `session_id=${encodeURIComponent(sessionId)}`;
+          apiUrl += `session_id=${encodeURIComponent(sessionId)}`;
+        } else {
+          return null;
         }
-        
-        console.log('🔍 Checking status at:', url);
-        const response = await fetch(url, {
+        const resp = await fetch(apiUrl, {
           method: 'GET',
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Accept': 'application/json' }
         });
-        
-        if (response.ok) {
-          const data = await response.json();
-          console.log('📊 Payment status response:', data);
+        if (resp.ok) {
+          const data = await resp.json();
           return data;
         }
         return null;
-      } catch (error) {
-        console.log('⚠️ Error checking payment status:', error);
+      } catch (err) {
         return null;
       }
     }
     
-    // Format date nicely
-    function getCurrentDate() {
+    function getOrderDate() {
       return new Date().toLocaleDateString('en-PH', { 
         year: 'numeric', 
-        month: 'long', 
+        month: 'short', 
         day: 'numeric',
         hour: '2-digit',
         minute: '2-digit'
       });
     }
     
-    // Convert cents to pesos display
-    function formatAmount(cents) {
-      if (!cents) return amountDisplay;
-      const pesos = (cents / 100).toFixed(2);
-      return `₱${pesos}`;
-    }
-    
-    // Render the order status UI
-    function renderOrderUI(orderData) {
-      const isPaid = orderData?.status === 'paid' || orderData?.payment_status === 'paid';
-      const driveUrl = orderData?.driveFileUrl || null;
-      
-      // Get amount in pesos (convert from cents if needed)
-      let amountValue = correctAmountCents;
-      let amountDisplayText = amountDisplay;
-      
-      if (orderData?.amount) {
-        // If amount is in cents (like 14900), convert to pesos
-        if (orderData.amount > 1000) {
-          amountValue = orderData.amount;
-          amountDisplayText = formatAmount(orderData.amount);
-        } else {
-          amountDisplayText = `₱${orderData.amount.toFixed(2)}`;
-        }
-      }
-      
-      const customerName = orderData?.name || orderName;
-      const customerEmail = orderData?.email || orderEmail;
-      const orderReference = orderData?.ref || orderRef;
-      const orderDate = orderData?.date || getCurrentDate();
-      
-      let statusBadgeHtml = '';
-      let mainTitle = '';
-      let subText = '';
-      
-      if (isPaid) {
-        statusBadgeHtml = `<span class="status-badge paid"><span>✓</span> Payment confirmed</span>`;
-        mainTitle = `Thank you for your<span style="font-style: italic;"> purchase!</span>`;
-        subText = "Your payment has been confirmed. Your order is now ready.";
-      } else {
-        statusBadgeHtml = `<span class="status-badge pending"><span>⏳</span> Payment received - processing</span>`;
-        mainTitle = `Payment received!<span style="font-style: italic;"> Finalizing your order</span>`;
-        subText = "We've received your payment and are now preparing your order. This will only take a moment.";
-      }
-
-      const orderTypeDisplay = orderType === "PDF" ? "📄 Digital PDF (instant download)" : "🖨️ Premium Print + Delivery";
-      
-      let orderRows = `
-        <div class="detail-row">
-          <span class="detail-label">Order reference</span>
-          <span class="detail-value">${escapeHtml(orderReference)}</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">Order type</span>
-          <span class="detail-value">${orderTypeDisplay}</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">Total amount</span>
-          <span class="detail-value">${amountDisplayText}</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">Purchaser</span>
-          <span class="detail-value">${escapeHtml(customerName)}</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">Date</span>
-          <span class="detail-value">${orderDate}</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">Payment status</span>
-          <span class="detail-value"><span class="payment-status ${isPaid ? 'paid' : 'pending'}">${isPaid ? '✓ Paid' : '⏳ Processing'}</span></span>
-        </div>
-      `;
-      
-      // Add download link if PDF and paid
-      let downloadSection = '';
-      if (isPaid && orderType === 'PDF') {
-        if (driveUrl) {
-          downloadSection = `
-            <div style="margin: 1rem 0; text-align: center;">
-              <a href="${driveUrl}" target="_blank" class="download-link">
-                📎 Download Your PDF Now
-              </a>
-              <p style="font-size: 0.7rem; color: #888; margin-top: 8px;">Link also sent to your email</p>
-            </div>
-          `;
-        } else {
-          downloadSection = `
-            <div style="margin: 1rem 0; text-align: center; background: #f0f3ea; padding: 1rem; border-radius: 12px;">
-              <p style="font-size: 0.9rem;">✨ Your PDF is being prepared and will be emailed to you within 1-2 minutes.</p>
-              <p style="font-size: 0.75rem; color: #666; margin-top: 5px;">Check your inbox (and spam folder) for the download link.</p>
-            </div>
-          `;
-        }
-      }
-      
-      let emailNoticeHtml = '';
-      if (customerEmail) {
-        emailNoticeHtml = `
-          <div class="email-notice">
-            <span class="email-icon">📧</span>
-            <span>Confirmation sent to <strong>${escapeHtml(customerEmail)}</strong>. 
-            ${isPaid && orderType === 'PDF' ? 'Your download link is on its way!' : 'We\'ll email you once your order is ready.'}</span>
-          </div>
-        `;
-      }
-      
-      let manualRefreshButton = '';
-      if (!isPaid) {
-        manualRefreshButton = `
-          <div style="margin-top: 1rem;">
-            <button onclick="window.location.reload()" class="refresh-btn">
-              ↻ Refresh status
-            </button>
-          </div>
-        `;
-      }
-      
-      const actionButtons = `
-        <div class="btn-group">
-          <a href="/tag-editor/index.html" class="btn-primary">
-            <span>✨ Create another design</span>
-          </a>
-          <a href="/" class="btn-outline">
-            ← Back to home
-          </a>
-        </div>
-      `;
-      
-      let extraNote = '';
-      if (isPaid && orderType === 'PDF') {
-        extraNote = `<div class="footnote">💡 Can't find the email? Check your spam folder, or <a href="/cdn-cgi/l/email-protection" style="color: #c4956a;">contact us</a> and we'll resend your download link.</div>`;
-      } else if (isPaid && orderType !== 'PDF') {
-        extraNote = `<div class="footnote">🖨️ Print orders are processed within 5-7 business days. You'll receive a shipping confirmation once ready.</div>`;
-      } else {
-        extraNote = `<div class="footnote">⏳ Your payment is being verified. This usually takes less than a minute. The page will update automatically once confirmed.</div>`;
-      }
-      
-      const fullHtml = `
-        <div class="icon-illustration">
-          <svg class="checkmark-svg" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="${isPaid ? 'M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z' : 'M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z'}" />
-          </svg>
-        </div>
-        ${statusBadgeHtml}
-        <h1>${mainTitle}</h1>
-        <p class="subhead">${subText}</p>
-        <div class="order-details-panel">
-          ${orderRows}
-        </div>
-        ${downloadSection}
-        ${emailNoticeHtml}
-        ${manualRefreshButton}
-        ${actionButtons}
-        ${extraNote}
-      `;
-      
-      document.getElementById("dynamicStatusContent").innerHTML = fullHtml;
-      
-      // If paid, stop polling
-      if (isPaid && pollInterval) {
-        clearInterval(pollInterval);
-        pollInterval = null;
-      }
-    }
-    
-    function escapeHtml(str) {
+    function esc(str) {
       if (!str) return '';
       return String(str).replace(/[&<>]/g, function(m) {
         if (m === '&') return '&amp;';
@@ -572,51 +412,229 @@
       });
     }
     
-    // Check if payment was already confirmed via webhook
-    async function init() {
-      // First, try to get real status from API
-      const apiData = await checkPaymentStatus();
+    // ---- RENDER UI (no icon, no top badge) ----
+    function renderUI(orderData) {
+      const isPaid = orderData && (orderData.status === 'paid' || orderData.payment_status === 'paid');
+      const driveUrl = (isPaid && orderData?.driveFileUrl) ? orderData.driveFileUrl : null;
       
-      if (apiData && (apiData.status === 'paid' || apiData.payment_status === 'paid')) {
-        // Payment already confirmed!
-        console.log('✅ Payment confirmed from API');
-        renderOrderUI(apiData);
+      const finalName = orderData?.name || orderName;
+      const finalEmail = orderData?.email || orderEmail;
+      const finalRef = orderData?.ref || orderRef;
+      const finalDate = orderData?.date || getOrderDate();
+      
+      // title & subtitle
+      let titleText = isPaid ? "Thank you for your purchase" : "Payment received";
+      let subText = isPaid ? "Your order is complete." : "Finalizing your order — almost ready.";
+      
+      if (!isPaid) {
+        subText = "We're confirming your payment. This takes just a few seconds.";
+      }
+      
+      // order rows
+      let orderRows = `
+        <div class="detail-row">
+          <span class="detail-label">Order ref</span>
+          <span class="detail-value">${esc(finalRef)}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Type</span>
+          <span class="detail-value">${orderTypeLabel}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Amount</span>
+          <span class="detail-value">${amountDisplay}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Customer</span>
+          <span class="detail-value">${esc(finalName)}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Status</span>
+          <span class="detail-value"><span class="payment-status ${isPaid ? 'paid' : 'pending'}">${isPaid ? '✓ Paid' : '⏳ Pending'}</span></span>
+        </div>
+      `;
+      
+      // download section (only for paid PDF)
+      let downloadHtml = '';
+      if (isPaid && !isPrintOrder) {
+        if (driveUrl) {
+          downloadHtml = `
+            <div style="text-align: center; margin: 0.8rem 0 0.5rem;">
+              <a href="${driveUrl}" target="_blank" class="download-link">
+                ⬇️ Download PDF
+              </a>
+            </div>
+          `;
+        } else {
+          downloadHtml = `
+            <div class="info-note">
+              <span>✨</span> PDF will be emailed within 1-2 minutes
+            </div>
+          `;
+        }
+      } else if (isPaid && isPrintOrder) {
+        downloadHtml = `
+          <div class="info-note">
+            <span>📦</span> Print order • shipping confirmation via email
+          </div>
+        `;
+      }
+      
+      // email note
+      let emailNote = '';
+      if (finalEmail) {
+        emailNote = `
+          <div class="info-note">
+            <span>📧</span> Confirmation sent to ${esc(finalEmail)}
+          </div>
+        `;
+      }
+      
+      // manual refresh for pending
+      let manualRefresh = '';
+      if (!isPaid) {
+        manualRefresh = `
+          <div style="text-align: center; margin-top: 0.5rem;">
+            <button class="refresh-btn" id="manualRefreshBtn">↻ Refresh status</button>
+          </div>
+        `;
+      }
+      
+      // action buttons
+      const actionButtons = `
+        <div class="btn-group">
+          <a href="/tag-editor/index.html" class="btn-primary">✨ New design</a>
+          <a href="/" class="btn-outline">← Home</a>
+        </div>
+      `;
+      
+      // footnote
+      let footnote = '';
+      if (isPaid && !isPrintOrder && !driveUrl) {
+        footnote = `<div class="footnote">💡 Check spam folder. <a href="/cdn-cgi/l/email-protection" style="color: var(--gold-dark);">Contact us</a> if needed.</div>`;
+      } else if (isPaid && isPrintOrder) {
+        footnote = `<div class="footnote">🖨️ Print orders ship within 5–7 business days.</div>`;
       } else {
-        // Show pending UI and start polling
-        console.log('⏳ Waiting for payment confirmation...');
-        renderOrderUI({ status: 'pending' });
-        startPolling();
+        footnote = `<div class="footnote">⏳ Auto-refreshes once payment is verified.</div>`;
+      }
+      
+      const fullHtml = `
+        <h1>${titleText}</h1>
+        <div class="subhead">${subText}</div>
+        
+        <div class="order-details-panel">
+          ${orderRows}
+        </div>
+        
+        ${downloadHtml}
+        ${emailNote}
+        ${manualRefresh}
+        ${actionButtons}
+        ${footnote}
+      `;
+      
+      document.getElementById('dynamicContent').innerHTML = fullHtml;
+      
+      const refreshBtn = document.getElementById('manualRefreshBtn');
+      if (refreshBtn) {
+        refreshBtn.addEventListener('click', () => {
+          window.location.reload();
+        });
+      }
+      
+      if (isPaid && pollInterval) {
+        clearInterval(pollInterval);
+        pollInterval = null;
       }
     }
     
-    function startPolling() {
+    // ---- Pending minimal UI (no icon/badge) ----
+    function showPendingUI() {
+      const pendingHtml = `
+        <h1>Payment received</h1>
+        <div class="subhead">Verifying transaction details...</div>
+        
+        <div class="order-details-panel">
+          <div class="detail-row">
+            <span class="detail-label">Order ref</span>
+            <span class="detail-value">${esc(orderRef)}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Type</span>
+            <span class="detail-value">${orderTypeLabel}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Amount</span>
+            <span class="detail-value">${amountDisplay}</span>
+          </div>
+        </div>
+        
+        <div class="info-note">
+          <span>🔄</span> This page updates automatically
+        </div>
+        
+        <div class="btn-group">
+          <a href="/tag-editor/index.html" class="btn-primary">✨ New design</a>
+          <a href="/" class="btn-outline">← Home</a>
+        </div>
+        
+        <div style="text-align: center; margin-top: 0.8rem;">
+          <button class="refresh-btn" id="pendingRefreshBtn">↻ Refresh status</button>
+        </div>
+        
+        <div class="footnote">⏳ Usually takes less than 30 seconds.</div>
+      `;
+      document.getElementById('dynamicContent').innerHTML = pendingHtml;
+      
+      const refreshPending = document.getElementById('pendingRefreshBtn');
+      if (refreshPending) {
+        refreshPending.addEventListener('click', () => {
+          window.location.reload();
+        });
+      }
+    }
+    
+    // ---- Polling ----
+    async function startPolling() {
       if (pollInterval) return;
       
       pollInterval = setInterval(async () => {
-        pollCount++;
-        console.log(`🔍 Polling payment status (attempt ${pollCount}/${MAX_POLLS})`);
-        
-        const apiData = await checkPaymentStatus();
-        
-        if (apiData && (apiData.status === 'paid' || apiData.payment_status === 'paid')) {
-          console.log('✅ Payment confirmed via polling!');
+        pollAttempts++;
+        const statusData = await fetchOrderStatus();
+        if (statusData && (statusData.status === 'paid' || statusData.payment_status === 'paid')) {
           clearInterval(pollInterval);
           pollInterval = null;
-          renderOrderUI(apiData);
-        } else if (pollCount >= MAX_POLLS) {
-          console.log('⏰ Max polling attempts reached');
+          renderUI(statusData);
+        } else if (pollAttempts >= MAX_POLL) {
           clearInterval(pollInterval);
           pollInterval = null;
-          // Still pending after max polls, add a message
-          const refreshBtn = document.querySelector('.refresh-btn');
-          if (refreshBtn) {
-            refreshBtn.style.display = 'inline-block';
-          }
+          // final fallback: still pending
+          renderUI({ status: 'pending', ref: orderRef, name: orderName, email: orderEmail });
         }
       }, 3000);
     }
     
-    // Start the app
+    // ---- Init ----
+    async function init() {
+      const initialData = await fetchOrderStatus();
+      if (initialData && (initialData.status === 'paid' || initialData.payment_status === 'paid')) {
+        renderUI(initialData);
+        return;
+      }
+      showPendingUI();
+      startPolling();
+      
+      // extra fast re-check after 1s
+      setTimeout(async () => {
+        const recheck = await fetchOrderStatus();
+        if (recheck && (recheck.status === 'paid' || recheck.payment_status === 'paid')) {
+          if (pollInterval) clearInterval(pollInterval);
+          pollInterval = null;
+          renderUI(recheck);
+        }
+      }, 1200);
+    }
+    
     init();
   })();
 </script>
