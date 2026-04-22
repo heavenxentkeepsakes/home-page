@@ -358,7 +358,7 @@
     // Check payment status from your API
     async function checkPaymentStatus() {
       try {
-        let url = `/api/check-order-status?`;
+        let url = `https://api.heavenxentph.com/api/check-order-status?`;
         if (orderRef) {
           url += `ref=${encodeURIComponent(orderRef)}`;
         } else if (orderEmail) {
