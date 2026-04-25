@@ -11,7 +11,7 @@ const rateLimitMap = new Map();
 function checkRateLimit(identifier, limit = 3, windowMs = 60000) {
   const now = Date.now();
   const windowStart = now - windowMs;
-  
+
   for (const [key, timestamps] of rateLimitMap.entries()) {
     const filtered = timestamps.filter(t => t > windowStart);
     if (filtered.length === 0) {
@@ -20,21 +20,21 @@ function checkRateLimit(identifier, limit = 3, windowMs = 60000) {
       rateLimitMap.set(key, filtered);
     }
   }
-  
+
   const userRequests = rateLimitMap.get(identifier) || [];
   if (userRequests.length >= limit) {
     return false;
   }
-  
+
   userRequests.push(now);
   rateLimitMap.set(identifier, userRequests);
   return true;
 }
 
 function getSessionId(req) {
-  return req.headers['x-forwarded-for'] || 
-         req.socket.remoteAddress ||
-         'unknown';
+  return req.headers['x-forwarded-for'] ||
+    req.socket.remoteAddress ||
+    'unknown';
 }
 
 export default async function handler(req, res) {
@@ -62,8 +62,8 @@ export default async function handler(req, res) {
     const rateLimitKey = `${sessionId}:${email || 'anonymous'}`;
     if (!checkRateLimit(rateLimitKey, 3, 60000)) {
       console.warn(`⚠️ Rate limit exceeded for ${rateLimitKey}`);
-      return res.status(429).json({ 
-        error: "Too many requests. Please wait a moment before trying again." 
+      return res.status(429).json({
+        error: "Too many requests. Please wait a moment before trying again."
       });
     }
 
@@ -108,12 +108,12 @@ export default async function handler(req, res) {
 
     // Upload to Drive
     console.log(`📤 Uploading to Drive folder: ${folderId}`);
-    const uploadResult = await uploadToDrive({ 
-      base64PDF: pdfBase64, 
-      fileName, 
-      folderId 
+    const uploadResult = await uploadToDrive({
+      base64PDF: pdfBase64,
+      fileName,
+      folderId
     });
-    
+
     const driveFileId = uploadResult.fileId;
     const driveFileUrl = uploadResult.fileUrl;
     console.log(`✅ File uploaded with ID: ${driveFileId}`);
@@ -137,12 +137,18 @@ export default async function handler(req, res) {
                 quantity: 1,
               },
             ],
-            payment_method_types: ["gcash", "card"],
-            metadata: { 
-              name, 
-              email, 
-              type, 
-              address, 
+            "payment_method_types": [
+              "card",
+              "gcash",
+              "paymaya",
+              "qrph",
+              "online_banking"
+            ],
+            metadata: {
+              name,
+              email,
+              type,
+              address,
               driveFileId,
               driveFileUrl,
               fileName,
@@ -185,7 +191,7 @@ export default async function handler(req, res) {
       fileName,
       createdAt: Date.now()
     });
-    
+
     // Clean up old entries after 15 minutes
     setTimeout(() => {
       if (orderStore.has(ref)) {
