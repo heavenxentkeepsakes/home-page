@@ -36,6 +36,9 @@ function verifyPayMongoSignature(req, rawBody) {
       } else if (part.startsWith('te=')) {
         signature = part.substring(3);
       }
+      else if (part.startsWith('li=')) {
+        signature = part.substring(3); 
+      }
     }
 
     if (!timestamp || !signature) {
@@ -221,7 +224,7 @@ export default async function handler(req, res) {
         customerText = finalFileUrl
           ? `Hi ${name},\n\nYour payment is confirmed and your wedding tag PDF is ready!\n\nDownload here:\n${finalFileUrl}\n\nThank you for your purchase 💖`
           : `Hi ${name},\n\nYour payment is confirmed! Your file is still processing and we will send your download link shortly.\n\nThank you 💖`;
-        
+
         customerHtml = finalFileUrl
           ? `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
