@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Payment · Heavenxent Keepsakes</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Jost:wght@200;300;400;500&family=Cormorant+Garamond:wght@300;400&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="landing.css">
   <style>
-    /* ============================================
-       HEAVENXENT — SITE STYLES (aligned)
-       ============================================ */
     *,
     *::before,
     *::after {
@@ -33,8 +33,12 @@
       --border: rgba(201, 169, 110, 0.25);
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-      font-family: 'Outfit', sans-serif;
+      font-family: 'Jost', sans-serif;
       font-weight: 300;
       background: var(--cream);
       color: var(--ink);
@@ -44,67 +48,95 @@
       flex-direction: column;
     }
 
-    /* subtle grain overlay */
-    body::after {
+    body::before {
       content: '';
       position: fixed;
       inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
       pointer-events: none;
-      z-index: 9999;
+      z-index: 1000;
+      opacity: 0.4;
     }
 
-    .success-container {
-      max-width: 560px;
-      margin: 2rem auto;
-      padding: 0 1.5rem 2rem;
-      width: 100%;
+
+    /* ── PAGE LAYOUT ── */
+    .page-wrap {
       flex: 1;
       display: flex;
+      flex-direction: column;
       align-items: center;
+      padding: 120px 1.5rem 3rem;
     }
 
-    .success-card {
-      background: var(--warm-white);
-      border-radius: 1.75rem;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.02);
-      padding: 2rem 2rem 2.2rem;
-      width: 100%;
-      border: 1px solid var(--border);
+    /* ── HEADER ── */
+    .page-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
     }
 
-    h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.9rem;
+    .page-eyebrow {
+      font-size: 0.65rem;
       font-weight: 400;
-      letter-spacing: -0.2px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+    }
+
+    .page-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: 2.4rem;
       color: var(--ink);
-      margin-bottom: 0.4rem;
-      line-height: 1.2;
+      line-height: 1.15;
+      margin-bottom: 0.5rem;
     }
 
-    .subhead {
-      font-size: 0.85rem;
+    .page-sub {
+      font-size: 0.8rem;
+      font-weight: 300;
+      letter-spacing: 0.06em;
       color: var(--ink-muted);
-      margin-bottom: 1.6rem;
-      border-bottom: 1px solid var(--border);
-      display: inline-block;
-      padding-bottom: 5px;
     }
 
-    .order-details-panel {
-      background: var(--cream);
-      border-radius: 1.2rem;
-      padding: 1.2rem 1.2rem;
-      margin: 1rem 0 1.2rem;
+    .gold-rule {
+      width: 40px;
+      height: 1px;
+      background: var(--gold);
+      margin: 1rem auto 0;
+      opacity: 0.6;
+    }
+
+    /* ── CARD ── */
+    .order-card {
+      background: var(--warm-white);
       border: 1px solid var(--border);
+      border-radius: 1.5rem;
+      width: 100%;
+      max-width: 520px;
+      overflow: hidden;
+    }
+
+    /* ── ORDER DETAILS ── */
+    .order-panel {
+      background: var(--parchment);
+      border-bottom: 1px solid var(--border);
+      padding: 1.5rem 1.75rem;
+    }
+
+    .panel-label {
+      font-size: 0.6rem;
+      font-weight: 400;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      margin-bottom: 1rem;
     }
 
     .detail-row {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      flex-wrap: wrap;
       padding: 0.6rem 0;
       border-bottom: 1px solid var(--border);
     }
@@ -114,64 +146,74 @@
     }
 
     .detail-label {
+      font-size: 0.68rem;
       font-weight: 400;
-      color: var(--ink-muted);
-      font-size: 0.7rem;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
+      color: var(--ink-muted);
     }
 
     .detail-value {
+      font-size: 0.85rem;
       font-weight: 400;
       color: var(--ink-soft);
-      font-size: 0.9rem;
-      word-break: break-word;
       text-align: right;
       max-width: 60%;
+      word-break: break-word;
     }
 
     .payment-status {
-      border-radius: 40px;
-      padding: 4px 12px;
-      font-size: 0.7rem;
-      font-weight: 500;
       display: inline-flex;
       align-items: center;
       gap: 5px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
     }
 
     .payment-status.paid {
       background: #eaf6e6;
       color: #1b5e2a;
+      border: 1px solid rgba(27, 94, 42, 0.15);
     }
 
     .payment-status.pending {
       background: #fff0db;
       color: #b45f1b;
+      border: 1px solid rgba(180, 95, 27, 0.15);
     }
 
-    .info-note {
-      background: var(--parchment);
-      border-radius: 1rem;
-      padding: 0.7rem 1rem;
-      margin: 0.8rem 0;
-      font-size: 0.75rem;
+    /* ── BODY AREA ── */
+    .order-body {
+      padding: 1.5rem 1.75rem 1.75rem;
       display: flex;
-      gap: 10px;
-      align-items: center;
-      justify-content: center;
-      flex-wrap: wrap;
-      border-left: 3px solid var(--gold);
-      color: var(--ink-soft);
+      flex-direction: column;
+      gap: 1rem;
     }
 
-    /* BUTTONS — exact match to site */
+    /* ── INFO NOTE ── */
+    .info-note {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--parchment);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--gold);
+      border-radius: 0.75rem;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 300;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+
+    /* ── BUTTONS ── */
     .btn-group {
       display: flex;
-      gap: 1.2rem;
-      justify-content: center;
+      gap: 0.75rem;
       flex-wrap: wrap;
-      margin: 1.4rem 0 0.5rem;
     }
 
     .btn-primary {
@@ -182,12 +224,17 @@
       background: var(--ink);
       color: var(--cream);
       text-decoration: none;
+      font-family: 'Jost', sans-serif;
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.22em;
       text-transform: uppercase;
+      border: none;
+      cursor: pointer;
       transition: background 0.3s, gap 0.3s;
       border-radius: 0;
+      flex: 1;
+      justify-content: center;
     }
 
     .btn-primary:hover {
@@ -198,18 +245,22 @@
     .btn-outline {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 10px;
       padding: 11px 26px;
       background: transparent;
       color: var(--ink-muted);
       text-decoration: none;
+      font-family: 'Jost', sans-serif;
       font-size: 10px;
       font-weight: 300;
       letter-spacing: 0.2em;
       text-transform: uppercase;
+      border: none;
       border-bottom: 1px solid var(--border);
       transition: color 0.25s, border-color 0.25s;
       border-radius: 0;
+      flex: 1;
     }
 
     .btn-outline:hover {
@@ -217,228 +268,280 @@
       border-color: var(--gold);
     }
 
-    .download-link {
+    .btn-download {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 10px;
       padding: 11px 26px;
       background: var(--gold);
       color: var(--ink);
       text-decoration: none;
+      font-family: 'Jost', sans-serif;
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      transition: background 0.3s, gap 0.3s;
       border-radius: 0;
+      transition: background 0.3s, gap 0.3s;
+      width: 100%;
     }
 
-    .download-link:hover {
+    .btn-download:hover {
       background: var(--gold-light);
       gap: 14px;
     }
 
+    /* ── REFRESH ── */
     .refresh-btn {
       background: none;
       border: none;
-      font-size: 0.7rem;
+      font-size: 0.68rem;
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      letter-spacing: 0.1em;
       color: var(--gold-dark);
       cursor: pointer;
-      font-family: 'Outfit', sans-serif;
       text-decoration: underline;
-      letter-spacing: 0.06em;
-      margin-top: 8px;
+      text-underline-offset: 3px;
       transition: opacity 0.2s;
+      text-align: center;
+      width: 100%;
     }
 
     .refresh-btn:hover {
-      opacity: 0.7;
+      opacity: 0.65;
     }
 
+    /* ── FOOTNOTE ── */
     .footnote {
-      margin-top: 1.4rem;
-      font-size: 0.68rem;
+      font-size: 0.65rem;
+      font-weight: 300;
+      letter-spacing: 0.05em;
       color: var(--ink-muted);
       text-align: center;
-      border-top: 1px solid var(--border);
       padding-top: 1rem;
-    }
-
-    .loader {
-      display: inline-block;
-      width: 22px;
-      height: 22px;
-      border: 2px solid var(--soft);
-      border-top-color: var(--gold);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .loading-state {
-      text-align: center;
-      padding: 2rem 1rem;
-    }
-
-    .loading-state span {
-      color: var(--ink-muted);
-      font-size: 0.85rem;
-    }
-
-    footer {
-      margin-top: auto;
-      text-align: center;
-      padding: 1.2rem 1rem;
       border-top: 1px solid var(--border);
-      font-size: 0.7rem;
-      color: var(--ink-muted);
     }
 
-    footer a {
+    .footnote a {
       color: var(--gold-dark);
       text-decoration: none;
     }
 
-    @media (max-width: 500px) {
-      .success-card { padding: 1.5rem; }
-      h1 { font-size: 1.6rem; }
-      .detail-row { flex-direction: column; gap: 4px; }
-      .detail-value { text-align: left; max-width: 100%; }
-      .btn-primary, .btn-outline, .download-link { padding: 9px 20px; font-size: 9px; }
+    /* ── LOADER ── */
+    .loading-state {
+      padding: 3rem 1.75rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .loader {
+      width: 28px;
+      height: 28px;
+      border: 1.5px solid var(--soft);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+
+    .loading-state p {
+      font-size: 0.8rem;
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      color: var(--ink-muted);
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .l-nav {
+        padding: 12px 20px;
+      }
+
+      .l-nav__links {
+        display: none;
+      }
+
+      .page-wrap {
+        padding: 90px 1rem 2.5rem;
+      }
+
+      .page-title {
+        font-size: 1.9rem;
+      }
+
+      .order-panel,
+      .order-body {
+        padding: 1.2rem;
+      }
+
+      .detail-row {
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .detail-value {
+        text-align: left;
+        max-width: 100%;
+      }
+
+      .btn-group {
+        flex-direction: column;
+      }
+
+      .btn-primary,
+      .btn-outline {
+        flex: unset;
+      }
+
+      .l-footer {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+        padding: 1rem;
+      }
     }
   </style>
 </head>
+
 <body>
 
-<div class="success-container">
-  <div class="success-card" id="successCard">
-    <div id="dynamicContent">
-      <!-- loading state -->
-      <div class="loading-state">
-        <div class="loader" style="margin-bottom: 12px;"></div>
-        <span>Verifying payment status...</span>
+  <!-- NAV -->
+  <nav class="l-nav">
+    <a href="/" class="l-nav__brand">
+      <img src="logo.png" alt="Heavenxent Keepsakes">
+    </a>
+    <ul class="l-nav__links">
+      <li><a href="#products">Products</a></li>
+      <li><a href="#process">How it works</a></li>
+      <li><a href="#proof">Why us</a></li>
+      <li><a href="/tag-editor/index.html" class="l-nav__cta">Design now</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE -->
+  <div class="page-wrap">
+    <div class="page-header">
+      <p class="page-eyebrow">✦ Heavenxent Keepsakes ✦</p>
+      <h1 class="page-title" id="pageTitle">Your order</h1>
+      <p class="page-sub" id="pageSub">Verifying payment status…</p>
+      <div class="gold-rule"></div>
+    </div>
+
+    <div class="order-card" id="orderCard">
+      <div id="dynamicContent">
+        <div class="loading-state">
+          <div class="loader"></div>
+          <p>Verifying payment status…</p>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<footer>
-  <p>✨ Heavenxent Keepsakes — where your love becomes art ✨</p>
-  <p style="margin-top: 0.3rem;">Need help? <a href="/cdn-cgi/l/email-protection#6d0c1f081e1f2d0a0303190c03190c190e08430e0200">hello@heavenxentph.com</a></p>
-</footer>
+  <!-- FOOTER -->
+   <footer class="l-footer">
+    <a href="/" class="l-footer__brand">Heavenxent Keepsakes</a>
+    <ul class="l-footer__links">
+      <li><a href="#products">Products</a></li>
+      <li><a href="#process">How it works</a></li>
+      <li><a href="/tag-editor/index.html">Design now</a></li>
+      <li><a href="/cdn-cgi/l/email-protection#177f727b7b78577f72766172796f727963677f3974787a">Contact</a></li>
+    </ul>
+    <p class="l-footer__copy">2025 Heavenxent Keepsakes</p>
+  </footer>
 
-<script>
-  (function() {
-    // ---- get URL parameters ----
-    const urlParams = new URLSearchParams(window.location.search);
-    let orderRef = urlParams.get('ref');
-    const orderEmail = urlParams.get('email');
-    let orderName = urlParams.get('name');
-    let orderType = urlParams.get('type');
-    const sessionId = urlParams.get('session_id');
-    
-    // localStorage fallback (minimal)
-    try {
-      const lastOrder = localStorage.getItem('heavenxent_last_order');
-      if (lastOrder && !orderRef) {
-        const parsed = JSON.parse(lastOrder);
-        if (!orderRef) orderRef = parsed.ref;
-        if (!orderName) orderName = parsed.name;
-        if (!orderType) orderType = parsed.type;
-      }
-    } catch(e) {}
-    
-    // defaults
-    if (!orderType) orderType = 'PDF';
-    if (!orderName) orderName = orderEmail ? orderEmail.split('@')[0] : 'Customer';
-    if (!orderRef) orderRef = 'HK-' + Math.floor(Math.random() * 10000);
-    
-    const isPrintOrder = (orderType !== 'PDF');
-    const amountCents = isPrintOrder ? 19900 : 14900;
-    const amountDisplay = `₱${(amountCents / 100).toFixed(2)}`;
-    const orderTypeLabel = isPrintOrder ? "🖨️ Premium Print" : "📄 Digital PDF";
-    
-    let pollInterval = null;
-    let pollAttempts = 0;
-    const MAX_POLL = 25; // 75 seconds
-    
-    // ---- API fetch ----
-    async function fetchOrderStatus() {
+  <script>
+    (function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      let orderRef = urlParams.get('ref');
+      const orderEmail = urlParams.get('email');
+      let orderName = urlParams.get('name');
+      let orderType = urlParams.get('type');
+      const sessionId = urlParams.get('session_id');
+
       try {
-        let apiUrl = 'https://api.heavenxentph.com/api/check-order-status?';
-        if (orderRef) {
-          apiUrl += `ref=${encodeURIComponent(orderRef)}`;
-        } else if (orderEmail) {
-          apiUrl += `email=${encodeURIComponent(orderEmail)}`;
-        } else if (sessionId) {
-          apiUrl += `session_id=${encodeURIComponent(sessionId)}`;
-        } else {
-          return null;
+        const lastOrder = localStorage.getItem('heavenxent_last_order');
+        if (lastOrder && !orderRef) {
+          const parsed = JSON.parse(lastOrder);
+          if (!orderRef) orderRef = parsed.ref;
+          if (!orderName) orderName = parsed.name;
+          if (!orderType) orderType = parsed.type;
         }
-        const resp = await fetch(apiUrl, {
-          method: 'GET',
-          headers: { 'Accept': 'application/json' }
+      } catch (e) { }
+
+      if (!orderType) orderType = 'PDF';
+      if (!orderName) orderName = orderEmail ? orderEmail.split('@')[0] : 'Customer';
+      if (!orderRef) orderRef = 'HK-' + Math.floor(Math.random() * 10000);
+
+      const isPrintOrder = orderType !== 'PDF';
+      const amountCents = isPrintOrder ? 19900 : 14900;
+      const amountDisplay = `₱${(amountCents / 100).toFixed(2)}`;
+      const orderTypeLabel = isPrintOrder ? 'Premium Print' : 'Digital PDF';
+
+      let pollInterval = null;
+      let pollAttempts = 0;
+      const MAX_POLL = 25;
+
+      function esc(str) {
+        if (!str) return '';
+        return String(str).replace(/[&<>]/g, m =>
+          m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'
+        );
+      }
+
+      function getOrderDate() {
+        return new Date().toLocaleDateString('en-PH', {
+          year: 'numeric', month: 'short', day: 'numeric',
+          hour: '2-digit', minute: '2-digit'
         });
-        if (resp.ok) {
-          const data = await resp.json();
-          return data;
-        }
-        return null;
-      } catch (err) {
-        return null;
       }
-    }
-    
-    function getOrderDate() {
-      return new Date().toLocaleDateString('en-PH', { 
-        year: 'numeric', 
-        month: 'short', 
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-    }
-    
-    function esc(str) {
-      if (!str) return '';
-      return String(str).replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-      });
-    }
-    
-    // ---- RENDER UI (no icon, no top badge) ----
-    function renderUI(orderData) {
-      const isPaid = orderData && (orderData.status === 'paid' || orderData.payment_status === 'paid');
-      const driveUrl = (isPaid && orderData?.driveFileUrl) ? orderData.driveFileUrl : null;
-      
-      const finalName = orderData?.name || orderName;
-      const finalEmail = orderData?.email || orderEmail;
-      const finalRef = orderData?.ref || orderRef;
-      const finalDate = orderData?.date || getOrderDate();
-      
-      // title & subtitle
-      let titleText = isPaid ? "Thank you for your purchase" : "Payment received";
-      let subText = isPaid ? "Your order is complete." : "Finalizing your order — almost ready.";
-      
-      if (!isPaid) {
-        subText = "We're confirming your payment. This takes just a few seconds.";
+
+      async function fetchOrderStatus() {
+        try {
+          let apiUrl = 'https://api.heavenxentph.com/api/check-order-status?';
+          if (orderRef) apiUrl += `ref=${encodeURIComponent(orderRef)}`;
+          else if (orderEmail) apiUrl += `email=${encodeURIComponent(orderEmail)}`;
+          else if (sessionId) apiUrl += `session_id=${encodeURIComponent(sessionId)}`;
+          else return null;
+
+          const resp = await fetch(apiUrl, { headers: { 'Accept': 'application/json' } });
+          return resp.ok ? await resp.json() : null;
+        } catch { return null; }
       }
-      
-      // order rows
-      let orderRows = `
+
+      function renderUI(orderData) {
+        const isPaid = orderData && (orderData.status === 'paid' || orderData.payment_status === 'paid');
+        const driveUrl = isPaid && orderData?.driveFileUrl ? orderData.driveFileUrl : null;
+
+        const finalName = orderData?.name || orderName;
+        const finalEmail = orderData?.email || orderEmail;
+        const finalRef = orderData?.ref || orderRef;
+
+        // Update page header
+        document.getElementById('pageTitle').textContent = isPaid ? 'Thank you' : 'Payment received';
+        document.getElementById('pageSub').textContent = isPaid
+          ? 'Your order is confirmed and complete.'
+          : 'We\'re confirming your payment — almost there.';
+
+        // Order rows
+        const orderRows = `
         <div class="detail-row">
           <span class="detail-label">Order ref</span>
           <span class="detail-value">${esc(finalRef)}</span>
         </div>
         <div class="detail-row">
           <span class="detail-label">Type</span>
-          <span class="detail-value">${orderTypeLabel}</span>
+          <span class="detail-value">${esc(orderTypeLabel)}</span>
         </div>
         <div class="detail-row">
           <span class="detail-label">Amount</span>
@@ -450,193 +553,139 @@
         </div>
         <div class="detail-row">
           <span class="detail-label">Status</span>
-          <span class="detail-value"><span class="payment-status ${isPaid ? 'paid' : 'pending'}">${isPaid ? '✓ Paid' : '⏳ Pending'}</span></span>
+          <span class="detail-value">
+            <span class="payment-status ${isPaid ? 'paid' : 'pending'}">
+              ${isPaid ? '✓ Paid' : '⏳ Pending'}
+            </span>
+          </span>
         </div>
       `;
-      
-      // download section (only for paid PDF)
-      let downloadHtml = '';
-      if (isPaid && !isPrintOrder) {
-        if (driveUrl) {
-          downloadHtml = `
-            <div style="text-align: center; margin: 0.8rem 0 0.5rem;">
-              <a href="${driveUrl}" target="_blank" class="download-link">
-                ⬇️ Download PDF
-              </a>
-            </div>
-          `;
-        } else {
-          downloadHtml = `
-            <div class="info-note">
-              <span>✨</span> PDF will be emailed within 1-2 minutes
-            </div>
-          `;
+
+        // Download / info notes
+        let downloadHtml = '';
+        if (isPaid && !isPrintOrder) {
+          downloadHtml = driveUrl
+            ? `<a href="${driveUrl}" target="_blank" class="btn-download">⬇&nbsp; Download PDF</a>`
+            : `<div class="info-note"><span>✨</span><span>Your PDF will be emailed within 1–2 minutes.</span></div>`;
+        } else if (isPaid && isPrintOrder) {
+          downloadHtml = `<div class="info-note"><span>📦</span><span>Print order confirmed — shipping details will be sent to your email.</span></div>`;
         }
-      } else if (isPaid && isPrintOrder) {
-        downloadHtml = `
-          <div class="info-note">
-            <span>📦</span> Print order • shipping confirmation via email
-          </div>
-        `;
-      }
-      
-      // email note
-      let emailNote = '';
-      if (finalEmail) {
-        emailNote = `
-          <div class="info-note">
-            <span>📧</span> Confirmation sent to ${esc(finalEmail)}
-          </div>
-        `;
-      }
-      
-      // manual refresh for pending
-      let manualRefresh = '';
-      if (!isPaid) {
-        manualRefresh = `
-          <div style="text-align: center; margin-top: 0.5rem;">
-            <button class="refresh-btn" id="manualRefreshBtn">↻ Refresh status</button>
-          </div>
-        `;
-      }
-      
-      // action buttons
-      const actionButtons = `
+
+        const emailNote = finalEmail
+          ? `<div class="info-note"><span>📧</span><span>Confirmation sent to ${esc(finalEmail)}</span></div>`
+          : '';
+
+        const manualRefresh = !isPaid
+          ? `<button class="refresh-btn" id="manualRefreshBtn">↻ Refresh status</button>`
+          : '';
+
+        const actionButtons = `
         <div class="btn-group">
           <a href="/tag-editor/index.html" class="btn-primary">✨ New design</a>
           <a href="/" class="btn-outline">← Home</a>
         </div>
       `;
-      
-      // footnote
-      let footnote = '';
-      if (isPaid && !isPrintOrder && !driveUrl) {
-        footnote = `<div class="footnote">💡 Check spam folder. <a href="/cdn-cgi/l/email-protection" style="color: var(--gold-dark);">Contact us</a> if needed.</div>`;
-      } else if (isPaid && isPrintOrder) {
-        footnote = `<div class="footnote">🖨️ Print orders ship within 5–7 business days.</div>`;
-      } else {
-        footnote = `<div class="footnote">⏳ Auto-refreshes once payment is verified.</div>`;
-      }
-      
-      const fullHtml = `
-        <h1>${titleText}</h1>
-        <div class="subhead">${subText}</div>
-        
-        <div class="order-details-panel">
+
+        let footnote = '';
+        if (isPaid && !isPrintOrder && !driveUrl) {
+          footnote = `Check your spam folder if the email hasn't arrived. <a href="mailto:hello@heavenxentph.com">Contact us</a> if needed.`;
+        } else if (isPaid && isPrintOrder) {
+          footnote = `Print orders ship within 5–7 business days.`;
+        } else {
+          footnote = `This page refreshes automatically once payment is verified.`;
+        }
+
+        document.getElementById('dynamicContent').innerHTML = `
+        <div class="order-panel">
+          <p class="panel-label">Order details</p>
           ${orderRows}
         </div>
-        
-        ${downloadHtml}
-        ${emailNote}
-        ${manualRefresh}
-        ${actionButtons}
-        ${footnote}
+        <div class="order-body">
+          ${downloadHtml}
+          ${emailNote}
+          ${manualRefresh}
+          ${actionButtons}
+          <p class="footnote">${footnote}</p>
+        </div>
       `;
-      
-      document.getElementById('dynamicContent').innerHTML = fullHtml;
-      
-      const refreshBtn = document.getElementById('manualRefreshBtn');
-      if (refreshBtn) {
-        refreshBtn.addEventListener('click', () => {
-          window.location.reload();
-        });
+
+        const refreshBtn = document.getElementById('manualRefreshBtn');
+        if (refreshBtn) refreshBtn.addEventListener('click', () => window.location.reload());
+
+        if (isPaid && pollInterval) { clearInterval(pollInterval); pollInterval = null; }
       }
-      
-      if (isPaid && pollInterval) {
-        clearInterval(pollInterval);
-        pollInterval = null;
-      }
-    }
-    
-    // ---- Pending minimal UI (no icon/badge) ----
-    function showPendingUI() {
-      const pendingHtml = `
-        <h1>Payment received</h1>
-        <div class="subhead">Verifying transaction details...</div>
-        
-        <div class="order-details-panel">
+
+      function showPendingUI() {
+        document.getElementById('pageTitle').textContent = 'Payment received';
+        document.getElementById('pageSub').textContent = 'Verifying transaction details…';
+
+        document.getElementById('dynamicContent').innerHTML = `
+        <div class="order-panel">
+          <p class="panel-label">Order details</p>
           <div class="detail-row">
             <span class="detail-label">Order ref</span>
             <span class="detail-value">${esc(orderRef)}</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Type</span>
-            <span class="detail-value">${orderTypeLabel}</span>
+            <span class="detail-value">${esc(orderTypeLabel)}</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Amount</span>
             <span class="detail-value">${amountDisplay}</span>
           </div>
         </div>
-        
-        <div class="info-note">
-          <span>🔄</span> This page updates automatically
-        </div>
-        
-        <div class="btn-group">
-          <a href="/tag-editor/index.html" class="btn-primary">✨ New design</a>
-          <a href="/" class="btn-outline">← Home</a>
-        </div>
-        
-        <div style="text-align: center; margin-top: 0.8rem;">
+        <div class="order-body">
+          <div class="info-note"><span>🔄</span><span>This page updates automatically — usually under 30 seconds.</span></div>
+          <div class="btn-group">
+            <a href="/tag-editor/index.html" class="btn-primary">✨ New design</a>
+            <a href="/" class="btn-outline">← Home</a>
+          </div>
           <button class="refresh-btn" id="pendingRefreshBtn">↻ Refresh status</button>
+          <p class="footnote">Waiting for payment confirmation.</p>
         </div>
-        
-        <div class="footnote">⏳ Usually takes less than 30 seconds.</div>
       `;
-      document.getElementById('dynamicContent').innerHTML = pendingHtml;
-      
-      const refreshPending = document.getElementById('pendingRefreshBtn');
-      if (refreshPending) {
-        refreshPending.addEventListener('click', () => {
-          window.location.reload();
-        });
+
+        const btn = document.getElementById('pendingRefreshBtn');
+        if (btn) btn.addEventListener('click', () => window.location.reload());
       }
-    }
-    
-    // ---- Polling ----
-    async function startPolling() {
-      if (pollInterval) return;
-      
-      pollInterval = setInterval(async () => {
-        pollAttempts++;
-        const statusData = await fetchOrderStatus();
-        if (statusData && (statusData.status === 'paid' || statusData.payment_status === 'paid')) {
-          clearInterval(pollInterval);
-          pollInterval = null;
-          renderUI(statusData);
-        } else if (pollAttempts >= MAX_POLL) {
-          clearInterval(pollInterval);
-          pollInterval = null;
-          // final fallback: still pending
-          renderUI({ status: 'pending', ref: orderRef, name: orderName, email: orderEmail });
-        }
-      }, 3000);
-    }
-    
-    // ---- Init ----
-    async function init() {
-      const initialData = await fetchOrderStatus();
-      if (initialData && (initialData.status === 'paid' || initialData.payment_status === 'paid')) {
-        renderUI(initialData);
-        return;
+
+      function startPolling() {
+        if (pollInterval) return;
+        pollInterval = setInterval(async () => {
+          pollAttempts++;
+          const statusData = await fetchOrderStatus();
+          if (statusData && (statusData.status === 'paid' || statusData.payment_status === 'paid')) {
+            clearInterval(pollInterval); pollInterval = null;
+            renderUI(statusData);
+          } else if (pollAttempts >= MAX_POLL) {
+            clearInterval(pollInterval); pollInterval = null;
+            renderUI({ status: 'pending', ref: orderRef, name: orderName, email: orderEmail });
+          }
+        }, 3000);
       }
-      showPendingUI();
-      startPolling();
-      
-      // extra fast re-check after 1s
-      setTimeout(async () => {
-        const recheck = await fetchOrderStatus();
-        if (recheck && (recheck.status === 'paid' || recheck.payment_status === 'paid')) {
-          if (pollInterval) clearInterval(pollInterval);
-          pollInterval = null;
-          renderUI(recheck);
+
+      async function init() {
+        const initialData = await fetchOrderStatus();
+        if (initialData && (initialData.status === 'paid' || initialData.payment_status === 'paid')) {
+          renderUI(initialData);
+          return;
         }
-      }, 1200);
-    }
-    
-    init();
-  })();
-</script>
+        showPendingUI();
+        startPolling();
+        setTimeout(async () => {
+          const recheck = await fetchOrderStatus();
+          if (recheck && (recheck.status === 'paid' || recheck.payment_status === 'paid')) {
+            if (pollInterval) clearInterval(pollInterval);
+            pollInterval = null;
+            renderUI(recheck);
+          }
+        }, 1200);
+      }
+
+      init();
+    })();
+  </script>
 </body>
+
 </html>
