@@ -541,6 +541,24 @@ function closePreviewModal(force) {
 }
 
 async function handleCheckout() {
+  const nameInput = document.getElementById('checkoutName');
+  const emailInput = document.getElementById('checkoutEmail');
+  const fieldError = document.getElementById('checkoutError');
+
+  const customerName = nameInput.value.trim();
+  const customerEmail = emailInput.value.trim();
+
+  nameInput.classList.remove('input-error');
+  emailInput.classList.remove('input-error');
+  fieldError.classList.remove('visible');
+
+  if (!customerName || !customerEmail) {
+    if (!customerName) nameInput.classList.add('input-error');
+    if (!customerEmail) emailInput.classList.add('input-error');
+    fieldError.classList.add('visible');
+    return;
+  }
+
   const btn = document.getElementById('btnCheckout');
   btn.disabled = true;
   btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/></svg>Redirecting to checkout…`;
@@ -555,13 +573,12 @@ async function handleCheckout() {
     const arrayBuffer = await blob.arrayBuffer();
     const base64PDF = btoa(new Uint8Array(arrayBuffer).reduce((d, b) => d + String.fromCharCode(b), ''));
 
-    const v = getValues();
     const res = await fetch('https://api.heavenxentph.com/api/checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        name: (v.name1 && v.name2) ? `${v.name1} & ${v.name2}` : 'Guest',
-        email: 'pending@heavenxentph.com',
+        name: customerName,
+        email: customerEmail,
         type: 'PDF',
         pdf: base64PDF
       })

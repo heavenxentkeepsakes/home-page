@@ -1117,6 +1117,57 @@ input::placeholder {
   margin-top: 1px;
 }
 
+.customer-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.customer-field label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  letter-spacing: 0.03em;
+}
+
+.field-required {
+  color: #e05252;
+}
+
+.customer-field input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.875rem;
+  border: 1.5px solid #e0d9d0;
+  border-radius: 8px;
+  background: #fff;
+  color: inherit;
+  transition: border-color 0.15s;
+}
+
+.customer-field input:focus {
+  outline: none;
+  border-color: #b39a7a;
+}
+
+.customer-field input.input-error {
+  border-color: #e05252;
+}
+
+.field-error {
+  display: none;
+  font-size: 0.75rem;
+  color: #e05252;
+  margin: 0;
+}
+
+.field-error.visible {
+  display: block;
+}
+
 /* ── FOOTER ── */
 .l-footer {
   background-color: var(--parchment);
