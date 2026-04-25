@@ -138,11 +138,9 @@ export default async function handler(req, res) {
               },
             ],
             "payment_method_types": [
-              "card",
               "gcash",
               "paymaya",
-              "qrph",
-              "online_banking"
+              "qrph"
             ],
             metadata: {
               name,
