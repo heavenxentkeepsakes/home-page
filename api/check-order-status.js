@@ -74,11 +74,11 @@ export default async function handler(req, res) {
                   (payment_id && rowPaymentId === payment_id) ||
                   (session_id && rowPaymentId === session_id)) {
                 
-                // Parse amount from sheet (should be like "₱149" or "₱199")
-                let amountDisplay = row[4] || "₱149";
-                let amountCents = 14900;
+                // Parse amount from sheet (should be like "₱199" or "₱199")
+                let amountDisplay = row[4] || "₱199";
+                let amountCents = 19900;
                 if (amountDisplay.includes("199")) amountCents = 19900;
-                if (amountDisplay.includes("149")) amountCents = 14900;
+                if (amountDisplay.includes("199")) amountCents = 19900;
                 
                 sheetOrder = {
                   date: row[0],

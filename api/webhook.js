@@ -180,7 +180,7 @@ export default async function handler(req, res) {
     const type = metadata.type || "PDF";
     const driveFileUrl = metadata.driveFileUrl;
     const driveFileId = metadata.driveFileId;
-    const amount = type === "PDF" ? "₱149" : "₱199";
+    const amount = type === "PDF" ? "₱199" : "₱199";
     const ref = metadata.ref || `${type}-${Date.now()}`;
     const date = new Date().toLocaleString("en-PH", { timeZone: "Asia/Manila" });
 
