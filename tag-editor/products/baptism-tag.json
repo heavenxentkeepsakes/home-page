@@ -167,7 +167,7 @@
         "fontSize": "1.6rem",
         "fontWeight": "400",
         "lineHeight": "1.4",
-        "maxLines": 2,
+        "maxLines": 1,
         "letterSpacing": "0.1em",
         "textTransform": "none",
         "color": "#7a5f7b",
