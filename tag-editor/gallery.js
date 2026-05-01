@@ -1,4 +1,4 @@
-// gallery.js — Design selection page
+// gallery.js — Design selection page with product URL support
 
 // Hash‑based category routing (no server config)
 function getCurrentCategory() {
@@ -180,6 +180,15 @@ async function buildCard(design, index) {
   card.style.animationDelay = `${index * 0.08}s`;
   card.dataset.designId = design.id;
 
+  // Make entire card clickable for direct navigation
+  card.style.cursor = 'pointer';
+  card.addEventListener('click', (e) => {
+    // Don't trigger if clicking the button (it has its own handler)
+    if (!e.target.closest('.btn-select-design')) {
+      window.location.href = `editor.html?product=${design.id}&category=${currentCategory}`;
+    }
+  });
+
   // Thumbnail area
   const thumb = document.createElement('div');
   thumb.className = 'gallery-thumb';
@@ -219,7 +228,7 @@ function escapeHtml(str) {
 function selectDesign(designId) {
   sessionStorage.setItem('selectedDesignId', designId);
   sessionStorage.setItem('selectedCategory', currentCategory);
-  window.location.href = 'editor.html';
+  window.location.href = `editor.html?product=${designId}&category=${currentCategory}`;
 }
 
 async function init() {

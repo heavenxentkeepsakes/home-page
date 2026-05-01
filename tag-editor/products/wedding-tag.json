@@ -1,6 +1,6 @@
 [
   {
-    "id": "wt1",
+    "id": "wt001",
     "name": "Autumn Bloom",
     "description": "Warm, earthy florals frame your details in seasonal beauty.",
     "tagImage": "./wedding-img/tag1.png",
@@ -71,7 +71,7 @@
     }
   },
   {
-    "id": "wt2",
+    "id": "wt002",
     "name": "Minimal Frame",
     "description": "A clean, modern spotlight on your favorite captured moment.",
     "tagImage": "./wedding-img/tag2.png",
@@ -150,7 +150,7 @@
     }
   },
   {
-    "id": "wt3",
+    "id": "wt003",
     "name": "Soft Petal",
     "description": "Delicate lavender sprigs bring a touch of garden-fresh elegance.",
     "tagImage": "./wedding-img/tag3.png",
@@ -220,7 +220,7 @@
     }
   },
   {
-    "id": "wt4",
+    "id": "wt004",
     "name": "Seaside Sketch",
     "description": "Gentle blue watercolor strokes for a light, breezy coastal feel.",
     "tagImage": "./wedding-img/tag4.png",
@@ -298,7 +298,7 @@
     }
   },
   {
-    "id": "wt5",
+    "id": "wt005",
     "name": "Forest Arches",
     "description": "Deep botanical greens meet a classic arch for a timeless look.",
     "tagImage": "./wedding-img/tag5.png",
@@ -368,7 +368,7 @@
     }
   },
   {
-    "id": "wt6",
+    "id": "wt006",
     "name": "Polished Portrait",
     "description": "Traditional typography paired with a generous, centered photo.",
     "tagImage": "./wedding-img/tag6.png",
@@ -446,7 +446,7 @@
     }
   },
   {
-    "id": "wt7",
+    "id": "wt007",
     "name": "Golden Etch",
     "description": "Intricate, shimmering line art for a touch of vintage luxury.",
     "tagImage": "./wedding-img/tag7.png",
@@ -516,7 +516,7 @@
     }
   },
   {
-    "id": "wt8",
+    "id": "wt008",
     "name": "Modern Horizon",
     "description": "A sleek, wide-angle layout perfect for landscape photography.",
     "tagImage": "./wedding-img/tag8.png",
@@ -594,7 +594,7 @@
     }
   },
   {
-    "id": "wt9",
+    "id": "wt009",
     "name": "Ornate Border",
     "description": "Decorative flourishes that frame your names in royal style.",
     "tagImage": "./wedding-img/tag9.png",
@@ -672,7 +672,7 @@
     }
   },
   {
-    "id": "wt10",
+    "id": "wt0010",
     "name": "Monochrome Leaf",
     "description": "Minimalist black-ink sketches for the modern, understated couple.",
     "tagImage": "./wedding-img/tag10.png",
@@ -742,7 +742,7 @@
     }
   },
   {
-    "id": "wt11",
+    "id": "wt0011",
     "name": "Willow Wreath",
     "description": "A soft, circular frame of greenery symbolizing eternal love.",
     "tagImage": "./wedding-img/tag11.png",
@@ -820,7 +820,7 @@
     }
   },
   {
-    "id": "wt12",
+    "id": "wt0012",
     "name": "Sunset Palms",
     "description": "Tropical warmth and golden tones for your destination celebration.",
     "tagImage": "./wedding-img/tag12.png",

@@ -15,6 +15,37 @@ const MONTHS = [
 ];
 let _dateState = { month: null, day: null, year: null };
 
+// Parse URL parameters
+function getUrlParams() {
+  const params = new URLSearchParams(window.location.search);
+  return {
+    productId: params.get('product') || params.get('id'),
+    category: params.get('category')
+  };
+}
+
+// Helper to detect category from design ID prefix
+function detectCategoryFromDesignId(designId) {
+  if (!designId) return null;
+  
+  // Define prefixes for each category based on your naming convention
+  const categoryMap = {
+    'wt': 'wedding-tag',     // Wedding tags start with wt (e.g., wt001, wt002)
+    'bp': 'baptism-tag',     // Baptism tags start with bp (e.g., bp001, bp002)
+    'ct': 'christmas-tag',   // Christmas tags start with ct (e.g., ct001, ct002)
+  };
+  
+  for (const [prefix, category] of Object.entries(categoryMap)) {
+    if (designId.toLowerCase().startsWith(prefix)) {
+      console.log(`Detected category ${category} from design ID prefix ${prefix}`);
+      return category;
+    }
+  }
+  
+  console.warn(`Could not detect category from design ID: ${designId}, using default`);
+  return 'wedding-tag'; // Default fallback
+}
+
 // =====================================================
 // FONT MANAGEMENT
 // =====================================================
@@ -606,16 +637,102 @@ window.addEventListener('DOMContentLoaded', async () => {
   console.log("🚀 App initializing...");
 
   try {
-    const designId = sessionStorage.getItem('selectedDesignId');
-    const selectedCategory = sessionStorage.getItem('selectedCategory') || 'wedding-tag';
-
-    // Load designs
-    const res = await fetch(`/tag-editor/products/${selectedCategory}.json`);
-    if (!res.ok) throw new Error(`Could not load ${selectedCategory}.json`);
-    const designs = await res.json();
-
-    _currentDesign = designs.find(d => d.id === designId) || designs[0];
-    console.log('Design loaded:', _currentDesign.name);
+    // PRIORITY 1: Check URL parameters first
+    const urlParams = getUrlParams();
+    let designId = urlParams.productId;
+    let selectedCategory = urlParams.category;
+    
+    // PRIORITY 2: Fall back to sessionStorage
+    if (!designId) {
+      designId = sessionStorage.getItem('selectedDesignId');
+      selectedCategory = sessionStorage.getItem('selectedCategory');
+      console.log('Using sessionStorage:', designId);
+    } else {
+      console.log('Using URL parameter:', designId, 'category:', selectedCategory);
+    }
+    
+    // If still no design ID, redirect to gallery
+    if (!designId) {
+      console.error('No design selected. Redirecting to gallery...');
+      window.location.href = '/tag-editor/index.html';
+      return;
+    }
+    
+    // If we don't have a category from URL or sessionStorage, try to detect it from the design ID
+    if (!selectedCategory) {
+      selectedCategory = detectCategoryFromDesignId(designId);
+      console.log(`No category provided, detected: ${selectedCategory}`);
+    }
+    
+    // Try to load the design
+    let designs = null;
+    let foundCategory = null;
+    
+    // First try the category we have (from URL, sessionStorage, or detection)
+    if (selectedCategory) {
+      try {
+        console.log(`Trying to load from category: ${selectedCategory}`);
+        const res = await fetch(`/tag-editor/products/${selectedCategory}.json`);
+        if (res.ok) {
+          designs = await res.json();
+          const found = designs.find(d => d.id === designId);
+          if (found) {
+            foundCategory = selectedCategory;
+            console.log(`✓ Found design in category: ${selectedCategory}`);
+          } else {
+            console.log(`Design not found in ${selectedCategory}, searching all categories...`);
+            designs = null; // Reset to search all
+          }
+        } else {
+          console.log(`Category ${selectedCategory} not found, searching all categories...`);
+          designs = null;
+        }
+      } catch (e) {
+        console.warn(`Could not load category ${selectedCategory}:`, e);
+        designs = null;
+      }
+    }
+    
+    // If design not found in specified category, search all categories
+    if (!designs || !designs.find(d => d.id === designId)) {
+      const categories = ['wedding-tag', 'baptism-tag', 'christmas-tag'];
+      
+      for (const cat of categories) {
+        // Skip if we already tried this category and it didn't work
+        if (cat === selectedCategory) continue;
+        
+        try {
+          console.log(`Searching in category: ${cat}`);
+          const res = await fetch(`/tag-editor/products/${cat}.json`);
+          if (res.ok) {
+            const catDesigns = await res.json();
+            const found = catDesigns.find(d => d.id === designId);
+            if (found) {
+              designs = catDesigns;
+              foundCategory = cat;
+              console.log(`✓ Found design in category: ${cat}`);
+              break;
+            }
+          }
+        } catch (e) {
+          console.warn(`Could not check category ${cat}:`, e);
+        }
+      }
+    }
+    
+    // If still no design found, throw error
+    if (!designs || !designs.find(d => d.id === designId)) {
+      throw new Error(`Design ${designId} not found in any category`);
+    }
+    
+    // Get the actual design object
+    _currentDesign = designs.find(d => d.id === designId);
+    if (!_currentDesign) {
+      throw new Error(`Design ${designId} not found`);
+    }
+    
+    console.log('✅ Design loaded:', _currentDesign.name);
+    console.log('📁 Category:', foundCategory);
 
     // Update UI labels
     const nameStepLabel = document.querySelector('#nameStepLabel');
@@ -626,10 +743,17 @@ window.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('name1').placeholder = _currentDesign.fields.name.preset?.name1 || '';
     document.getElementById('name2').placeholder = _currentDesign.fields.name.preset?.name2 || '';
 
+    // Update back links with the found category
     const backLink1 = document.querySelector('.back-to-designs');
     const backLink2 = document.querySelector('.design-badge-change');
-    if (backLink1) backLink1.href = `index.html#/${selectedCategory}`;
-    if (backLink2) backLink2.href = `index.html#/${selectedCategory}`;
+    const backUrl = foundCategory ? `index.html#/${foundCategory}` : 'index.html';
+    if (backLink1) backLink1.href = backUrl;
+    if (backLink2) backLink2.href = backUrl;
+    
+    // Also store the category in sessionStorage for consistency
+    if (foundCategory) {
+      sessionStorage.setItem('selectedCategory', foundCategory);
+    }
 
     document.getElementById('designBadgeName').textContent = _currentDesign.name;
     document.getElementById('previewDesignName').textContent = _currentDesign.name;
@@ -638,14 +762,13 @@ window.addEventListener('DOMContentLoaded', async () => {
     if (photoStep) photoStep.style.display = _currentDesign.fields.photo?.enabled ? 'flex' : 'none';
 
     const dateStep = document.getElementById('dateStep');
-    if (dateStep) dateStep.style.display = _currentDesign.fields.date?.enabled ? 'flex' : 'none';
+    if (dateStep) dateStep.style.display = _currentDesign.fields.date?.enabled !== false ? 'flex' : 'none';
 
     const taglineInput = document.getElementById('tagline');
     if (taglineInput && _currentDesign.fields.tagline?.defaultValue) {
       taglineInput.placeholder = _currentDesign.fields.tagline.defaultValue;
       if (!taglineInput.value) taglineInput.value = _currentDesign.fields.tagline.defaultValue;
     }
-
 
     // Load fonts
     await collectAvailableFonts();

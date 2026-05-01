@@ -1,6 +1,6 @@
 [
   {
-    "id": "bt1",
+    "id": "bt001",
     "name": "Leafy Lullaby",
     "description": "Soft dancing eucalyptus leaves frame your little one's name for a fresh, natural feel.",
     "tagImage": "./baptism-img/tag1.png",
@@ -71,7 +71,7 @@
     }
   },
   {
-    "id": "bt2",
+    "id": "bt002",
     "name": "Skyward Grace",
     "description": "A soft blue floral wreath encircling a classic cross, perfect for a baby boy's baptism.",
     "tagImage": "./baptism-img/tag2.png",
@@ -142,7 +142,7 @@
     }
   },
   {
-    "id": "bt3",
+    "id": "bt003",
     "name": "Blushing Grace",
     "description": "A sweet pink floral wreath framing a timeless cross, designed for a baby girl's baptism.",
     "tagImage": "./baptism-img/tag3.png",
@@ -212,7 +212,7 @@
     }
   },
   {
-    "id": "bt4",
+    "id": "bt004",
     "name": "Blueberry Sky",
     "description": "Dreamy watercolor clouds and a cute photo slot to highlight your favorite little face.",
     "tagImage": "./baptism-img/tag4.png",
@@ -290,7 +290,7 @@
     }
   },
   {
-    "id": "bt5",
+    "id": "bt005",
     "name": "Petal Princess",
     "description": "A bright arch of rosy garden flowers and a golden cross for a sweet spring celebration.",
     "tagImage": "./baptism-img/tag5.png",
@@ -368,7 +368,7 @@
     }
   },
   {
-    "id": "bt6",
+    "id": "bt006",
     "name": "Honey Bear Hugs",
     "description": "Cuddly teddy bears and golden accents to highlight your \"berry\" cute little one.",
     "tagImage": "./baptism-img/tag6.png",
@@ -446,7 +446,7 @@
     }
   },
   {
-    "id": "bt7",
+    "id": "bt007",
     "name": "Sun-Kissed Meadow",
     "description": "Golden etched wildflowers that feel like a warm, peaceful afternoon in a summer field.",
     "tagImage": "./baptism-img/tag7.png",
@@ -516,7 +516,7 @@
     }
   },
   {
-    "id": "bt8",
+    "id": "bt008",
     "name": "Picture Perfect",
     "description": "A clean, modern layout that lets your baby's biggest smile take the center stage.",
     "tagImage": "./baptism-img/tag8.png",
@@ -594,7 +594,7 @@
     }
   },
   {
-    "id": "bt9",
+    "id": "bt009",
     "name": "Rainbow Trumpet",
     "description": "A joyful blue elephant sitting atop a rainbow to celebrate your \"ton\" of joy.",
     "tagImage": "./baptism-img/tag9.png",
@@ -672,7 +672,7 @@
     }
   },
   {
-    "id": "bt10",
+    "id": "bt0010",
     "name": "Balloon Adventure",
     "description": "Floating pink balloons and a sleepy cub taking a trip to the clouds.",
     "tagImage": "./baptism-img/tag10.png",
@@ -750,7 +750,7 @@
     }
   },
   {
-    "id": "bt11",
+    "id": "bt0011",
     "name": "Butterfly Wishes",
     "description": "Lavender wings and golden stars for a magical design as sweet as a butterfly kiss.",
     "tagImage": "./baptism-img/tag11.png",
@@ -828,7 +828,7 @@
     }
   },
   {
-    "id": "bt12",
+    "id": "bt0012",
     "name": "Boho Sands",
     "description": "Peaceful pampas grass and soft palm fronds in a beautiful, trendy terracotta palette.",
     "tagImage": "./baptism-img/tag12.png",

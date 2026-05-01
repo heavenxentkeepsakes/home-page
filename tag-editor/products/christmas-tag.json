@@ -1,6 +1,6 @@
 [
   {
-    "id": "wt1",
+    "id": "ct001",
     "name": "Merry Little Village",
     "description": "A cozy holiday scene filled with glowing homes and shared joy.",
     "tagImage": "./christmas-img/tag1.png",
@@ -58,7 +58,7 @@
     }
   },
   {
-    "id": "wt2",
+    "id": "ct002",
     "name": "Holiday Script",
     "description": "A sophisticated, quiet moment of beauty for a classic gift.",
     "tagImage": "./christmas-img/tag2.png",
@@ -116,7 +116,7 @@
     }
   },
   {
-    "id": "wt3",
+    "id": "ct003",
     "name": "Joyful Gathering",
     "description": "The heart-filling magic of family coming together at last.",
     "tagImage": "./christmas-img/tag3.png",
@@ -173,7 +173,7 @@
     }
   },
   {
-    "id": "wt4",
+    "id": "ct004",
     "name": "Winter Sketch",
     "description": "Light, airy strokes with a soft and calming festive charm.",
     "tagImage": "./christmas-img/tag4.png",
@@ -230,7 +230,7 @@
     }
   },
   {
-    "id": "wt5",
+    "id": "ct005",
     "name": "Evergreen Wishes",
     "description": "Classic greens that bring timeless holiday warmth and joy.",
     "tagImage": "./christmas-img/tag5.png",
@@ -287,7 +287,7 @@
     }
   },
   {
-    "id": "wt6",
+    "id": "ct006",
     "name": "Petal Whimsy",
     "description": "Playful florals with a lighthearted and festive touch.",
     "tagImage": "./christmas-img/tag6.png",
@@ -344,7 +344,7 @@
     }
   },
   {
-    "id": "wt7",
+    "id": "ct007",
     "name": "Gilded Glow",
     "description": "A soft golden shimmer inspired by festive evening lights.",
     "tagImage": "./christmas-img/tag7.png",
@@ -401,7 +401,7 @@
     }
   },
   {
-    "id": "wt8",
+    "id": "ct008",
     "name": "Star Lantern",
     "description": "Spirit of Paskong Pinoy, inspired by glowing holiday stars.",
     "tagImage": "./christmas-img/tag8.png",
@@ -458,7 +458,7 @@
     }
   },
   {
-    "id": "wt9",
+    "id": "ct009",
     "name": "Midnight Spark",
     "description": "Sleek and luminous, like festive lights in the night sky.",
     "tagImage": "./christmas-img/tag9.png",
@@ -515,7 +515,7 @@
     }
   },
   {
-    "id": "wt10",
+    "id": "ct0010",
     "name": "Blush Wreath",
     "description": "A soft and welcoming touch of festive greenery and charm.",
     "tagImage": "./christmas-img/tag10.png",
@@ -572,7 +572,7 @@
     }
   },
   {
-    "id": "wt11",
+    "id": "ct0011",
     "name": "Sacred Circle",
     "description": "Calm and meaningful, with a gentle and peaceful spirit.",
     "tagImage": "./christmas-img/tag11.png",
@@ -629,7 +629,7 @@
     }
   },
   {
-    "id": "wt12",
+    "id": "ct0012",
     "name": "Frost Bloom",
     "description": "Crisp and refreshing with a subtle festive winter feel.",
     "tagImage": "./christmas-img/tag12.png",
