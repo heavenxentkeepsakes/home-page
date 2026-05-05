@@ -180,9 +180,8 @@
 
       <!-- RIGHT: Preview -->
       <div class="preview-panel">
+        <div class="zoom-overlay" id="zoomOverlay" style="display: none;"></div>
         <p class="preview-label">✦ Live Preview ✦</p>
-        <!-- tagWrapper is sized dynamically by app.js to match the design -->
-        <!-- oncontextmenu/ondragstart prevent right-click > Save Image on the live preview -->
         <div class="tag-wrapper" id="tagWrapper" oncontextmenu="return false" ondragstart="return false"></div>
         <div class="preview-meta">
           <span>Print size: 1.9" x 3.5"</span>
@@ -217,155 +216,160 @@
   </footer>
 
   <!-- ── Preview Modal ─────────────────────────────────────────── -->
-<div class="modal-backdrop" id="previewModal" onclick="closePreviewModal(event)">
-  <div class="modal-box">
+  <div class="modal-backdrop" id="previewModal" onclick="closePreviewModal(event)">
+    <div class="modal-box">
 
-    <button class="modal-close" onclick="closePreviewModal(true)" aria-label="Close">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <line x1="18" y1="6" x2="6" y2="18" />
-        <line x1="6" y1="6" x2="18" y2="18" />
-      </svg>
-    </button>
+      <button class="modal-close" onclick="closePreviewModal(true)" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
 
-    <div class="modal-layout">
+      <div class="modal-layout">
 
-      <!-- LEFT: A4 sheet -->
-      <div class="modal-left">
-        <p class="preview-label">✦ Print Preview ✦</p>
+        <!-- LEFT: A4 sheet -->
+        <div class="modal-left">
+          <p class="preview-label">✦ Print Preview ✦</p>
 
-        <div class="a4-frame" id="a4Frame">
-          <div class="a4-loading" id="a4Loading">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10" stroke-opacity="0.25" />
-              <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round" />
-            </svg>
-            Rendering your tags…
-          </div>
-          <div class="a4-grid" id="a4Grid" style="display:none"></div>
-        </div>
-
-        <div class="a4-label">
-          <span>A4 · 210 × 297 mm</span>
-          <span>12 tags per sheet</span>
-          <span>Print at 100% scale</span>
-        </div>
-      </div>
-
-      <!-- RIGHT: Checkout panel -->
-      <div class="modal-right">
-
-        <div class="design-badge" style="margin-bottom:1.5rem">
-          <span class="design-badge-name" id="modalDesignName">—</span>
-          <button class="design-badge-change" style="background:none;border:none;cursor:pointer"
-            onclick="closePreviewModal(true)">Edit design</button>
-        </div>
-
-        <!-- Watermark notice -->
-        <div class="watermark-notice">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="8" x2="12" y2="12" />
-            <line x1="12" y1="16" x2="12.01" y2="16" />
-          </svg>
-          The preview above has a watermark. Your purchased PDF will be completely clean and print-ready.
-        </div>
-
-        <!-- Print instructions -->
-        <div class="print-instructions">
-          <div class="print-instructions-title">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="9 11 12 14 22 4" />
-              <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
-            </svg>
-            How to print &amp; use
+          <div class="a4-frame" id="a4Frame">
+            <div class="a4-loading" id="a4Loading">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" stroke-opacity="0.25" />
+                <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round" />
+              </svg>
+              Rendering your tags…
+            </div>
+            <div class="a4-grid" id="a4Grid" style="display:none"></div>
           </div>
 
-          <div class="print-step">
-            <div class="print-step-icon">
+          <div class="a4-label">
+            <span>A4 · 210 × 297 mm</span>
+            <span>12 tags per sheet</span>
+            <span>Print at 100% scale</span>
+          </div>
+        </div>
+
+        <!-- RIGHT: Checkout panel -->
+        <div class="modal-right">
+
+          <div class="design-badge" style="margin-bottom:1.5rem">
+            <span class="design-badge-name" id="modalDesignName">—</span>
+            <button class="design-badge-change" style="background:none;border:none;cursor:pointer"
+              onclick="closePreviewModal(true)">Edit design</button>
+          </div>
+
+          <!-- Watermark notice -->
+          <div class="watermark-notice">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+            The preview above has a watermark. Your purchased PDF will be completely clean and print-ready.
+          </div>
+
+          <!-- Print instructions -->
+          <div class="print-instructions">
+            <div class="print-instructions-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 11 12 14 22 4" />
+                <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
+              </svg>
+              How to print &amp; use
+            </div>
+
+            <div class="print-step">
+              <div class="print-step-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+              </div>
+              <div class="print-step-text">
+                <strong>Download &amp; open the PDF</strong>
+                <span>Open in any PDF viewer and print at <em>100% / actual size</em> — never "fit to page" or "shrink
+                  to fit."</span>
+              </div>
+            </div>
+
+            <div class="print-step">
+              <div class="print-step-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="2" y="3" width="20" height="18" rx="2" />
+                  <line x1="2" y1="9" x2="22" y2="9" />
+                  <line x1="7" y1="3" x2="7" y2="9" />
+                </svg>
+              </div>
+              <div class="print-step-text">
+                <strong>Choose your paper</strong>
+                <span>Use good quality A4 size card stock or photo paper for best print results. Suggested paper
+                  thickness is <em>200 gsm or higher</em> — this keeps your tags sturdy and prevents bending when
+                  handled.</span>
+              </div>
+            </div>
+
+            <div class="print-step">
+              <div class="print-step-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="2" x2="12" y2="22" />
+                  <path d="M6 7a3 3 0 100-6 3 3 0 000 6zm0 10a3 3 0 100-6 3 3 0 000 6zM7 8l12 11M7 16L19 5" />
+                </svg>
+              </div>
+              <div class="print-step-text">
+                <strong>Cut along the outline</strong>
+                <span>Use sharp scissors or a craft knife with a cutting mat to cut each tag along the printed border.
+                  Each finished tag is 1.9" × 3.5".</span>
+              </div>
+            </div>
+
+            <div class="print-step">
+              <div class="print-step-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path
+                    d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+                </svg>
+              </div>
+              <div class="print-step-text">
+                <strong>Punch a hole &amp; tie</strong>
+                <span>Use a hole punch at the top of each tag, then thread ribbon or twine through to attach to your
+                  favours.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Customer details -->
+          <div class="customer-fields">
+            <div class="customer-field">
+              <label for="checkoutName">Full name <span class="field-required">*</span></label>
+              <input type="text" id="checkoutName" placeholder="e.g. Maria Santos" autocomplete="name" />
+            </div>
+            <div class="customer-field">
+              <label for="checkoutEmail">Email address <span class="field-required">*</span></label>
+              <input type="email" id="checkoutEmail" placeholder="e.g. maria@email.com" autocomplete="email" />
+            </div>
+            <p class="field-error" id="checkoutError">Please fill in both fields to continue.</p>
+          </div>
+
+          <!-- CTA -->
+          <div class="cta-section">
+            <button class="btn-download-pdf" id="btnCheckout" onclick="handleCheckout()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
                 <polyline points="7 10 12 15 17 10" />
                 <line x1="12" y1="15" x2="12" y2="3" />
               </svg>
-            </div>
-            <div class="print-step-text">
-              <strong>Download &amp; open the PDF</strong>
-              <span>Open in any PDF viewer and print at <em>100% / actual size</em> — never "fit to page" or "shrink to fit."</span>
-            </div>
+              Buy &amp; Download PDF — ₱199
+            </button>
+            <p class="dl-note">A4 · 12 tags per sheet · High-resolution · Print-ready</p>
           </div>
 
-          <div class="print-step">
-            <div class="print-step-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="2" y="3" width="20" height="18" rx="2" />
-                <line x1="2" y1="9" x2="22" y2="9" />
-                <line x1="7" y1="3" x2="7" y2="9" />
-              </svg>
-            </div>
-            <div class="print-step-text">
-              <strong>Choose your paper</strong>
-              <span>Use good quality A4 size card stock or photo paper for best print results. Suggested paper thickness is <em>200 gsm or higher</em> — this keeps your tags sturdy and prevents bending when handled.</span>
-            </div>
-          </div>
-
-          <div class="print-step">
-            <div class="print-step-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="12" y1="2" x2="12" y2="22" />
-                <path d="M6 7a3 3 0 100-6 3 3 0 000 6zm0 10a3 3 0 100-6 3 3 0 000 6zM7 8l12 11M7 16L19 5" />
-              </svg>
-            </div>
-            <div class="print-step-text">
-              <strong>Cut along the outline</strong>
-              <span>Use sharp scissors or a craft knife with a cutting mat to cut each tag along the printed border. Each finished tag is 1.9" × 3.5".</span>
-            </div>
-          </div>
-
-          <div class="print-step">
-            <div class="print-step-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path
-                  d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
-              </svg>
-            </div>
-            <div class="print-step-text">
-              <strong>Punch a hole &amp; tie</strong>
-              <span>Use a hole punch at the top of each tag, then thread ribbon or twine through to attach to your favours.</span>
-            </div>
-          </div>
         </div>
-
-        <!-- Customer details -->
-        <div class="customer-fields">
-          <div class="customer-field">
-            <label for="checkoutName">Full name <span class="field-required">*</span></label>
-            <input type="text" id="checkoutName" placeholder="e.g. Maria Santos" autocomplete="name" />
-          </div>
-          <div class="customer-field">
-            <label for="checkoutEmail">Email address <span class="field-required">*</span></label>
-            <input type="email" id="checkoutEmail" placeholder="e.g. maria@email.com" autocomplete="email" />
-          </div>
-          <p class="field-error" id="checkoutError">Please fill in both fields to continue.</p>
-        </div>
-
-        <!-- CTA -->
-        <div class="cta-section">
-          <button class="btn-download-pdf" id="btnCheckout" onclick="handleCheckout()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
-            Buy &amp; Download PDF — ₱199
-          </button>
-          <p class="dl-note">A4 · 12 tags per sheet · High-resolution · Print-ready</p>
-        </div>
-
       </div>
     </div>
   </div>
-</div>
- 
+
   <!-- crop modal -->
   <div class="modal-backdrop" id="cropModal">
     <div class="modal-box"

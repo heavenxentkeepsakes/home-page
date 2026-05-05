@@ -27,21 +27,21 @@ function getUrlParams() {
 // Helper to detect category from design ID prefix
 function detectCategoryFromDesignId(designId) {
   if (!designId) return null;
-  
+
   // Define prefixes for each category based on your naming convention
   const categoryMap = {
     'wt': 'wedding-tag',     // Wedding tags start with wt (e.g., wt001, wt002)
     'bp': 'baptism-tag',     // Baptism tags start with bp (e.g., bp001, bp002)
     'ct': 'christmas-tag',   // Christmas tags start with ct (e.g., ct001, ct002)
   };
-  
+
   for (const [prefix, category] of Object.entries(categoryMap)) {
     if (designId.toLowerCase().startsWith(prefix)) {
       console.log(`Detected category ${category} from design ID prefix ${prefix}`);
       return category;
     }
   }
-  
+
   console.warn(`Could not detect category from design ID: ${designId}, using default`);
   return 'wedding-tag'; // Default fallback
 }
@@ -641,7 +641,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     const urlParams = getUrlParams();
     let designId = urlParams.productId;
     let selectedCategory = urlParams.category;
-    
+
     // PRIORITY 2: Fall back to sessionStorage
     if (!designId) {
       designId = sessionStorage.getItem('selectedDesignId');
@@ -650,24 +650,24 @@ window.addEventListener('DOMContentLoaded', async () => {
     } else {
       console.log('Using URL parameter:', designId, 'category:', selectedCategory);
     }
-    
+
     // If still no design ID, redirect to gallery
     if (!designId) {
       console.error('No design selected. Redirecting to gallery...');
       window.location.href = '/tag-editor/index.html';
       return;
     }
-    
+
     // If we don't have a category from URL or sessionStorage, try to detect it from the design ID
     if (!selectedCategory) {
       selectedCategory = detectCategoryFromDesignId(designId);
       console.log(`No category provided, detected: ${selectedCategory}`);
     }
-    
+
     // Try to load the design
     let designs = null;
     let foundCategory = null;
-    
+
     // First try the category we have (from URL, sessionStorage, or detection)
     if (selectedCategory) {
       try {
@@ -692,15 +692,15 @@ window.addEventListener('DOMContentLoaded', async () => {
         designs = null;
       }
     }
-    
+
     // If design not found in specified category, search all categories
     if (!designs || !designs.find(d => d.id === designId)) {
       const categories = ['wedding-tag', 'baptism-tag', 'christmas-tag'];
-      
+
       for (const cat of categories) {
         // Skip if we already tried this category and it didn't work
         if (cat === selectedCategory) continue;
-        
+
         try {
           console.log(`Searching in category: ${cat}`);
           const res = await fetch(`/tag-editor/products/${cat}.json`);
@@ -719,18 +719,18 @@ window.addEventListener('DOMContentLoaded', async () => {
         }
       }
     }
-    
+
     // If still no design found, throw error
     if (!designs || !designs.find(d => d.id === designId)) {
       throw new Error(`Design ${designId} not found in any category`);
     }
-    
+
     // Get the actual design object
     _currentDesign = designs.find(d => d.id === designId);
     if (!_currentDesign) {
       throw new Error(`Design ${designId} not found`);
     }
-    
+
     console.log('✅ Design loaded:', _currentDesign.name);
     console.log('📁 Category:', foundCategory);
 
@@ -749,7 +749,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     const backUrl = foundCategory ? `index.html#/${foundCategory}` : 'index.html';
     if (backLink1) backLink1.href = backUrl;
     if (backLink2) backLink2.href = backUrl;
-    
+
     // Also store the category in sessionStorage for consistency
     if (foundCategory) {
       sessionStorage.setItem('selectedCategory', foundCategory);
@@ -820,11 +820,51 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-document.getElementById('tagWrapper').addEventListener('click', function () {
+// Mobile preview zoom functionality
+const previewPanel = document.querySelector('.preview-panel');
+const tagWrapperMobile = document.getElementById('tagWrapper');
+
+// Open zoom
+tagWrapperMobile.addEventListener('click', function (e) {
   if (window.innerWidth <= 780) {
-    document.querySelector('.preview-panel').classList.toggle('zoomed');
+    e.stopPropagation();
+    previewPanel.classList.add('zoomed');
+    document.body.classList.add('zoom-active');
   }
 });
+
+// Close zoom function
+function closeZoom() {
+  if (window.innerWidth <= 780 && previewPanel.classList.contains('zoomed')) {
+    previewPanel.classList.remove('zoomed');
+    document.body.classList.remove('zoom-active');
+  }
+}
+
+// Close when clicking ANYWHERE on the preview panel (including background)
+previewPanel.addEventListener('click', function (e) {
+  // Don't close if clicking on the tag wrapper or its children
+  if (tagWrapperMobile && tagWrapperMobile.contains(e.target)) {
+    e.stopPropagation(); // Stop the click from bubbling
+    return; // Don't close
+  }
+  // Close for any other click (background, padding areas, etc.)
+  closeZoom();
+});
+
+// Also close on escape key
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') {
+    closeZoom();
+  }
+});
+
+const zoomOverlay = document.getElementById('zoomOverlay');
+if (zoomOverlay) {
+  zoomOverlay.addEventListener('click', function() {
+    closeZoom();
+  });
+}
 
 // =====================================================
 // EXPOSE TO WINDOW
