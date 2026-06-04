@@ -1,0 +1,901 @@
+[
+  {
+    "id": "bdt001",
+    "name": "Blush Floral Photo",
+    "description": "Soft pink accents and delicate florals framing a circular photo centerpiece.",
+    "tagImage": "./birthday-img/tag1.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;500&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": true,
+        "x": "53%",
+        "y": "18.5%",
+        "width": 160,
+        "height": 195,
+        "shape": "oval",
+        "borderColor": "#c4956a",
+        "borderWidth": 0,
+        "defaultImage": "./birthday-img/lady.jpg"
+      },
+      "name": {
+        "label": "Name",
+        "x": "90%",
+        "y": "71%",
+        "width": "80%",
+        "alignment": "right",
+        "fontFamily": "Bebas Neue, sans-serif",
+        "fontSize": "2rem",
+        "fontWeight": "400",
+        "lineHeight": "1",
+        "maxLines": 1,
+        "letterSpacing": "0.03em",
+        "textTransform": "none",
+        "color": "#7b4628",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1rem",
+        "ampCharacter": "",
+        "preset": {
+          "name1": "Sophia Jean",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": true,
+        "label": "Date",
+        "x": "90%",
+        "y": "80%",
+        "width": "85%",
+        "alignment": "right",
+        "fontFamily": "Barlow Condensed, sans-serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "500",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.12em",
+        "textTransform": "none",
+        "color": "#7b4628",
+        "format": "MM | DD | YYYY"
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "90%",
+        "y": "85%",
+        "width": "58%",
+        "alignment": "right",
+        "fontFamily": "Barlow Condensed, sans-serif",
+        "fontSize": "0.9rem",
+        "fontWeight": "400",
+        "lineHeight": "1.3",
+        "letterSpacing": "0em",
+        "textTransform": "none",
+        "color": "#7b4628",
+        "defaultValue": "Eighteen years of love, laughter, and lessons"
+      }
+    }
+  },
+  {
+    "id": "bdt002",
+    "name": "Festive Dino",
+    "description": "A whimsical cream tag starring a cute blue dinosaur, stars, and party confetti.",
+    "tagImage": "./birthday-img/tag2.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Gilda+Display&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false
+      },
+      "name": {
+        "label": "Name",
+        "x": "50%",
+        "y": "76%",
+        "width": "88%",
+        "alignment": "center",
+        "fontFamily": "Gilda Display, serif",
+        "fontSize": "1.2rem",
+        "fontWeight": "400",
+        "lineHeight": "1.2",
+        "maxLines": 1,
+        "letterSpacing": "0.1em",
+        "textTransform": "none",
+        "color": "#596f96",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1.5rem",
+        "ampCharacter": "",
+        "preset": {
+          "name1": "JOHN CARLO",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": true,
+        "label": "Date",
+        "x": "50%",
+        "y": "84%",
+        "width": "88%",
+        "alignment": "center",
+        "fontFamily": "Gilda Display, serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.1em",
+        "textTransform": "none",
+        "color": "#6a5a50",
+        "format": "DD / MM / YYYY"
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "88%",
+        "width": "78%",
+        "alignment": "center",
+        "fontFamily": "Gilda Display, serif",
+        "fontSize": "0.7rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.01em",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "Thank you for celebrating the 1st birthday of our little dino!"
+      }
+    }
+  },
+  {
+    "id": "bdt003",
+    "name": "Balloons & Cake",
+    "description": "A clean white tag decorated with playful pink balloons and birthday treats.",
+    "tagImage": "./birthday-img/tag3.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Cinzel&family=Lora&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false
+      },
+      "name": {
+        "label": "Name",
+        "x": "50%",
+        "y": "36%",
+        "width": "88%",
+        "alignment": "center",
+        "fontFamily": "Cinzel, serif",
+        "fontSize": "1.6rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "maxLines": 1,
+        "letterSpacing": "0.1em",
+        "textTransform": "none",
+        "color": "#e45f7d",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1rem",
+        "ampCharacter": "",
+        "preset": {
+          "name1": "SOPHIA JEAN",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": true,
+        "label": "Date",
+        "x": "50%",
+        "y": "78%",
+        "width": "86%",
+        "alignment": "center",
+        "fontFamily": "Lora, serif",
+        "fontSize": "0.9rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.12em",
+        "textTransform": "none",
+        "color": "#735e59",
+        "format": "MMMM DD, YYYY"
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "70%",
+        "width": "78%",
+        "alignment": "center",
+        "fontFamily": "Lora, serif",
+        "fontSize": "0.75rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "textTransform": "none",
+        "color": "#735e59",
+        "defaultValue": "Thank you for celebrating our daughter’s  7th birthday with us!"
+      }
+    }
+  },
+  {
+    "id": "bdt004",
+    "name": "Blue Sky & Balloons",
+    "description": "Gentle watercolor clouds, stars, and blue balloons around a central photo.",
+    "tagImage": "./birthday-img/tag4.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400&family=Pinyon+Script&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": true,
+        "x": "50%",
+        "y": "20%",
+        "width": 170,
+        "height": 170,
+        "shape": "circle",
+        "borderColor": "#cad7e2",
+        "borderWidth": 5,
+        "defaultImage": "./birthday-img/baby-boy.jpg"
+      },
+      "name": {
+        "label": "Name",
+        "x": "50%",
+        "y": "70%",
+        "width": "67%",
+        "alignment": "center",
+        "fontFamily": "Literata, serif",
+        "fontSize": "1.7rem",
+        "fontWeight": "400",
+        "lineHeight": "1.3",
+        "maxLines": 2,
+        "letterSpacing": "0.02em",
+        "textTransform": "none",
+        "color": "#1d4d69",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1.0625rem",
+        "ampCharacter": "",
+        "preset": {
+          "name1": "John Carlo Santos",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": true,
+        "label": "Date",
+        "x": "50%",
+        "y": "88%",
+        "width": "87%",
+        "alignment": "center",
+        "fontFamily": "Literata, serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.05em",
+        "textTransform": "none",
+        "color": "#1d4d69",
+        "format": "DD MMMM, YYYY"
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "60%",
+        "width": "80%",
+        "alignment": "center",
+        "fontFamily": "Pinyon Script, cursive",
+        "fontSize": "1.5rem",
+        "fontWeight": "400",
+        "lineHeight": "1.1",
+        "textTransform": "none",
+        "color": "#1d4d69",
+        "defaultValue": "Happy 3rd Birthday"
+      }
+    }
+  },
+  {
+    "id": "bdt005",
+    "name": "Elegance & Orchids",
+    "description": "A sophisticated design featuring a crisp white panel flanked by soft purple orchids.",
+    "tagImage": "./birthday-img/tag5.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inria+Serif&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": true,
+        "x": "51%",
+        "y": "18%",
+        "width": 175,
+        "height": 210,
+        "shape": "oval",
+        "borderColor": "#c4956a",
+        "borderWidth": 2,
+        "defaultImage": "./birthday-img/woman.jpg"
+      },
+      "name": {
+        "label": "Name",
+        "x": "50%",
+        "y": "64%",
+        "width": "75%",
+        "alignment": "center",
+        "fontFamily": "Great Vibes, cursive",
+        "fontSize": "2.5rem",
+        "fontWeight": "400",
+        "lineHeight": "1",
+        "maxLines": 2,
+        "letterSpacing": "0em",
+        "textTransform": "none",
+        "color": "#d38f8b",
+        "ampColor": "#ffffff",
+        "ampFontSize": "1.5rem",
+        "ampCharacter": "",
+        "preset": {
+          "name1": "Mommy Amelia",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": true,
+        "label": "Date",
+        "x": "50%",
+        "y": "90%",
+        "width": "80%",
+        "alignment": "center",
+        "fontFamily": "Inria Serif, serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.1em",
+        "textTransform": "none",
+        "color": "#d38f8b",
+        "format": "DD MMMM, YYYY"
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "82%",
+        "width": "80%",
+        "alignment": "center",
+        "fontFamily": "Inria Serif, serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "textTransform": "none",
+        "color": "#323131",
+        "defaultValue": "Thank you for attending our mother's 60th birthday"
+      }
+    }
+  },
+  {
+    "id": "bdt006",
+    "name": "Lavender Florals",
+    "description": "A beautiful frame-style tag bordered by lush purple and blue watercolor bouquets.",
+    "tagImage": "./birthday-img/tag6.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Petit+Formal+Script&family=Source+Serif+4&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false
+      },
+      "name": {
+        "label": "Name",
+        "x": "50%",
+        "y": "40%",
+        "width": "80%",
+        "alignment": "center",
+        "fontFamily": "Petit Formal Script, cursive",
+        "fontSize": "2.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "maxLines": 1,
+        "letterSpacing": "0em",
+        "textTransform": "none",
+        "color": "#7c849d",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1rem",
+        "ampCharacter": "",
+        "preset": {
+          "name1": "Ma. Amelia @ 50",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": true,
+        "label": "Date",
+        "x": "50%",
+        "y": "57%",
+        "width": "84%",
+        "alignment": "center",
+        "fontFamily": "Source Serif 4, serif",
+        "fontSize": "0.9rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.1em",
+        "textTransform": "none",
+        "color": "#6a5a50",
+        "format": "MM · DD · YYYY"
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "62%",
+        "width": "75%",
+        "alignment": "center",
+        "fontFamily": "Petit Formal Script, cursive",
+        "fontSize": "0.7rem",
+        "fontWeight": "400",
+        "lineHeight": "1.3",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "Thank you for coming to my birthday celebration"
+      }
+    }
+  },
+  {
+    "id": "bdt007",
+    "name": "Golden Wildflowers",
+    "description": "A minimalist, elegant layout featuring delicate golden-etched botanical line art.",
+    "tagImage": "./birthday-img/tag7.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Tangerine:wght@700&family=Roboto+Condensed&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false
+      },
+      "name": {
+        "label": "Name",
+        "x": "50%",
+        "y": "37%",
+        "width": "62%",
+        "alignment": "center",
+        "fontFamily": "Tangerine, cursive",
+        "fontSize": "2.2rem",
+        "fontWeight": "700",
+        "lineHeight": "1",
+        "maxLines": 2,
+        "letterSpacing": "0.05em",
+        "textTransform": "none",
+        "color": "#927e57",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1.3125rem",
+        "ampCharacter": "",
+        "preset": {
+          "name1": "Sophia Jean Ramos",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": true,
+        "label": "Date",
+        "x": "50%",
+        "y": "75%",
+        "width": "82%",
+        "alignment": "center",
+        "fontFamily": "Roboto Condensed, sans-serif",
+        "fontSize": "0.9rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.12em",
+        "textTransform": "none",
+        "color": "#927e57",
+        "format": "YYYY-MM-DD"
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "60%",
+        "width": "75%",
+        "alignment": "center",
+        "fontFamily": "Roboto Condensed, sans-serif",
+        "fontSize": "1.3rem",
+        "fontWeight": "400",
+        "lineHeight": "1.2",
+        "textTransform": "none",
+        "color": "#927e57",
+        "defaultValue": "60th Birthday Celebration"
+      }
+    }
+  },
+  {
+    "id": "bdt008",
+    "name": "Safari Friends",
+    "description": "A lively jungle theme featuring a central photo surrounded by cute cartoon animals.",
+    "tagImage": "./birthday-img/tag8.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Parisienne&family=Montserrat&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": true,
+        "x": "50%",
+        "y": "30%",
+        "width": 200,
+        "height": 200,
+        "shape": "circle",
+        "borderColor": "#ffffff",
+        "borderWidth": 0,
+        "defaultImage": "./birthday-img/baby-boy.jpg"
+      },
+      "name": {
+        "label": "Name",
+        "x": "50%",
+        "y": "16%",
+        "width": "65%",
+        "alignment": "center",
+        "fontFamily": "Parisienne, cursive",
+        "fontSize": "1.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1",
+        "maxLines": 2,
+        "letterSpacing": "0em",
+        "textTransform": "none",
+        "color": "#5f8264",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1.3125rem",
+        "ampCharacter": "",
+        "preset": {
+          "name1": "John Carlo Santos",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": true,
+        "label": "Date",
+        "x": "50%",
+        "y": "80%",
+        "width": "85%",
+        "alignment": "center",
+        "fontFamily": "Montserrat, sans-serif",
+        "fontSize": "0.9rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.15em",
+        "textTransform": "none",
+        "color": "#57603c",
+        "format": "DD / MM / YYYY"
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "73%",
+        "width": "65%",
+        "alignment": "center",
+        "fontFamily": "Parisienne, cursive",
+        "fontSize": "1.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.2",
+        "textTransform": "none",
+        "color": "#57603c",
+        "defaultValue": "is turning one!"
+      }
+    }
+  },
+  {
+    "id": "bdt009",
+    "name": "Pink Bouquet Photo",
+    "description": "A romantic, soft pink template decorated with sweet floral bouquets and a photo slot.",
+    "tagImage": "./birthday-img/tag9.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Srisakdi&family=Cormorant+Garamond&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": true,
+        "x": "49%",
+        "y": "32%",
+        "width": 138,
+        "height": 138,
+        "shape": "circle",
+        "borderColor": "#cad7e2",
+        "borderWidth": 0,
+        "defaultImage": "./birthday-img/baby-girl.jpg"
+      },
+      "name": {
+        "label": "Name",
+        "x": "50%",
+        "y": "68%",
+        "width": "86%",
+        "alignment": "center",
+        "fontFamily": "Srisakdi, cursive",
+        "fontSize": "2rem",
+        "fontWeight": "400",
+        "lineHeight": "1.1",
+        "maxLines": 2,
+        "letterSpacing": "0",
+        "textTransform": "none",
+        "color": "#e45f7d",
+        "ampColor": "#c4956a",
+        "ampFontSize": "0.875rem",
+        "ampCharacter": "",
+        "preset": {
+          "name1": "Sophia Jean Ramos",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": true,
+        "label": "Date",
+        "x": "50%",
+        "y": "85%",
+        "width": "86%",
+        "alignment": "center",
+        "fontFamily": "Cormorant Garamond, serif",
+        "fontSize": "1rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.12em",
+        "textTransform": "none",
+        "color": "#6a5a50",
+        "format": "MM | DD | YYYY"
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "18%",
+        "width": "60%",
+        "alignment": "center",
+        "fontFamily": "Cormorant Garamond, serif",
+        "fontSize": "1.3rem",
+        "fontWeight": "400",
+        "lineHeight": "1.1",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "Happy 2nd Birthday!"
+      }
+    }
+  },
+  {
+    "id": "bdt0010",
+    "name": "Minimalist Portrait",
+    "description": "A sleek, contemporary layout with a dominant rectangular photo and clean lines.",
+    "tagImage": "./birthday-img/tag10.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Alegreya&family=Open+Sans&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": true,
+        "x": "47.3%",
+        "y": "33%",
+        "width": 182,
+        "height": 230,
+        "shape": "rectangle",
+        "borderColor": "#c4956a",
+        "borderWidth": 0,
+        "defaultImage": "./birthday-img/man.jpg"
+      },
+      "name": {
+        "label": "Name",
+        "x": "47%",
+        "y": "84%",
+        "width": "84%",
+        "alignment": "center",
+        "fontFamily": "Alegreya, serif",
+        "fontSize": "1.5rem",
+        "fontWeight": "400",
+        "lineHeight": "1.2",
+        "maxLines": 1,
+        "letterSpacing": "0.05em",
+        "textTransform": "none",
+        "color": "#3a2e28",
+        "ampColor": "#57603c",
+        "ampFontSize": "1.5rem",
+        "ampCharacter": "",
+        "preset": {
+          "name1": "JOHN CARLO",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": true,
+        "label": "Date",
+        "x": "47%",
+        "y": "91%",
+        "width": "84%",
+        "alignment": "center",
+        "fontFamily": "Open Sans, sans-serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.12em",
+        "textTransform": "uppercase",
+        "color": "#6a5a50",
+        "format": "MMMM DD, YYYY"
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "47%",
+        "y": "25%",
+        "width": "64%",
+        "alignment": "center",
+        "fontFamily": "Open Sans, sans-serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.5",
+        "letterSpacing": "0.1em",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "Happy 16th birthday!"
+      }
+    }
+  },
+  {
+    "id": "bdt0011",
+    "name": "Boho Wildflowers",
+    "description": "A trendy, artistic tag showcasing vibrant watercolor florals and abstract shapes.",
+    "tagImage": "./birthday-img/tag11.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Pacifico&family=Pompiere&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": false
+      },
+      "name": {
+        "label": "Name",
+        "x": "90%",
+        "y": "39%",
+        "width": "70%",
+        "alignment": "right",
+        "fontFamily": "Pacifico, cursive",
+        "fontSize": "1.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.2",
+        "maxLines": 2,
+        "letterSpacing": "0",
+        "textTransform": "none",
+        "color": "#9178b4",
+        "ampColor": "#7b4628",
+        "ampFontSize": "1rem",
+        "ampCharacter": "",
+        "preset": {
+          "name1": "Sophia Jean @20",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": true,
+        "label": "Date",
+        "x": "90%",
+        "y": "57%",
+        "width": "82%",
+        "alignment": "right",
+        "fontFamily": "Pompiere, cursive",
+        "fontSize": "0.9rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.08em",
+        "textTransform": "none",
+        "color": "#6a5a50",
+        "format": "DD MMMM, YYYY"
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "90%",
+        "y": "25%",
+        "width": "60%",
+        "alignment": "right",
+        "fontFamily": "Pompiere, cursive",
+        "fontSize": "1rem",
+        "fontWeight": "400",
+        "lineHeight": "1.2",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "I’m so grateful for your love and time in celebrating with me."
+      }
+    }
+  },
+  {
+    "id": "bdt0012",
+    "name": "Classic Blue Arches",
+    "description": "A handsome, tailored design featuring fine grid lines and deep blue arch accents.",
+    "tagImage": "./birthday-img/tag12.png",
+    "tagDimensions": {
+      "width": 260,
+      "height": 490
+    },
+    "fonts": [
+      "https://fonts.googleapis.com/css2?family=Glass+Antiqua&family=Noto+Sans+JP&display=swap"
+    ],
+    "fields": {
+      "photo": {
+        "enabled": true,
+        "x": "50%",
+        "y": "29%",
+        "width": 177,
+        "height": 220,
+        "shape": "oval",
+        "borderColor": "#c4956a",
+        "borderWidth": 0,
+        "defaultImage": "./birthday-img/man.jpg"
+      },
+      "name": {
+        "label": "Name",
+        "x": "50%",
+        "y": "76%",
+        "width": "65%",
+        "alignment": "center",
+        "fontFamily": "Glass Antiqua, serif",
+        "fontSize": "1.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1",
+        "maxLines": 2,
+        "letterSpacing": "0.08em",
+        "textTransform": "none",
+        "color": "#3a2e28",
+        "ampColor": "#c4956a",
+        "ampFontSize": "1rem",
+        "ampCharacter": "",
+        "preset": {
+          "name1": "JOHN CARLO",
+          "name2": ""
+        }
+      },
+      "date": {
+        "enabled": true,
+        "label": "Date",
+        "x": "50%",
+        "y": "85%",
+        "width": "84%",
+        "alignment": "center",
+        "fontFamily": "Noto Sans JP, sans-serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.4",
+        "letterSpacing": "0.1em",
+        "textTransform": "none",
+        "color": "#6a5a50",
+        "format": "YYYY-MM-DD"
+      },
+      "tagline": {
+        "enabled": true,
+        "x": "50%",
+        "y": "24%",
+        "width": "70%",
+        "alignment": "center",
+        "fontFamily": "Noto Sans JP, sans-serif",
+        "fontSize": "0.8rem",
+        "fontWeight": "400",
+        "lineHeight": "1.5",
+        "textTransform": "none",
+        "color": "#5a4a40",
+        "defaultValue": "HAPPY 21ST BIRTHDAY"
+      }
+    }
+  }
+]
