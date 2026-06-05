@@ -37,7 +37,7 @@ function verifyPayMongoSignature(req, rawBody) {
         signature = part.substring(3);
       }
       else if (part.startsWith('li=')) {
-        signature = part.substring(3); 
+        signature = part.substring(3);
       }
     }
 
@@ -180,7 +180,10 @@ export default async function handler(req, res) {
     const type = metadata.type || "PDF";
     const driveFileUrl = metadata.driveFileUrl;
     const driveFileId = metadata.driveFileId;
-    const amount = type === "PDF" ? "₱199" : "₱199";
+
+    const priceCents = metadata.price || 19900;
+    const amount = `₱${(priceCents / 100).toFixed(0)}`;
+
     const ref = metadata.ref || `${type}-${Date.now()}`;
     const date = new Date().toLocaleString("en-PH", { timeZone: "Asia/Manila" });
 
