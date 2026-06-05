@@ -2,6 +2,7 @@
   {
     "id": "ct001",
     "name": "Merry Little Village",
+    "price": 14900,
     "description": "A cozy holiday scene filled with glowing homes and shared joy.",
     "tagImage": "./christmas-img/tag1.png",
     "tagDimensions": {
@@ -60,6 +61,7 @@
   {
     "id": "ct002",
     "name": "Holiday Script",
+    "price": 14900,
     "description": "A sophisticated, quiet moment of beauty for a classic gift.",
     "tagImage": "./christmas-img/tag2.png",
     "tagDimensions": {
@@ -118,6 +120,7 @@
   {
     "id": "ct003",
     "name": "Joyful Gathering",
+    "price": 14900,
     "description": "The heart-filling magic of family coming together at last.",
     "tagImage": "./christmas-img/tag3.png",
     "tagDimensions": {
@@ -175,6 +178,7 @@
   {
     "id": "ct004",
     "name": "Winter Sketch",
+    "price": 14900,
     "description": "Light, airy strokes with a soft and calming festive charm.",
     "tagImage": "./christmas-img/tag4.png",
     "tagDimensions": {
@@ -232,6 +236,7 @@
   {
     "id": "ct005",
     "name": "Evergreen Wishes",
+    "price": 14900,
     "description": "Classic greens that bring timeless holiday warmth and joy.",
     "tagImage": "./christmas-img/tag5.png",
     "tagDimensions": {
@@ -289,6 +294,7 @@
   {
     "id": "ct006",
     "name": "Petal Whimsy",
+    "price": 14900,
     "description": "Playful florals with a lighthearted and festive touch.",
     "tagImage": "./christmas-img/tag6.png",
     "tagDimensions": {
@@ -346,6 +352,7 @@
   {
     "id": "ct007",
     "name": "Gilded Glow",
+    "price": 14900,
     "description": "A soft golden shimmer inspired by festive evening lights.",
     "tagImage": "./christmas-img/tag7.png",
     "tagDimensions": {
@@ -403,6 +410,7 @@
   {
     "id": "ct008",
     "name": "Star Lantern",
+    "price": 14900,
     "description": "Spirit of Paskong Pinoy, inspired by glowing holiday stars.",
     "tagImage": "./christmas-img/tag8.png",
     "tagDimensions": {
@@ -460,6 +468,7 @@
   {
     "id": "ct009",
     "name": "Midnight Spark",
+    "price": 14900,
     "description": "Sleek and luminous, like festive lights in the night sky.",
     "tagImage": "./christmas-img/tag9.png",
     "tagDimensions": {
@@ -517,6 +526,7 @@
   {
     "id": "ct0010",
     "name": "Blush Wreath",
+    "price": 14900,
     "description": "A soft and welcoming touch of festive greenery and charm.",
     "tagImage": "./christmas-img/tag10.png",
     "tagDimensions": {
@@ -574,6 +584,7 @@
   {
     "id": "ct0011",
     "name": "Sacred Circle",
+    "price": 14900,
     "description": "Calm and meaningful, with a gentle and peaceful spirit.",
     "tagImage": "./christmas-img/tag11.png",
     "tagDimensions": {
@@ -631,6 +642,7 @@
   {
     "id": "ct0012",
     "name": "Frost Bloom",
+    "price": 100,
     "description": "Crisp and refreshing with a subtle festive winter feel.",
     "tagImage": "./christmas-img/tag12.png",
     "tagDimensions": {

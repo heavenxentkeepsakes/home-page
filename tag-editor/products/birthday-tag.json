@@ -2,6 +2,7 @@
   {
     "id": "bdt001",
     "name": "Blush Floral Photo",
+    "price": 14900,
     "description": "Soft pink accents and delicate florals framing a circular photo centerpiece.",
     "tagImage": "./birthday-img/tag1.png",
     "tagDimensions": {
@@ -81,6 +82,7 @@
   {
     "id": "bdt002",
     "name": "Festive Dino",
+    "price": 14900,
     "description": "A whimsical cream tag starring a cute blue dinosaur, stars, and party confetti.",
     "tagImage": "./birthday-img/tag2.png",
     "tagDimensions": {
@@ -152,6 +154,7 @@
   {
     "id": "bdt003",
     "name": "Balloons & Cake",
+    "price": 14900,
     "description": "A clean white tag decorated with playful pink balloons and birthday treats.",
     "tagImage": "./birthday-img/tag3.png",
     "tagDimensions": {
@@ -222,6 +225,7 @@
   {
     "id": "bdt004",
     "name": "Blue Sky & Balloons",
+    "price": 14900,
     "description": "Gentle watercolor clouds, stars, and blue balloons around a central photo.",
     "tagImage": "./birthday-img/tag4.png",
     "tagDimensions": {
@@ -300,6 +304,7 @@
   {
     "id": "bdt005",
     "name": "Elegance & Orchids",
+    "price": 14900,
     "description": "A sophisticated design featuring a crisp white panel flanked by soft purple orchids.",
     "tagImage": "./birthday-img/tag5.png",
     "tagDimensions": {
@@ -378,6 +383,7 @@
   {
     "id": "bdt006",
     "name": "Lavender Florals",
+    "price": 14900,
     "description": "A beautiful frame-style tag bordered by lush purple and blue watercolor bouquets.",
     "tagImage": "./birthday-img/tag6.png",
     "tagDimensions": {
@@ -448,6 +454,7 @@
   {
     "id": "bdt007",
     "name": "Golden Wildflowers",
+    "price": 14900,
     "description": "A minimalist, elegant layout featuring delicate golden-etched botanical line art.",
     "tagImage": "./birthday-img/tag7.png",
     "tagDimensions": {
@@ -518,6 +525,7 @@
   {
     "id": "bdt008",
     "name": "Safari Friends",
+    "price": 14900,
     "description": "A lively jungle theme featuring a central photo surrounded by cute cartoon animals.",
     "tagImage": "./birthday-img/tag8.png",
     "tagDimensions": {
@@ -596,6 +604,7 @@
   {
     "id": "bdt009",
     "name": "Pink Bouquet Photo",
+    "price": 14900,
     "description": "A romantic, soft pink template decorated with sweet floral bouquets and a photo slot.",
     "tagImage": "./birthday-img/tag9.png",
     "tagDimensions": {
@@ -674,6 +683,7 @@
   {
     "id": "bdt0010",
     "name": "Minimalist Portrait",
+    "price": 14900,
     "description": "A sleek, contemporary layout with a dominant rectangular photo and clean lines.",
     "tagImage": "./birthday-img/tag10.png",
     "tagDimensions": {
@@ -753,6 +763,7 @@
   {
     "id": "bdt0011",
     "name": "Boho Wildflowers",
+    "price": 14900,
     "description": "A trendy, artistic tag showcasing vibrant watercolor florals and abstract shapes.",
     "tagImage": "./birthday-img/tag11.png",
     "tagDimensions": {
@@ -823,6 +834,7 @@
   {
     "id": "bdt0012",
     "name": "Classic Blue Arches",
+    "price": 14900,
     "description": "A handsome, tailored design featuring fine grid lines and deep blue arch accents.",
     "tagImage": "./birthday-img/tag12.png",
     "tagDimensions": {

@@ -524,6 +524,9 @@ async function buildPDFBlob(tagCanvas) {
 }
 
 async function openPreviewModal() {
+  document.getElementById('btnDownload').innerHTML =
+    `Review & Continue — ₱${(_currentDesign.price / 100).toFixed(0)} <svg>...</svg>`;
+
   const modal = document.getElementById('previewModal');
   const grid = document.getElementById('a4Grid');
   const loading = document.getElementById('a4Loading');
@@ -535,6 +538,19 @@ async function openPreviewModal() {
   _cachedPDFBlob = null;
 
   if (nameEl && _currentDesign) nameEl.textContent = _currentDesign.name || 'Custom';
+  const priceDisplay = `₱${(_currentDesign.price / 100).toFixed(0)}`;
+  const btnCheckout = document.getElementById('btnCheckout');
+  if (btnCheckout) {
+    btnCheckout.innerHTML = `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Buy &amp; Download PDF — ${priceDisplay}
+    `;
+  }
+
 
   modal.classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -592,8 +608,17 @@ async function handleCheckout() {
 
   const btn = document.getElementById('btnCheckout');
   btn.disabled = true;
-  btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/></svg>Redirecting to checkout…`;
-
+  const priceDisplay = _currentDesign?.price
+    ? `₱${(_currentDesign.price / 100).toFixed(0)}`
+    : '₱199';
+  btn.innerHTML = `
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+    <polyline points="7 10 12 15 17 10"/>
+    <line x1="12" y1="15" x2="12" y2="3"/>
+  </svg>
+  Buy &amp; Download PDF — ${priceDisplay}
+`;
   try {
     let blob = _cachedPDFBlob;
     if (!blob) {
@@ -611,6 +636,7 @@ async function handleCheckout() {
         name: customerName,
         email: customerEmail,
         type: 'PDF',
+        price: _currentDesign.price,
         pdf: base64PDF
       })
     });
@@ -730,6 +756,12 @@ window.addEventListener('DOMContentLoaded', async () => {
     if (!_currentDesign) {
       throw new Error(`Design ${designId} not found`);
     }
+
+    const priceDisplay = `₱${(_currentDesign.price / 100).toFixed(0)}`;
+    document.getElementById('btnDownload').querySelector('span') // or set innerHTML
+    // simpler: just set the whole text
+    document.getElementById('btnDownload').childNodes[0].textContent =
+      `Review & Continue — ${priceDisplay}`;
 
     console.log('✅ Design loaded:', _currentDesign.name);
     console.log('📁 Category:', foundCategory);
@@ -861,7 +893,7 @@ document.addEventListener('keydown', function (e) {
 
 const zoomOverlay = document.getElementById('zoomOverlay');
 if (zoomOverlay) {
-  zoomOverlay.addEventListener('click', function() {
+  zoomOverlay.addEventListener('click', function () {
     closeZoom();
   });
 }

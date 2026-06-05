@@ -117,6 +117,7 @@ export default async function handler(req, res) {
     const driveFileId = uploadResult.fileId;
     const driveFileUrl = uploadResult.fileUrl;
     console.log(`✅ File uploaded with ID: ${driveFileId}`);
+    const amount = req.body.price || 19900;
 
     // Create PayMongo checkout session
     const checkoutRes = await fetch("https://api.paymongo.com/v1/checkout_sessions", {
@@ -132,7 +133,7 @@ export default async function handler(req, res) {
             line_items: [
               {
                 currency: "PHP",
-                amount: type === "PDF" ? 19900 : 24900,
+                amount: amount,
                 name: type === "PDF" ? "PDF Download" : "Print Order",
                 quantity: 1,
               },
@@ -143,6 +144,7 @@ export default async function handler(req, res) {
               "qrph"
             ],
             metadata: {
+              price: amount,
               name,
               email,
               type,
