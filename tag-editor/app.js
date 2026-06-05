@@ -46,6 +46,50 @@ function detectCategoryFromDesignId(designId) {
   return 'wedding-tag'; // Default fallback
 }
 
+//helper to build a skeleton preview element while the actual design loads
+function buildSkeletonPreview() {
+  const SKELETON_W = 260;
+  const SKELETON_H = 490;
+
+  const wrapper = document.createElement('div');
+  wrapper.id = 'tagSkeleton';
+  wrapper.style.cssText = `
+    width: ${SKELETON_W}px;
+    height: ${SKELETON_H}px;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    background: linear-gradient(90deg, #f0e8dc 25%, #e8ddd4 50%, #f0e8dc 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+    flex-shrink: 0;
+  `;
+
+  // Fake text lines to hint at a tag layout
+  const lines = [
+    { top: '55%', width: '60%', height: '18px' },
+    { top: '63%', width: '40%', height: '10px' },
+    { top: '68%', width: '50%', height: '10px' },
+  ];
+
+  lines.forEach(({ top, width, height }) => {
+    const line = document.createElement('div');
+    line.style.cssText = `
+      position: absolute;
+      left: 50%;
+      top: ${top};
+      transform: translateX(-50%);
+      width: ${width};
+      height: ${height};
+      border-radius: 4px;
+      background: rgba(255,255,255,0.45);
+    `;
+    wrapper.appendChild(line);
+  });
+
+  return wrapper;
+}
+
 // =====================================================
 // FONT MANAGEMENT
 // =====================================================
@@ -677,58 +721,51 @@ window.addEventListener('DOMContentLoaded', async () => {
       console.log('Using URL parameter:', designId, 'category:', selectedCategory);
     }
 
-    // If still no design ID, redirect to gallery
     if (!designId) {
       console.error('No design selected. Redirecting to gallery...');
       window.location.href = '/tag-editor/index.html';
       return;
     }
 
-    // If we don't have a category from URL or sessionStorage, try to detect it from the design ID
     if (!selectedCategory) {
       selectedCategory = detectCategoryFromDesignId(designId);
-      console.log(`No category provided, detected: ${selectedCategory}`);
     }
 
-    // Try to load the design
+    // ── STEP 1: Show skeleton preview immediately ──────────────────
+    const wrapper = document.getElementById('tagWrapper');
+    if (wrapper) {
+      const skeletonEl = buildSkeletonPreview();
+      wrapper.appendChild(skeletonEl);
+    }
+
+    // ── STEP 2: Load design JSON + fonts + photo all in parallel ───
     let designs = null;
     let foundCategory = null;
 
-    // First try the category we have (from URL, sessionStorage, or detection)
+    // Try specified category first
     if (selectedCategory) {
       try {
-        console.log(`Trying to load from category: ${selectedCategory}`);
         const res = await fetch(`/tag-editor/products/${selectedCategory}.json`);
         if (res.ok) {
           designs = await res.json();
           const found = designs.find(d => d.id === designId);
           if (found) {
             foundCategory = selectedCategory;
-            console.log(`✓ Found design in category: ${selectedCategory}`);
           } else {
-            console.log(`Design not found in ${selectedCategory}, searching all categories...`);
-            designs = null; // Reset to search all
+            designs = null;
           }
-        } else {
-          console.log(`Category ${selectedCategory} not found, searching all categories...`);
-          designs = null;
         }
       } catch (e) {
-        console.warn(`Could not load category ${selectedCategory}:`, e);
         designs = null;
       }
     }
 
-    // If design not found in specified category, search all categories
+    // Search all categories if not found
     if (!designs || !designs.find(d => d.id === designId)) {
-      const categories = ['wedding-tag', 'baptism-tag', 'christmas-tag'];
-
+      const categories = ['wedding-tag', 'baptism-tag', 'christmas-tag', 'birthday-tag'];
       for (const cat of categories) {
-        // Skip if we already tried this category and it didn't work
         if (cat === selectedCategory) continue;
-
         try {
-          console.log(`Searching in category: ${cat}`);
           const res = await fetch(`/tag-editor/products/${cat}.json`);
           if (res.ok) {
             const catDesigns = await res.json();
@@ -736,7 +773,6 @@ window.addEventListener('DOMContentLoaded', async () => {
             if (found) {
               designs = catDesigns;
               foundCategory = cat;
-              console.log(`✓ Found design in category: ${cat}`);
               break;
             }
           }
@@ -746,46 +782,27 @@ window.addEventListener('DOMContentLoaded', async () => {
       }
     }
 
-    // If still no design found, throw error
     if (!designs || !designs.find(d => d.id === designId)) {
       throw new Error(`Design ${designId} not found in any category`);
     }
 
-    // Get the actual design object
     _currentDesign = designs.find(d => d.id === designId);
-    if (!_currentDesign) {
-      throw new Error(`Design ${designId} not found`);
-    }
-
-    const priceDisplay = `₱${(_currentDesign.price / 100).toFixed(0)}`;
-    document.getElementById('btnDownload').querySelector('span') // or set innerHTML
-    // simpler: just set the whole text
-    document.getElementById('btnDownload').childNodes[0].textContent =
-      `Review & Continue — ${priceDisplay}`;
-
     console.log('✅ Design loaded:', _currentDesign.name);
-    console.log('📁 Category:', foundCategory);
 
-    // Update UI labels
+    // ── STEP 3: Update UI labels immediately after design loads ────
     const nameStepLabel = document.querySelector('#nameStepLabel');
     const dateStepLabel = document.querySelector('#dateStepLabel');
     if (nameStepLabel) nameStepLabel.textContent = _currentDesign.fields.name.label || 'Names';
-    if (dateStepLabel) dateStepLabel.textContent = _currentDesign.fields.date.label || 'Date';
+    if (dateStepLabel) dateStepLabel.textContent = _currentDesign.fields.date?.label || 'Date';
 
     document.getElementById('name1').placeholder = _currentDesign.fields.name.preset?.name1 || '';
     document.getElementById('name2').placeholder = _currentDesign.fields.name.preset?.name2 || '';
 
-    // Update back links with the found category
-    const backLink1 = document.querySelector('.back-to-designs');
     const backLink2 = document.querySelector('.design-badge-change');
     const backUrl = foundCategory ? `index.html#/${foundCategory}` : 'index.html';
-    if (backLink1) backLink1.href = backUrl;
     if (backLink2) backLink2.href = backUrl;
 
-    // Also store the category in sessionStorage for consistency
-    if (foundCategory) {
-      sessionStorage.setItem('selectedCategory', foundCategory);
-    }
+    if (foundCategory) sessionStorage.setItem('selectedCategory', foundCategory);
 
     document.getElementById('designBadgeName').textContent = _currentDesign.name;
     document.getElementById('previewDesignName').textContent = _currentDesign.name;
@@ -802,47 +819,80 @@ window.addEventListener('DOMContentLoaded', async () => {
       if (!taglineInput.value) taglineInput.value = _currentDesign.fields.tagline.defaultValue;
     }
 
-    // Load fonts
-    await collectAvailableFonts();
-    await preloadAllFonts();
-    await loadFontsForDesign(_currentDesign);
-
-    // Load default photo
-    if (_currentDesign.fields.photo?.enabled && _currentDesign.fields.photo?.defaultImage) {
-      try {
-        const photoRes = await fetch(_currentDesign.fields.photo.defaultImage);
-        const blob = await photoRes.blob();
-        _photoDataURL = await new Promise(resolve => {
-          const reader = new FileReader();
-          reader.onload = e => resolve(e.target.result);
-          reader.readAsDataURL(blob);
-        });
-        document.getElementById('photoRemoveBtn').style.display = 'block';
-        document.getElementById('photoUploadLabel').style.display = 'none';
-      } catch (e) {
-        console.warn('Could not load default photo:', e);
-      }
+    // Update price on buttons
+    const priceDisplay = _currentDesign.price
+      ? `₱${(_currentDesign.price / 100).toFixed(0)}`
+      : '₱199';
+    const btnDownload = document.getElementById('btnDownload');
+    if (btnDownload) {
+      btnDownload.innerHTML = `
+        Review & Continue — ${priceDisplay}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
+      `;
     }
 
-    // Initialize UI
+    // ── STEP 4: Kick off fonts + photo loading in parallel ─────────
+    const [fontData] = await Promise.all([
+      collectAvailableFonts(),
+      loadFontsForDesign(_currentDesign),
+
+      // Load default photo in parallel with fonts
+      (async () => {
+        if (_currentDesign.fields.photo?.enabled && _currentDesign.fields.photo?.defaultImage) {
+          try {
+            const photoRes = await fetch(_currentDesign.fields.photo.defaultImage);
+            const blob = await photoRes.blob();
+            _photoDataURL = await new Promise(resolve => {
+              const reader = new FileReader();
+              reader.onload = e => resolve(e.target.result);
+              reader.readAsDataURL(blob);
+            });
+            const photoRemoveBtn = document.getElementById('photoRemoveBtn');
+            const photoUploadLabel = document.getElementById('photoUploadLabel');
+            if (photoRemoveBtn) photoRemoveBtn.style.display = 'block';
+            if (photoUploadLabel) photoUploadLabel.style.display = 'none';
+          } catch (e) {
+            console.warn('Could not load default photo:', e);
+          }
+        }
+      })()
+    ]);
+
+    // Preload all fonts for the dropdown (non-blocking — don't await)
+    preloadAllFonts().catch(e => console.warn('Font preload error:', e));
+
+    // ── STEP 5: Initialize UI controls ────────────────────────────
     populateFontDropdown();
     initDropdown();
     updateTag();
 
-    // Only initialize date picker if date field is enabled
     if (_currentDesign.fields.date?.enabled !== false) {
       initDatePicker();
     }
 
-    // Render desktop preview
-    const wrapper = document.getElementById('tagWrapper');
+    // ── STEP 6: Render actual tag — replace skeleton ───────────────
     if (wrapper) {
       wrapper.style.width = _currentDesign.tagDimensions.width + 'px';
       wrapper.style.height = _currentDesign.tagDimensions.height + 'px';
+
       _tagRoot = await TagRenderer.buildTagElement(_currentDesign, getValues(), _photoDataURL);
       _tagRoot.id = 'theTag';
+
+      // Fade in the real tag, remove skeleton
+      _tagRoot.style.opacity = '0';
+      _tagRoot.style.transition = 'opacity 0.3s ease';
       wrapper.innerHTML = '';
       wrapper.appendChild(_tagRoot);
+
+      // Trigger fade in on next frame
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          _tagRoot.style.opacity = '1';
+        });
+      });
     }
 
     console.log('✅ App ready!');
