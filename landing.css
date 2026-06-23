@@ -295,9 +295,12 @@ body::after {
 }
 
 .l-demo__actions {
-  display: flex;      /* Changed from block */
-  justify-content: center;  /* Horizontal centering */
-  align-items: center;      /* Vertical centering (needs container height) */
+  display: flex;
+  /* Changed from block */
+  justify-content: center;
+  /* Horizontal centering */
+  align-items: center;
+  /* Vertical centering (needs container height) */
   margin-top: 28px;
   /* Add height if needed, e.g., height: 100px; */
 }
@@ -1013,6 +1016,35 @@ body::after {
   appearance: none;
 }
 
+/* landing.css — add at bottom */
+
+/* Stat items look like they should do something — make them links or kill the tappable feel */
+.l-stat {
+  cursor: default;
+  /* was implicitly pointer on mobile from parent flex */
+}
+
+/* Fix: product card entire surface clickable on mobile */
+.l-product {
+  display: block;
+  /* already is, but ensure no gap */
+  cursor: pointer;
+}
+
+/* The hero right panel has padding above/below the tag card that registers
+   dead clicks — the inputs and demo section need a tighter hit region */
+.l-hero__right {
+  cursor: default;
+}
+
+.l-demo-inputs,
+.l-tag-wrap,
+.l-demo__actions {
+  position: relative;
+  /* ensure stacking context for z-index */
+  z-index: 1;
+}
+
 /* ── MOBILE ── */
 @media (max-width: 900px) {
   .l-nav {
@@ -1193,5 +1225,34 @@ body::after {
 
   .l-tag-card__tagline {
     font-size: 8px;
+  }
+}
+
+/* landing.css — add at bottom */
+
+/* Prevent the hero right background from eating taps meant for the CTA */
+.l-hero__right {
+  pointer-events: none;
+  /* background area is not interactive */
+}
+
+/* Re-enable pointer events only on actual interactive children */
+.l-demo-inputs,
+.l-tag-wrap,
+.l-demo__actions,
+.l-demo-input,
+.l-btn-primary,
+.bounce-text {
+  pointer-events: auto;
+}
+
+/* On mobile, the tag card sits over the CTA — give the CTA a clear z-index */
+@media (max-width: 900px) {
+  .l-demo__actions {
+    display: none;
+  }
+
+  .l-tag-wrap {
+    z-index: 1;
   }
 }

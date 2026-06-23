@@ -1764,3 +1764,30 @@ input::placeholder {
     height: 18px !important;
   }
 }
+
+/* Hide inline customer fields on desktop — modal handles it */
+@media (min-width: 781px) {
+  .inline-customer {
+    display: none;
+  }
+}
+
+/* styles.css — replace the mobile inline-customer block */
+@media (max-width: 780px) {
+  .inline-customer {
+    margin-bottom: 0.5rem;
+  }
+
+  .inline-customer > div:first-child {
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .inline-customer input {
+    flex: unset !important;
+    width: 100% !important;
+    padding: 0.5rem 0.6rem !important;
+    font-size: 13px !important;
+    box-sizing: border-box;
+  }
+}

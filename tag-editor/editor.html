@@ -169,7 +169,7 @@
                   <span>Click to upload a photo</span>
                 </label>
                 <button class="photo-remove-btn" id="photoRemoveBtn" onclick="removePhoto()" style="display:none">
-                  ✕ Remove photo
+                  ↺ Reset photo
                 </button>
               </div>
             </div>
@@ -191,8 +191,25 @@
 
       <!-- CTA Section -->
       <div class="cta-section">
+
+        <!-- Inline email capture — feels like part of the flow, not a gate -->
+        <div class="inline-customer" id="inlineCustomer">
+          <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;">
+            <input type="text" id="inlineName" placeholder="Your name" autocomplete="name"
+              style="flex:1;padding:0.6rem 0.75rem;font-size:14px;border:1px solid var(--gold-light);border-radius:6px;background:var(--warm-white);font-family:Jost,sans-serif;color:var(--ink);outline:none;"
+              onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--gold-light)'" />
+            <input type="email" id="inlineEmail" placeholder="Email for your PDF" autocomplete="email"
+              style="flex:1.4;padding:0.6rem 0.75rem;font-size:14px;border:1px solid var(--gold-light);border-radius:6px;background:var(--warm-white);font-family:Jost,sans-serif;color:var(--ink);outline:none;"
+              onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--gold-light)'" />
+          </div>
+          <p
+            style="font-size:0.65rem;color:var(--ink-muted);letter-spacing:0.04em;margin-bottom:0.75rem;text-align:center;">
+            We'll send your print-ready PDF here after payment.
+          </p>
+        </div>
+
         <button class="btn-download-pdf" id="btnDownload" onclick="handleBuyPDF()">
-          Review & Continue
+          Review & Continue — ₱199
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
             stroke-linejoin="round">
             <line x1="5" y1="12" x2="19" y2="12" />

@@ -567,14 +567,24 @@ async function buildPDFBlob(tagCanvas) {
   return pdf.output('blob');
 }
 
+// In app.js, replace handleBuyPDF (openPreviewModal)
 async function openPreviewModal() {
-  document.getElementById('btnDownload').innerHTML =
-    `Review & Continue — ₱${(_currentDesign.price / 100).toFixed(0)} <svg>...</svg>`;
-
   const modal = document.getElementById('previewModal');
   const grid = document.getElementById('a4Grid');
   const loading = document.getElementById('a4Loading');
   const nameEl = document.getElementById('modalDesignName');
+
+  // Sync inline fields → modal fields so validation still works
+  const inlineName = document.getElementById('inlineName')?.value.trim();
+  const inlineEmail = document.getElementById('inlineEmail')?.value.trim();
+  if (inlineName) {
+    const modalName = document.getElementById('checkoutName');
+    if (modalName && !modalName.value) modalName.value = inlineName;
+  }
+  if (inlineEmail) {
+    const modalEmail = document.getElementById('checkoutEmail');
+    if (modalEmail && !modalEmail.value) modalEmail.value = inlineEmail;
+  }
 
   grid.style.display = 'none';
   grid.innerHTML = '';
@@ -582,19 +592,6 @@ async function openPreviewModal() {
   _cachedPDFBlob = null;
 
   if (nameEl && _currentDesign) nameEl.textContent = _currentDesign.name || 'Custom';
-  const priceDisplay = `₱${(_currentDesign.price / 100).toFixed(0)}`;
-  const btnCheckout = document.getElementById('btnCheckout');
-  if (btnCheckout) {
-    btnCheckout.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
-        <polyline points="7 10 12 15 17 10"/>
-        <line x1="12" y1="15" x2="12" y2="3"/>
-      </svg>
-      Buy &amp; Download PDF — ${priceDisplay}
-    `;
-  }
-
 
   modal.classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -712,18 +709,21 @@ window.addEventListener('DOMContentLoaded', async () => {
     let designId = urlParams.productId;
     let selectedCategory = urlParams.category;
 
-    // PRIORITY 2: Fall back to sessionStorage
     if (!designId) {
       designId = sessionStorage.getItem('selectedDesignId');
       selectedCategory = sessionStorage.getItem('selectedCategory');
-      console.log('Using sessionStorage:', designId);
-    } else {
-      console.log('Using URL parameter:', designId, 'category:', selectedCategory);
+    }
+
+    // FIX: Instead of redirecting cold traffic, show a friendly picker
+    if (!designId) {
+      console.warn('No design ID — showing category picker instead of redirecting');
+      showDesignPickerFallback();
+      return;
     }
 
     if (!designId) {
-      console.error('No design selected. Redirecting to gallery...');
-      window.location.href = '/tag-editor/index.html';
+      console.warn('No design ID — showing category picker instead of redirecting');
+      showDesignPickerFallback();
       return;
     }
 
@@ -841,21 +841,18 @@ window.addEventListener('DOMContentLoaded', async () => {
 
       // Load default photo in parallel with fonts
       (async () => {
-        if (_currentDesign.fields.photo?.enabled && _currentDesign.fields.photo?.defaultImage) {
+        if (_currentDesign.fields.photo?.enabled) {
           try {
-            const photoRes = await fetch(_currentDesign.fields.photo.defaultImage);
+            const photoRes = await fetch('/tag-editor/blank.jpg');
             const blob = await photoRes.blob();
             _photoDataURL = await new Promise(resolve => {
               const reader = new FileReader();
               reader.onload = e => resolve(e.target.result);
               reader.readAsDataURL(blob);
             });
-            const photoRemoveBtn = document.getElementById('photoRemoveBtn');
-            const photoUploadLabel = document.getElementById('photoUploadLabel');
-            if (photoRemoveBtn) photoRemoveBtn.style.display = 'block';
-            if (photoUploadLabel) photoUploadLabel.style.display = 'none';
           } catch (e) {
-            console.warn('Could not load default photo:', e);
+            console.warn('Could not load blank.jpg:', e);
+            // _photoDataURL stays null — tag renders without photo slot filled
           }
         }
       })()
@@ -894,11 +891,11 @@ window.addEventListener('DOMContentLoaded', async () => {
         });
       });
     }
-
+    startOnboardingNudge();
     console.log('✅ App ready!');
   } catch (err) {
     console.error('❌ Init error:', err);
-    alert('Error: ' + err.message);
+    showEditorError(err.message);
   }
 });
 
@@ -921,6 +918,231 @@ function closeZoom() {
     previewPanel.classList.remove('zoomed');
     document.body.classList.remove('zoom-active');
   }
+}
+
+function showDesignPickerFallback() {
+  const wrapper = document.getElementById('tagWrapper');
+  const container = document.querySelector('.container');
+  if (!container) return;
+
+  container.innerHTML = `
+    <div style="
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      text-align: center;
+      padding: 2rem;
+      gap: 1.5rem;
+    ">
+      <p style="
+        font-size: 0.65rem;
+        font-weight: 500;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: var(--gold);
+      ">✦ Heavenxent Keepsakes ✦</p>
+      <h2 style="
+        font-family: 'Cormorant Garamond', serif;
+        font-weight: 300;
+        font-size: 2rem;
+        color: var(--ink);
+        line-height: 1.2;
+        margin: 0;
+      ">Choose your design to get started</h2>
+      <p style="
+        font-size: 0.8rem;
+        font-weight: 300;
+        color: var(--ink-muted);
+        max-width: 400px;
+        line-height: 1.7;
+      ">Browse our full collection and customize with your names, date, and message.</p>
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center;">
+        <a href="/tag-editor/index.html#/wedding-tag" style="
+          padding: 12px 28px;
+          background: var(--ink);
+          color: var(--cream);
+          text-decoration: none;
+          font-size: 0.75rem;
+          font-weight: 500;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          border-radius: 6px;
+          transition: background 0.2s;
+        ">Wedding tags</a>
+        <a href="/tag-editor/index.html#/baptism-tag" style="
+          padding: 12px 28px;
+          background: var(--parchment);
+          color: var(--ink);
+          text-decoration: none;
+          font-size: 0.75rem;
+          font-weight: 500;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          border-radius: 6px;
+          border: 1px solid var(--border);
+        ">Baptism tags</a>
+        <a href="/tag-editor/index.html#/birthday-tag" style="
+          padding: 12px 28px;
+          background: var(--parchment);
+          color: var(--ink);
+          text-decoration: none;
+          font-size: 0.75rem;
+          font-weight: 500;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          border-radius: 6px;
+          border: 1px solid var(--border);
+        ">Birthday tags</a>
+        <a href="/tag-editor/index.html#/christmas-tag" style="
+          padding: 12px 28px;
+          background: var(--parchment);
+          color: var(--ink);
+          text-decoration: none;
+          font-size: 0.75rem;
+          font-weight: 500;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          border-radius: 6px;
+          border: 1px solid var(--border);
+        ">Christmas tags</a>
+      </div>
+    </div>
+  `;
+}
+
+function showEditorError(message) {
+  const container = document.querySelector('.container');
+  if (!container) return;
+
+  console.error('Editor error:', message);
+  container.innerHTML = `
+    <div style="
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      text-align: center;
+      padding: 2rem;
+      gap: 1rem;
+    ">
+      <h2 style="
+        font-family: 'Cormorant Garamond', serif;
+        font-weight: 300;
+        font-size: 1.8rem;
+        color: var(--ink);
+      ">Something went wrong</h2>
+      <p style="font-size: 0.8rem; color: var(--ink-muted); line-height: 1.7; max-width: 360px;">
+        We couldn't load this design. Please go back to the gallery and choose a design to customize.
+      </p>
+      <a href="/tag-editor/index.html" style="
+        padding: 12px 28px;
+        background: var(--ink);
+        color: var(--cream);
+        text-decoration: none;
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        border-radius: 6px;
+      ">Back to gallery</a>
+    </div>
+  `;
+}
+
+function startOnboardingNudge() {
+  const name1Input = document.getElementById('name1');
+  const nameRow = document.querySelector('.name-row');
+  if (!name1Input || !nameRow) return;
+
+  let hasTyped = false;
+  let nudgeEl = null;
+
+  const showNudge = () => {
+    if (hasTyped) return;
+
+    nudgeEl = document.createElement('div');
+    nudgeEl.id = 'editorNudge';
+    nudgeEl.innerHTML = `
+      <span style="display:inline-block;animation:nudgeBounce 1.2s ease-in-out infinite;">👆</span>
+      <span>Type here — watch your tag update live!</span>
+    `;
+    Object.assign(nudgeEl.style, {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px',
+      marginTop: '8px',
+      padding: '8px 12px',
+      background: 'rgba(201, 169, 110, 0.12)',
+      border: '1px solid rgba(201, 169, 110, 0.35)',
+      borderLeft: '3px solid var(--gold)',
+      borderRadius: '6px',
+      fontSize: '0.72rem',
+      fontWeight: '400',
+      color: 'var(--gold-dark)',
+      letterSpacing: '0.03em',
+      overflow: 'hidden',
+      maxHeight: '60px',
+      opacity: '1',
+      transition: 'opacity 0.4s ease, max-height 0.4s ease, margin 0.4s ease, padding 0.4s ease',
+    });
+
+    name1Input.style.transition = 'border-color 0.4s ease, box-shadow 0.4s ease';
+    name1Input.style.borderColor = 'var(--gold)';
+    name1Input.style.boxShadow = '0 0 0 3px rgba(201, 169, 110, 0.18)';
+
+    // Insert immediately after the name row, before font selector
+    nameRow.after(nudgeEl);
+
+    if (!document.getElementById('nudgeStyle')) {
+      const style = document.createElement('style');
+      style.id = 'nudgeStyle';
+      style.textContent = `
+        @keyframes nudgeBounce {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-3px); }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    setTimeout(dismissNudge, 6000);
+  };
+
+  const dismissNudge = () => {
+    if (!nudgeEl) return;
+
+    // Collapse in place — no layout jump
+    nudgeEl.style.opacity = '0';
+    nudgeEl.style.maxHeight = '0';
+    nudgeEl.style.marginTop = '0';
+    nudgeEl.style.padding = '0 12px';
+
+    setTimeout(() => {
+      nudgeEl?.remove();
+      nudgeEl = null;
+    }, 400);
+
+    name1Input.style.borderColor = '';
+    name1Input.style.boxShadow = '';
+  };
+
+  const nudgeTimer = setTimeout(showNudge, 2500);
+
+  const onFirstType = () => {
+    hasTyped = true;
+    clearTimeout(nudgeTimer);
+    dismissNudge();
+    name1Input.removeEventListener('focus', onFirstType);
+    name1Input.removeEventListener('input', onFirstType);
+    document.getElementById('name2')?.removeEventListener('focus', onFirstType);
+  };
+
+  name1Input.addEventListener('focus', onFirstType);
+  name1Input.addEventListener('input', onFirstType);
+  document.getElementById('name2')?.addEventListener('focus', onFirstType);
 }
 
 // Close when clicking ANYWHERE on the preview panel (including background)

@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Batch Export — Heavenxent Keepsakes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Load the same font bundle the editor uses -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Bebas+Neue&family=Cinzel:wght@400;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Gilda+Display&family=Glass+Antiqua&family=Great+Vibes&family=Inria+Serif:ital,wght@0,400;0,700;1,400&family=Literata:ital,opsz,wght@0,7..72,400&family=Lora:ital,wght@0,400;0,600;1,400&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Noto+Sans+JP:wght@100;300;400;500;700&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Pacifico&family=Parisienne&family=Petit+Formal+Script&family=Pinyon+Script&family=Pompiere&family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Source+Serif+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Srisakdi:wght@400;700&family=Tangerine:wght@400;700&display=swap">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #faf7f2;
+      --parchment: #f2ede4;
+      --gold: #c9a96e;
+      --gold-dark: #9a7a45;
+      --ink: #1a1714;
+      --ink-muted: #7a7268;
+      --border: rgba(201, 169, 110, 0.25);
+      --green: #2e7d32;
+      --red: #c62828;
+    }
+
+    body {
+      font-family: 'Jost', system-ui, sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 2.5rem 2rem 4rem;
+    }
+
+    header {
+      max-width: 900px;
+      margin: 0 auto 2.5rem;
+    }
+
+    header h1 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 300;
+      font-size: 2.2rem;
+      color: var(--ink);
+      margin-bottom: 0.4rem;
+    }
+
+    header p {
+      font-size: 0.82rem;
+      color: var(--ink-muted);
+      line-height: 1.6;
+      letter-spacing: 0.03em;
+    }
+
+    .gold-rule {
+      width: 40px; height: 1px;
+      background: var(--gold);
+      margin: 1rem 0;
+    }
+
+    /* Controls */
+    .controls {
+      max-width: 900px;
+      margin: 0 auto 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .field-group label {
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+
+    .field-group input {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      color: var(--ink);
+      outline: none;
+      width: 180px;
+      transition: border-color 0.2s;
+    }
+
+    .field-group input:focus { border-color: var(--gold); }
+
+    .category-toggles {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .cat-btn {
+      padding: 7px 14px;
+      border: 1.5px solid var(--border);
+      background: white;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .cat-btn.active {
+      border-color: var(--gold);
+      background: rgba(201, 169, 110, 0.1);
+      color: var(--gold-dark);
+    }
+
+    .btn-run {
+      padding: 10px 28px;
+      background: var(--ink);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-run:hover:not(:disabled) { background: var(--gold-dark); }
+    .btn-run:disabled { opacity: 0.5; cursor: wait; }
+
+    .btn-zip {
+      padding: 10px 22px;
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: none;
+    }
+
+    .btn-zip:hover { background: #1b5e20; }
+
+    /* Progress */
+    .progress-wrap {
+      max-width: 900px;
+      margin: 0 auto 1.5rem;
+      display: none;
+    }
+
+    .progress-bar-track {
+      height: 4px;
+      background: var(--parchment);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 0.6rem;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--gold);
+      border-radius: 4px;
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    .progress-text {
+      font-size: 0.72rem;
+      color: var(--ink-muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* Log */
+    .log {
+      max-width: 900px;
+      margin: 0 auto 2rem;
+      background: #1a1714;
+      border-radius: 8px;
+      padding: 1rem 1.2rem;
+      font-family: 'SF Mono', 'Fira Mono', monospace;
+      font-size: 0.72rem;
+      color: #b0a89a;
+      max-height: 180px;
+      overflow-y: auto;
+      line-height: 1.7;
+      display: none;
+    }
+
+    .log .ok   { color: #81c784; }
+    .log .err  { color: #ef9a9a; }
+    .log .info { color: #90caf9; }
+
+    /* Grid */
+    .grid {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-thumb {
+      background: var(--parchment);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 180px;
+      position: relative;
+    }
+
+    .card-thumb canvas,
+    .card-thumb img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+
+    .card-thumb .spinner {
+      width: 24px; height: 24px;
+      border: 2px solid var(--border);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+
+    .card-thumb .status-icon {
+      position: absolute;
+      top: 6px; right: 8px;
+      font-size: 1rem;
+    }
+
+    .card-body {
+      padding: 0.7rem 0.8rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .card-category {
+      font-size: 0.55rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold-dark);
+    }
+
+    .card-name {
+      font-size: 0.78rem;
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1.3;
+    }
+
+    .card-id {
+      font-size: 0.6rem;
+      color: var(--ink-muted);
+      font-family: monospace;
+    }
+
+    .btn-dl {
+      margin-top: 6px;
+      padding: 5px 10px;
+      background: var(--ink);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+      transition: background 0.2s;
+    }
+
+    .btn-dl:hover { background: var(--gold-dark); }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Batch PNG Export</h1>
+  <div class="gold-rule"></div>
+  <p>
+    Renders all designs through the same <code>TagRenderer</code> pipeline the editor uses,
+    then exports each as a full-resolution PNG. Place this file inside your project root
+    and open it via Live Server (<code>http://localhost:5501/batch-export.html</code>).
+  </p>
+</header>
+
+<!-- ── Controls ── -->
+<div class="controls">
+
+  <div class="field-group">
+    <label>Name 1</label>
+    <input id="ctrlName1" value="Jason" placeholder="e.g. Jason" />
+  </div>
+
+  <div class="field-group">
+    <label>Name 2 (couple designs)</label>
+    <input id="ctrlName2" value="Maricar" placeholder="e.g. Maricar" />
+  </div>
+
+  <div class="field-group">
+    <label>Message / Tagline</label>
+    <input id="ctrlTagline" value="Forever starts today" placeholder="optional" />
+  </div>
+
+  <div class="field-group">
+    <label>Categories</label>
+    <div class="category-toggles">
+      <button class="cat-btn active" data-cat="wedding-tag">Wedding</button>
+      <button class="cat-btn active" data-cat="baptism-tag">Baptism</button>
+      <button class="cat-btn active" data-cat="birthday-tag">Birthday</button>
+      <button class="cat-btn active" data-cat="christmas-tag">Christmas</button>
+    </div>
+  </div>
+
+  <button class="btn-run" id="btnRun" onclick="runBatch()">▶ Run Batch</button>
+  <button class="btn-zip" id="btnZip" onclick="downloadZip()">⬇ Download ZIP</button>
+
+</div>
+
+<!-- ── Progress ── -->
+<div class="progress-wrap" id="progressWrap">
+  <div class="progress-bar-track">
+    <div class="progress-bar-fill" id="progressFill"></div>
+  </div>
+  <div class="progress-text" id="progressText">Preparing…</div>
+</div>
+
+<!-- ── Log ── -->
+<pre class="log" id="log"></pre>
+
+<!-- ── Results Grid ── -->
+<div class="grid" id="grid"></div>
+
+
+<!-- Load JSZip for the ZIP download feature -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<!-- Load the exact same TagRenderer the editor uses -->
+<script src="tag-editor/tag-renderer.js"></script>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────────────
+const CATEGORIES = [
+  { id: 'wedding-tag',  label: 'Wedding'   },
+  { id: 'baptism-tag',  label: 'Baptism'   },
+  { id: 'birthday-tag', label: 'Birthday'  },
+  { id: 'christmas-tag',label: 'Christmas' },
+];
+
+// ── Sample data ────────────────────────────────────────────────────────────
+const SAMPLE_NAMES = {
+  'wedding-tag': [
+    { name1: 'Carlo',   name2: 'Marisol'  },
+    { name1: 'Andrei',  name2: 'Precious' },
+    { name1: 'Ramon',   name2: 'Lourdes'  },
+    { name1: 'Miguel',  name2: 'Analisa'  },
+    { name1: 'Jerome',  name2: 'Katrina'  },
+    { name1: 'Ronaldo', name2: 'Fe'       },
+    { name1: 'Danilo',  name2: 'Rowena'   },
+    { name1: 'Arjay',   name2: 'Cristine' },
+    { name1: 'Jerico',  name2: 'Marie'  },
+    { name1: 'Aldrin',  name2: 'Sunshine' },
+    { name1: 'Renz',    name2: 'Abegail'  },
+    { name1: 'Jomel',   name2: 'Hazel'    },
+  ],
+  'baptism-tag': [
+    'Juancho Carlito', 'Juan Rafael', 'Maria Luisa', 'Ezekiel James',
+    'Lourdes Anne', 'Gabriel Rey', 'Theresa Jammilyn', 'Emmanuel Cruz','Lorenzo Peter',
+    'Angelica Mae', 'Mikaela Rose', 'Benedict Luke',
+  ],
+  'birthday-tag': [
+    'Samantha Jazz', 'James Joshua', 'Amelia Grace', 'Luis Antonio Santos',
+    'Bianca Marie', 'Catherine @50', 'Mommy Leonora', 'Andrei James',
+    'Ysabel Anne Cruz', 'Marco David', 'Natalia Rose', 'Enrique Paul',
+  ],
+  'christmas-tag': [
+    'Santos Family',
+    'Reyes Family',
+    'Dela Cruz Family',
+    'Bautista Family',
+    'Garcia & Mendoza',
+    'Dra. Coring Teng',
+    'Tita Malou & Family',
+    'Lola Nena',
+    'The Villanueva Family',
+    'Manang Rosie',
+    'Kuya Bien & Ate Grace',
+    'Tito Boy & Family',
+  ],
+};
+
+function getSampleValues(catId, index) {
+  const i = index % 12; // each category has exactly 12 designs
+
+  if (catId === 'wedding-tag') {
+    const pair = SAMPLE_NAMES['wedding-tag'][i];
+    return { name1: pair.name1, name2: pair.name2, tagline: '', date: '' };
+  }
+
+  if (catId === 'christmas-tag') {
+    // Christmas only has one name field (giver), name2 intentionally blank
+    return { name1: SAMPLE_NAMES['christmas-tag'][i], name2: '', tagline: '', date: '' };
+  }
+
+  // Baptism and birthday — single name only
+  return { name1: SAMPLE_NAMES[catId][i], name2: '', tagline: '', date: '' };
+}
+
+// Stores { designId → { blob, filename } } after a run
+const exportedPNGs = new Map();
+
+// Toggle category buttons
+document.querySelectorAll('.cat-btn').forEach(btn => {
+  btn.addEventListener('click', () => btn.classList.toggle('active'));
+});
+
+// ── Logging ───────────────────────────────────────────────────────────────
+function log(msg, type = '') {
+  const el = document.getElementById('log');
+  el.style.display = 'block';
+  const span = document.createElement('span');
+  if (type) span.className = type;
+  span.textContent = msg + '\n';
+  el.appendChild(span);
+  el.scrollTop = el.scrollHeight;
+}
+
+// ── Progress ─────────────────────────────────────────────────────────────
+function setProgress(done, total, label) {
+  const wrap = document.getElementById('progressWrap');
+  wrap.style.display = 'block';
+  document.getElementById('progressFill').style.width = `${Math.round(done / total * 100)}%`;
+  document.getElementById('progressText').textContent = label;
+}
+
+// ── Load product JSON ──────────────────────────────────────────────────────
+async function loadCategory(catId) {
+  const res = await fetch(`tag-editor/products/${catId}.json`);
+  if (!res.ok) throw new Error(`Could not load ${catId}.json (${res.status})`);
+  return res.json();
+}
+
+// ── Load default photo for a design ───────────────────────────────────────
+async function loadDefaultPhoto(design) {
+  const p = design.fields?.photo;
+  if (!p?.enabled || !p?.defaultImage) return null;
+  try {
+    const res = await fetch(p.defaultImage); // ← remove the tag-editor/ prefix, path is already patched
+    if (!res.ok) return null;
+    const blob = await res.blob();
+    return new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onload = e => resolve(e.target.result);
+      reader.readAsDataURL(blob);
+    });
+  } catch { return null; }
+}
+
+// ── Build one card placeholder ─────────────────────────────────────────────
+function makeCard(catLabel, design) {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.id = `card-${design.id}`;
+  card.innerHTML = `
+    <div class="card-thumb" id="thumb-${design.id}">
+      <div class="spinner"></div>
+    </div>
+    <div class="card-body">
+      <span class="card-category">${catLabel}</span>
+      <span class="card-name">${design.name}</span>
+      <span class="card-id">${design.id}</span>
+    </div>
+  `;
+  return card;
+}
+
+// ── Render one design → PNG blob ───────────────────────────────────────────
+async function renderDesign(design, catId, indexInCategory) {
+  const patchedDesign = {
+    ...design,
+    tagImage: design.tagImage
+      ? `tag-editor/${design.tagImage.replace(/^\.\//, '')}`
+      : design.tagImage,
+    fields: {
+      ...design.fields,
+      photo: design.fields.photo?.defaultImage
+        ? {
+            ...design.fields.photo,
+            defaultImage: `tag-editor/${design.fields.photo.defaultImage.replace(/^\.\//, '')}`
+          }
+        : design.fields.photo
+    }
+  };
+
+  // Auto-generate values unique to this design
+  const values = getSampleValues(catId, indexInCategory);
+
+  // Load all fonts for this design first
+  const families = new Set();
+  ['name', 'date', 'tagline'].forEach(key => {
+    const f = patchedDesign.fields[key];
+    if (f?.fontFamily) families.add(f.fontFamily.split(',')[0].trim().replace(/["']/g, ''));
+  });
+  for (const fam of families) await TagRenderer.loadFontFamily(fam);
+  await document.fonts.ready;
+  await new Promise(r => setTimeout(r, 120));
+
+  const photo = await loadDefaultPhoto(patchedDesign);
+  const canvas = await TagRenderer.buildTagCanvas(patchedDesign, values, photo);
+  return canvas;
+}
+
+// ── Update a card with its rendered image ─────────────────────────────────
+function showCardResult(design, canvas, ok) {
+  const thumb = document.getElementById(`thumb-${design.id}`);
+  if (!thumb) return;
+
+  if (ok) {
+    // Show a scaled preview
+    const preview = document.createElement('img');
+    preview.src = canvas.toDataURL('image/png');
+    preview.alt = design.name;
+    thumb.innerHTML = `<span class="status-icon">✅</span>`;
+    thumb.appendChild(preview);
+
+    // Add download link to card body
+    const body = document.querySelector(`#card-${design.id} .card-body`);
+    const a = document.createElement('a');
+    a.className = 'btn-dl';
+    a.textContent = '⬇ PNG';
+    a.href = canvas.toDataURL('image/png');
+    a.download = `${design.id}.png`;
+    body.appendChild(a);
+  } else {
+    thumb.innerHTML = `<span class="status-icon">❌</span><span style="font-size:0.7rem;color:#c62828;padding:8px;text-align:center">Render failed</span>`;
+  }
+}
+
+// ── Main batch runner ──────────────────────────────────────────────────────
+async function runBatch() {
+  const btn = document.getElementById('btnRun');
+  const zipBtn = document.getElementById('btnZip');
+  btn.disabled = true;
+  zipBtn.style.display = 'none';
+  exportedPNGs.clear();
+
+  // Collect inputs
+  const name1   = document.getElementById('ctrlName1').value.trim()   || 'Jason';
+  const name2   = document.getElementById('ctrlName2').value.trim()   || 'Maricar';
+  const tagline = document.getElementById('ctrlTagline').value.trim() || 'Forever starts today';
+  const values  = { name1, name2, tagline, date: '' };
+
+  const activeCats = [...document.querySelectorAll('.cat-btn.active')]
+    .map(b => b.dataset.cat);
+
+  if (!activeCats.length) {
+    alert('Select at least one category.');
+    btn.disabled = false;
+    return;
+  }
+
+  // Clear previous results
+  document.getElementById('grid').innerHTML = '';
+  document.getElementById('log').innerHTML = '';
+  document.getElementById('log').style.display = 'none';
+
+  log(`Starting batch export — categories: ${activeCats.join(', ')}`, 'info');
+  log(`Values: name1="${name1}", name2="${name2}", tagline="${tagline}"`, 'info');
+
+  // Load all designs
+  let allDesigns = [];
+  for (const catId of activeCats) {
+    try {
+      const label = CATEGORIES.find(c => c.id === catId)?.label ?? catId;
+      const designs = await loadCategory(catId);
+      allDesigns.push(...designs.map(d => ({ design: d, catId, label })));
+      log(`Loaded ${designs.length} designs from ${catId}`, 'ok');
+    } catch (e) {
+      log(`✗ Could not load ${catId}: ${e.message}`, 'err');
+    }
+  }
+
+  const total = allDesigns.length;
+  log(`Total designs to render: ${total}`, 'info');
+
+  if (!total) {
+    btn.disabled = false;
+    return;
+  }
+
+  // Pre-build card placeholders
+  const grid = document.getElementById('grid');
+  for (const { design, label } of allDesigns) {
+    grid.appendChild(makeCard(label, design));
+  }
+
+  // Render each design sequentially (avoids thrashing font loading)
+  let done = 0, errors = 0;
+  for (const { design, catId, label } of allDesigns) {
+    setProgress(done, total, `Rendering ${done + 1} / ${total} — ${design.name}`);
+    try {
+      const canvas = await renderDesign(design, catId, allDesigns.findIndex(d => d.design === design));
+
+      // Store PNG blob for ZIP
+      const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+      exportedPNGs.set(design.id, { blob, filename: `${catId}/${design.id}.png` });
+
+      showCardResult(design, canvas, true);
+      log(`✓ ${design.id} — ${design.name}`, 'ok');
+    } catch (e) {
+      showCardResult(design, null, false);
+      log(`✗ ${design.id} — ${e.message}`, 'err');
+      errors++;
+    }
+    done++;
+    setProgress(done, total, `Rendered ${done} / ${total}`);
+
+    // Yield to browser between designs to keep UI responsive
+    await new Promise(r => setTimeout(r, 0));
+  }
+
+  const summary = `Done — ${done - errors} succeeded, ${errors} failed.`;
+  setProgress(total, total, summary);
+  log(summary, errors ? 'err' : 'ok');
+
+  if (exportedPNGs.size > 0) zipBtn.style.display = 'inline-block';
+  btn.disabled = false;
+}
+
+// ── ZIP download ───────────────────────────────────────────────────────────
+async function downloadZip() {
+  if (!exportedPNGs.size) return;
+
+  const zipBtn = document.getElementById('btnZip');
+  zipBtn.textContent = '⏳ Zipping…';
+  zipBtn.disabled = true;
+
+  const zip = new JSZip();
+  for (const [id, { blob, filename }] of exportedPNGs) {
+    zip.file(filename, blob);
+  }
+
+  const content = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
+  const url = URL.createObjectURL(content);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'heavenxent-tag-exports.zip';
+  a.click();
+  URL.revokeObjectURL(url);
+
+  zipBtn.textContent = '⬇ Download ZIP';
+  zipBtn.disabled = false;
+}
+</script>
+</body>
+</html>

@@ -66,11 +66,12 @@
         </a>
         <a href="#products" class="l-btn-ghost">See all designs</a>
       </div>
+      <!-- AFTER: make stat nums link to designs, or style them plainly -->
       <div class="l-hero__stats">
-        <div class="l-stat">
+        <a href="/tag-editor/index.html" class="l-stat" style="text-decoration:none">
           <span class="l-stat__num">12</span>
           <span class="l-stat__label">Exclusive designs</span>
-        </div>
+        </a>
         <div class="l-stat">
           <span class="l-stat__num">10+</span>
           <span class="l-stat__label">Years in business</span>
@@ -110,9 +111,12 @@
             <div class="l-tag-card__tagline">Forever starts today</div>
           </div>
         </div>
+
         <div class="l-demo__actions">
-          <a href="/tag-editor/index.html" class="l-btn-primary">
-            <span>Start customizing</span>
+          <!-- Hide this on mobile — the main CTA in l-hero__actions is enough -->
+          <a href="/tag-editor/index.html" class="l-btn-primary" style="font-size:10px;padding:12px 24px;"
+            aria-hidden="true">
+            <span>Customize this design</span>
           </a>
         </div>
       </div>
