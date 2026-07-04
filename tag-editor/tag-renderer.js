@@ -433,7 +433,8 @@ async function drawStyledCoupleText(ctx, name1, name2, ampChar, design, x, y, dp
 }
 
 // ─── Build canvas tag asynchronously ───────────────────────────────────────────
-async function buildTagCanvas(design, values, photoDataURL) {
+async function buildTagCanvas(design, values, photoDataURL, options = {}) {
+  const { watermark = false } = options;
   try {
     console.log('🎨 buildTagCanvas: Starting for design:', design.name);
 
@@ -599,7 +600,7 @@ async function buildTagCanvas(design, values, photoDataURL) {
     const textFields = ['name', 'date', 'tagline'];
     for (const key of textFields) {
       const f = fields[key];
-      
+
       if (!f) continue;
       if ((key === 'date' || key === 'tagline') && f.enabled === false) continue;
 
@@ -651,6 +652,11 @@ async function buildTagCanvas(design, values, photoDataURL) {
     }
 
     console.log('✅ buildTagCanvas: Complete');
+
+    if (watermark) {
+      drawPreviewWatermark(ctx, W * DPI_SCALE, H * DPI_SCALE);
+    }
+
     return canvas;
   } catch (err) {
     console.error('❌ FATAL ERROR in buildTagCanvas:', err);
@@ -659,18 +665,18 @@ async function buildTagCanvas(design, values, photoDataURL) {
 }
 
 // ─── Update canvas with new values ────────────────────────────────────────────
-async function updateTagCanvas(canvas, design, values, photoDataURL) {
-  const newCanvas = await buildTagCanvas(design, values, photoDataURL);
+async function updateTagCanvas(canvas, design, values, photoDataURL, options = {}) {
+  const newCanvas = await buildTagCanvas(design, values, photoDataURL, options);
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(newCanvas, 0, 0);
 }
 
 // ─── Build tag element for DOM display ─────────────────────────────────────────
-async function buildTagElement(design, values, photoDataURL) {
+async function buildTagElement(design, values, photoDataURL, options = {}) {
   try {
     console.log('🏗️ buildTagElement: Starting...');
-    const canvas = await buildTagCanvas(design, values, photoDataURL);
+    const canvas = await buildTagCanvas(design, values, photoDataURL, options);
 
     const wrapper = document.createElement('div');
     wrapper.className = 'tag-root';
@@ -704,10 +710,10 @@ async function buildTagElement(design, values, photoDataURL) {
   }
 }
 
-async function updateTagElement(root, design, values, photoDataURL) {
+async function updateTagElement(root, design, values, photoDataURL, options = {}) {
   const canvas = root.querySelector('.tag-canvas');
   if (canvas) {
-    const newCanvas = await buildTagCanvas(design, values, photoDataURL);
+    const newCanvas = await buildTagCanvas(design, values, photoDataURL, options);
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(newCanvas, 0, 0);
@@ -786,6 +792,22 @@ async function loadFontFamily(fontFamily) {
   loadingFonts.set(mainFont, loadPromise);
   await loadPromise;
   loadingFonts.delete(mainFont);
+}
+
+// ─── Draw tiled "PREVIEW" watermark directly into canvas pixels ────────────────
+function drawPreviewWatermark(ctx, canvasW, canvasH) {
+  ctx.save();
+  ctx.globalAlpha = 0.10;
+  ctx.fillStyle = '#000000';
+  ctx.font = `bold ${Math.round(canvasW * 0.16)}px Arial, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  ctx.translate(canvasW / 2, canvasH / 2);
+  ctx.rotate(-Math.PI / 8);
+  ctx.fillText('PREVIEW', 0, 0);
+
+  ctx.restore();
 }
 
 // Export for use by both pages

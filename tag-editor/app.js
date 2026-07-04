@@ -419,7 +419,7 @@ function updateTag() {
 
 async function doUpdateTag() {
   if (!_currentDesign || !_tagRoot) return;
-  await TagRenderer.updateTagElement(_tagRoot, _currentDesign, getValues(), _photoDataURL);
+  await TagRenderer.updateTagElement(_tagRoot, _currentDesign, getValues(), _photoDataURL, { watermark: true });
 
   _tagRoot.classList.remove('updating');
   requestAnimationFrame(() => requestAnimationFrame(() => _tagRoot.classList.add('updating')));
@@ -875,7 +875,7 @@ window.addEventListener('DOMContentLoaded', async () => {
       wrapper.style.width = _currentDesign.tagDimensions.width + 'px';
       wrapper.style.height = _currentDesign.tagDimensions.height + 'px';
 
-      _tagRoot = await TagRenderer.buildTagElement(_currentDesign, getValues(), _photoDataURL);
+      _tagRoot = await TagRenderer.buildTagElement(_currentDesign, getValues(), _photoDataURL, { watermark: true });
       _tagRoot.id = 'theTag';
 
       // Fade in the real tag, remove skeleton
