@@ -521,7 +521,7 @@
         const isPaid = orderData && (orderData.status === 'paid' || orderData.payment_status === 'paid');
         const driveUrl = isPaid && orderData?.driveFileUrl ? orderData.driveFileUrl : null;
 
-        const amountCents = orderData?.amount || 19900;
+        const amountCents = orderData?.amount || 14900;
         const amountDisplay = `₱${(amountCents / 100).toFixed(2)}`;
 
         const finalName = orderData?.name || orderName;

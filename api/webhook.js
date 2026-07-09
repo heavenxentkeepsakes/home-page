@@ -181,7 +181,7 @@ export default async function handler(req, res) {
     const driveFileUrl = metadata.driveFileUrl;
     const driveFileId = metadata.driveFileId;
 
-    const priceCents = metadata.price || 19900;
+    const priceCents = metadata.price || 14900;
     const amount = `₱${(priceCents / 100).toFixed(0)}`;
 
     const ref = metadata.ref || `${type}-${Date.now()}`;

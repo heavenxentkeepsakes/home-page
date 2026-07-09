@@ -651,7 +651,7 @@ async function handleCheckout() {
   btn.disabled = true;
   const priceDisplay = _currentDesign?.price
     ? `₱${(_currentDesign.price / 100).toFixed(0)}`
-    : '₱199';
+    : '₱149';
   btn.innerHTML = `
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
     <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
@@ -692,7 +692,7 @@ async function handleCheckout() {
     console.error(err);
     alert('Something went wrong. Please try again.');
     btn.disabled = false;
-    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Buy & Download PDF — ₱199`;
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Buy & Download PDF — ₱149`;
   }
 }
 
@@ -822,11 +822,11 @@ window.addEventListener('DOMContentLoaded', async () => {
     // Update price on buttons
     const priceDisplay = _currentDesign.price
       ? `₱${(_currentDesign.price / 100).toFixed(0)}`
-      : '₱199';
+      : '₱149';
     const btnDownload = document.getElementById('btnDownload');
     if (btnDownload) {
       btnDownload.innerHTML = `
-        Review & Continue — ${priceDisplay}
+        Preview All 12 Tags
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="5" y1="12" x2="19" y2="12"/>
           <polyline points="12 5 19 12 12 19"/>

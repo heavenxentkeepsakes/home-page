@@ -74,12 +74,12 @@ export default async function handler(req, res) {
                 (payment_id && rowPaymentId === payment_id) ||
                 (session_id && rowPaymentId === session_id)) {
 
-                // Parse amount from sheet (should be like "₱199" or "₱199")
+                // Parse amount from sheet (should be like "₱149" or "₱149")
                 const rawAmount = row[4] || '';
                 const parsedAmount = parseFloat(rawAmount.replace(/[^\d.]/g, ''));
                 const amountCents = !isNaN(parsedAmount)
                   ? (parsedAmount < 1000 ? Math.round(parsedAmount * 100) : Math.round(parsedAmount))
-                  : 19900;
+                  : 14900;
 
                 sheetOrder = {
                   date: row[0],
