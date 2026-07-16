@@ -516,40 +516,51 @@ body::before {
   cursor: wait;
 }
 
-.shopee-result {
-  margin-top: 1rem;
-  background: var(--parchment);
-  border: 1px solid var(--gold-light);
-  border-radius: 10px;
-  padding: 1rem 1.2rem;
+.shopee-result-box {
+  max-width: 420px;
+  text-align: center;
+  padding: 2.5rem 2rem;
+}
+
+.shopee-result-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: white;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.2rem;
 }
 
 .shopee-result-label {
-  font-size: 0.65rem;
+  font-size: 0.68rem;
   font-weight: 500;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--ink-muted);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.9rem;
 }
 
 .shopee-code-row {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  margin-bottom: 0.6rem;
+  margin-bottom: 1rem;
 }
 
 .shopee-code {
   font-family: monospace;
-  font-size: 1.1rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   color: var(--ink);
-  background: var(--warm-white);
-  border: 1px solid var(--gold-light);
-  border-radius: 6px;
-  padding: 0.4rem 0.7rem;
+  background: var(--parchment);
+  border: 1.5px solid var(--gold-light);
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
   flex: 1;
 }
 
@@ -558,30 +569,39 @@ body::before {
   color: var(--cream);
   border: none;
   border-radius: 6px;
-  padding: 0.5rem 0.9rem;
+  padding: 0.65rem 1rem;
   font-size: 0.65rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .shopee-result-note {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: var(--ink-muted);
-  line-height: 1.5;
-  margin-bottom: 0.6rem;
+  line-height: 1.6;
+  margin-bottom: 1.4rem;
 }
 
-.shopee-listing-link {
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: var(--gold-dark);
+.shopee-listing-link-btn {
+  display: block;
+  width: 100%;
+  background: var(--gold);
+  color: var(--ink);
   text-decoration: none;
-  letter-spacing: 0.05em;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0.9rem;
+  border-radius: 8px;
+  transition: background 0.2s;
 }
 
-.shopee-listing-link:hover {
-  text-decoration: underline;
+.shopee-listing-link-btn:hover {
+  background: var(--gold-light);
 }
 
 .gallery-note {

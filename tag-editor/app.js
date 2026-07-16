@@ -620,7 +620,7 @@ async function openPreviewModal() {
   loading.style.display = 'flex';
   _cachedPDFBlob = null;
   _cachedShopeeCode = null;
-  document.getElementById('shopeeResult').style.display = 'none';
+  document.getElementById('shopeeResultModal').classList.remove('open');
 
   // Show the Shopee button only if this design's category has a listing
   const shopeeBtn = document.getElementById('btnShopeeRef');
@@ -792,7 +792,7 @@ async function handleShopeeReference() {
     document.getElementById('shopeeCodeText').textContent = data.code;
     const link = document.getElementById('shopeeListingLink');
     link.href = _currentDesign.shopeeUrl || '#';
-    document.getElementById('shopeeResult').style.display = 'block';
+    document.getElementById('shopeeResultModal').classList.add('open');
 
   } catch (err) {
     console.error(err);
@@ -811,6 +811,10 @@ function copyShopeeCode() {
     btn.textContent = 'Copied!';
     setTimeout(() => { btn.textContent = original; }, 1500);
   });
+}
+
+function closeShopeeResultModal() {
+  document.getElementById('shopeeResultModal').classList.remove('open');
 }
 
 // =====================================================
@@ -1305,4 +1309,5 @@ window.closePreviewModal = closePreviewModal;
 window.handleCheckout = handleCheckout;
 window.handleShopeeReference = handleShopeeReference;
 window.copyShopeeCode = copyShopeeCode;
+window.closeShopeeResultModal = closeShopeeResultModal;
 
