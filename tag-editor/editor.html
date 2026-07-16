@@ -377,9 +377,29 @@
                 <polyline points="7 10 12 15 17 10" />
                 <line x1="12" y1="15" x2="12" y2="3" />
               </svg>
-              Download PDF - ₱149
+              Buy &amp; Download PDF — ₱199
             </button>
             <p class="dl-note">A4 · 12 tags per sheet · High-resolution · Print-ready</p>
+
+            <button class="btn-shopee-ref" id="btnShopeeRef" onclick="handleShopeeReference()" style="display:none">
+              Order Print via Shopee
+            </button>
+          </div>
+
+          <!-- Shopee reference result (hidden until generated) -->
+          <div class="shopee-result" id="shopeeResult" style="display:none">
+            <p class="shopee-result-label">Your Shopee reference code</p>
+            <div class="shopee-code-row">
+              <span class="shopee-code" id="shopeeCodeText"></span>
+              <button class="shopee-copy-btn" id="shopeeCopyBtn" onclick="copyShopeeCode()">Copy</button>
+            </div>
+            <p class="shopee-result-note">
+              Paste this code in your Shopee order note, or send it via Shopee chat — we'll print your exact design.
+              We've also emailed it to you.
+            </p>
+            <a class="shopee-listing-link" id="shopeeListingLink" href="#" target="_blank" rel="noopener">
+              Go to Shopee listing →
+            </a>
           </div>
 
         </div>

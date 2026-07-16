@@ -2,6 +2,7 @@
   {
     "id": "ct001",
     "name": "Merry Little Village",
+    "shopeeUrl": "https://shopee.ph/product/10970421/40122669407/",
     "price": 14900,
     "description": "A cozy holiday scene filled with glowing homes and shared joy.",
     "tagImage": "./christmas-img/tag1.png",
@@ -61,6 +62,7 @@
   {
     "id": "ct002",
     "name": "Holiday Script",
+    "shopeeUrl": "https://shopee.ph/product/10970421/40122669407/",
     "price": 14900,
     "description": "A sophisticated, quiet moment of beauty for a classic gift.",
     "tagImage": "./christmas-img/tag2.png",
@@ -120,6 +122,7 @@
   {
     "id": "ct003",
     "name": "Joyful Gathering",
+    "shopeeUrl": "https://shopee.ph/product/10970421/40122669407/",
     "price": 14900,
     "description": "The heart-filling magic of family coming together at last.",
     "tagImage": "./christmas-img/tag3.png",
@@ -178,6 +181,7 @@
   {
     "id": "ct004",
     "name": "Winter Sketch",
+    "shopeeUrl": "https://shopee.ph/product/10970421/40122669407/",
     "price": 14900,
     "description": "Light, airy strokes with a soft and calming festive charm.",
     "tagImage": "./christmas-img/tag4.png",
@@ -236,6 +240,7 @@
   {
     "id": "ct005",
     "name": "Evergreen Wishes",
+    "shopeeUrl": "https://shopee.ph/product/10970421/40122669407/",
     "price": 14900,
     "description": "Classic greens that bring timeless holiday warmth and joy.",
     "tagImage": "./christmas-img/tag5.png",
@@ -294,6 +299,7 @@
   {
     "id": "ct006",
     "name": "Petal Whimsy",
+    "shopeeUrl": "https://shopee.ph/product/10970421/40122669407/",
     "price": 14900,
     "description": "Playful florals with a lighthearted and festive touch.",
     "tagImage": "./christmas-img/tag6.png",
@@ -352,6 +358,7 @@
   {
     "id": "ct007",
     "name": "Gilded Glow",
+    "shopeeUrl": "https://shopee.ph/product/10970421/40122669407/",
     "price": 14900,
     "description": "A soft golden shimmer inspired by festive evening lights.",
     "tagImage": "./christmas-img/tag7.png",
@@ -410,6 +417,7 @@
   {
     "id": "ct008",
     "name": "Star Lantern",
+    "shopeeUrl": "https://shopee.ph/product/10970421/40122669407/",
     "price": 14900,
     "description": "Spirit of Paskong Pinoy, inspired by glowing holiday stars.",
     "tagImage": "./christmas-img/tag8.png",
@@ -458,7 +466,7 @@
         "fontFamily": "Open Sans, sans-serif",
         "fontSize": "0.9rem",
         "fontWeight": "400",
-        "lineHeight": "1",
+        "lineHeight": "1, ",
         "textTransform": "none",
         "color": "#5a4a40",
         "defaultValue": "FROM:"
@@ -468,6 +476,7 @@
   {
     "id": "ct009",
     "name": "Midnight Spark",
+    "shopeeUrl": "https://shopee.ph/product/10970421/40122669407/",
     "price": 14900,
     "description": "Sleek and luminous, like festive lights in the night sky.",
     "tagImage": "./christmas-img/tag9.png",
@@ -526,6 +535,7 @@
   {
     "id": "ct0010",
     "name": "Blush Wreath",
+    "shopeeUrl": "https://shopee.ph/product/10970421/40122669407/",
     "price": 14900,
     "description": "A soft and welcoming touch of festive greenery and charm.",
     "tagImage": "./christmas-img/tag10.png",
@@ -584,6 +594,7 @@
   {
     "id": "ct0011",
     "name": "Sacred Circle",
+    "shopeeUrl": "https://shopee.ph/product/10970421/40122669407/",
     "price": 14900,
     "description": "Calm and meaningful, with a gentle and peaceful spirit.",
     "tagImage": "./christmas-img/tag11.png",
@@ -642,6 +653,7 @@
   {
     "id": "ct0012",
     "name": "Frost Bloom",
+    "shopeeUrl": "https://shopee.ph/product/10970421/40122669407/",
     "price": 14900,
     "description": "Crisp and refreshing with a subtle festive winter feel.",
     "tagImage": "./christmas-img/tag12.png",

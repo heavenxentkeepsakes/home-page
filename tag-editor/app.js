@@ -577,6 +577,7 @@ function removePhoto() {
 // =====================================================
 
 let _cachedPDFBlob = null;
+let _cachedShopeeCode = null;
 
 async function buildPDFBlob(tagCanvas) {
   const A4_W_MM = 210, A4_H_MM = 297;
@@ -614,25 +615,20 @@ async function openPreviewModal() {
   const loading = document.getElementById('a4Loading');
   const nameEl = document.getElementById('modalDesignName');
 
-  // Sync inline fields → modal fields so validation still works
-  const inlineName = document.getElementById('inlineName')?.value.trim();
-  const inlineEmail = document.getElementById('inlineEmail')?.value.trim();
-  if (inlineName) {
-    const modalName = document.getElementById('checkoutName');
-    if (modalName && !modalName.value) modalName.value = inlineName;
-  }
-  if (inlineEmail) {
-    const modalEmail = document.getElementById('checkoutEmail');
-    if (modalEmail && !modalEmail.value) modalEmail.value = inlineEmail;
-  }
-
   grid.style.display = 'none';
   grid.innerHTML = '';
   loading.style.display = 'flex';
   _cachedPDFBlob = null;
+  _cachedShopeeCode = null;
+  document.getElementById('shopeeResult').style.display = 'none';
+
+  // Show the Shopee button only if this design's category has a listing
+  const shopeeBtn = document.getElementById('btnShopeeRef');
+  if (shopeeBtn) {
+    shopeeBtn.style.display = _currentDesign?.shopeeUrl ? 'block' : 'none';
+  }
 
   if (nameEl && _currentDesign) nameEl.textContent = _currentDesign.name || 'Custom';
-
   modal.classList.add('open');
   document.body.style.overflow = 'hidden';
 
@@ -738,6 +734,83 @@ async function handleCheckout() {
     btn.disabled = false;
     btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Buy & Download PDF — ₱149`;
   }
+}
+
+async function handleShopeeReference() {
+  if (!_currentDesign?.shopeeUrl) return;
+
+  const nameInput = document.getElementById('checkoutName');
+  const emailInput = document.getElementById('checkoutEmail');
+  const fieldError = document.getElementById('checkoutError');
+
+  const customerName = nameInput.value.trim();
+  const customerEmail = emailInput.value.trim();
+
+  nameInput.classList.remove('input-error');
+  emailInput.classList.remove('input-error');
+  fieldError.classList.remove('visible');
+
+  if (!customerName || !customerEmail) {
+    if (!customerName) nameInput.classList.add('input-error');
+    if (!customerEmail) emailInput.classList.add('input-error');
+    fieldError.classList.add('visible');
+    return;
+  }
+
+  const btn = document.getElementById('btnShopeeRef');
+  const originalText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Generating code…';
+
+  try {
+    let blob = _cachedPDFBlob;
+    if (!blob) {
+      const tagCanvas = await TagRenderer.buildTagCanvas(_currentDesign, getValues(), _photoDataURL);
+      blob = await buildPDFBlob(tagCanvas);
+    }
+
+    const arrayBuffer = await blob.arrayBuffer();
+    const base64PDF = btoa(new Uint8Array(arrayBuffer).reduce((d, b) => d + String.fromCharCode(b), ''));
+
+    const res = await fetch('https://api.heavenxentph.com/api/shopee-reference', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: customerName,
+        email: customerEmail,
+        designId: _currentDesign.id,
+        designName: _currentDesign.name,
+        shopeeUrl: _currentDesign.shopeeUrl || '',
+        pdf: base64PDF
+      })
+    });
+
+    const data = await res.json();
+    if (!data.code) throw new Error('No code returned');
+
+    _cachedShopeeCode = data.code;
+    document.getElementById('shopeeCodeText').textContent = data.code;
+    const link = document.getElementById('shopeeListingLink');
+    link.href = _currentDesign.shopeeUrl || '#';
+    document.getElementById('shopeeResult').style.display = 'block';
+
+  } catch (err) {
+    console.error(err);
+    alert('Something went wrong generating your Shopee code. Please try again.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = originalText;
+  }
+}
+
+function copyShopeeCode() {
+  if (!_cachedShopeeCode) return;
+  navigator.clipboard.writeText(_cachedShopeeCode).then(() => {
+    const btn = document.getElementById('shopeeCopyBtn');
+    const original = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = original; }, 1500);
+  });
 }
 
 // =====================================================
@@ -1230,4 +1303,6 @@ window.removePhoto = removePhoto;
 window.handleBuyPDF = openPreviewModal;
 window.closePreviewModal = closePreviewModal;
 window.handleCheckout = handleCheckout;
+window.handleShopeeReference = handleShopeeReference;
+window.copyShopeeCode = copyShopeeCode;
 
