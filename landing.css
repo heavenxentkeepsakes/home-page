@@ -201,9 +201,21 @@ body::after {
   transition: background 0.3s, gap 0.3s;
 }
 
-.l-btn-primary:hover {
-  background: var(--gold-dark);
-  gap: 18px;
+a, button, .l-product, .btn-select-design {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(201, 169, 110, 0.25);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .l-btn-primary:hover {
+    background: var(--gold-dark);
+    gap: 18px;
+  }
+}
+
+.l-btn-primary:active {
+  opacity: 0.85;
+  transform: scale(0.98);
 }
 
 .l-btn-primary--lg {

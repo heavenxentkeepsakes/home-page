@@ -8,6 +8,27 @@ let _fontData = [];
 let _isDropdownOpen = false;
 let _cropper = null;
 
+function showEditorError(message) {
+  const container = document.querySelector('.studio') || document.body;
+  if (document.getElementById('editorErrorBanner')) return;
+  const banner = document.createElement('div');
+  banner.id = 'editorErrorBanner';
+  banner.style.cssText = `
+    background:#fff0db;border:1px solid #b45f1b;border-radius:8px;
+    padding:1rem 1.25rem;margin:1rem 0;font-size:0.85rem;color:#7a4a10;
+    text-align:center;
+  `;
+  banner.innerHTML = `
+    <p style="margin-bottom:0.75rem">We had trouble loading this design.</p>
+    <button id="editorRetryBtn" style="
+      background:#1a1714;color:#faf7f2;border:none;border-radius:6px;
+      padding:0.6rem 1.2rem;font-size:0.75rem;letter-spacing:0.1em;
+      text-transform:uppercase;cursor:pointer;">Try again</button>
+  `;
+  container.prepend(banner);
+  document.getElementById('editorRetryBtn').onclick = () => window.location.reload();
+}
+
 const MAX_CROP_SIZE = 1600;
 const MONTHS = [
   'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -383,6 +404,25 @@ function initDatePicker() {
 // FORM VALUES & TAG UPDATES
 // =====================================================
 
+function saveDraft() {
+  if (!_currentDesign) return;
+  try {
+    sessionStorage.setItem(`draft_${_currentDesign.id}`, JSON.stringify(getValues()));
+  } catch (e) { }
+}
+
+function restoreDraft() {
+  if (!_currentDesign) return;
+  try {
+    const saved = sessionStorage.getItem(`draft_${_currentDesign.id}`);
+    if (!saved) return;
+    const v = JSON.parse(saved);
+    if (v.name1) document.getElementById('name1').value = v.name1;
+    if (v.name2) document.getElementById('name2').value = v.name2;
+    if (v.tagline) document.getElementById('tagline').value = v.tagline;
+  } catch (e) { }
+}
+
 function getValues() {
   const name1El = document.getElementById('name1');
   const name2El = document.getElementById('name2');
@@ -414,7 +454,7 @@ function updateTag() {
   }
 
   clearTimeout(_updateTagTimer);
-  _updateTagTimer = setTimeout(() => doUpdateTag(), 80);
+  _updateTagTimer = setTimeout(() => { doUpdateTag(); saveDraft(); }, 80);
 }
 
 async function doUpdateTag() {
@@ -690,7 +730,11 @@ async function handleCheckout() {
     }
   } catch (err) {
     console.error(err);
-    alert('Something went wrong. Please try again.');
+    const fieldError = document.getElementById('checkoutError');
+    if (fieldError) {
+      fieldError.textContent = 'Something went wrong. Please try again.';
+      fieldError.classList.add('visible');
+    }
     btn.disabled = false;
     btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Buy & Download PDF — ₱149`;
   }
@@ -862,6 +906,10 @@ window.addEventListener('DOMContentLoaded', async () => {
     preloadAllFonts().catch(e => console.warn('Font preload error:', e));
 
     // ── STEP 5: Initialize UI controls ────────────────────────────
+    // Restore any saved draft for this design
+    restoreDraft();
+
+    // Initialize UI
     populateFontDropdown();
     initDropdown();
     updateTag();

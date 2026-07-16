@@ -338,9 +338,16 @@ body::before {
   transition: background 0.2s, transform 0.15s;
 }
 
-.btn-select-design:hover {
-  background: var(--ink-soft);
-  transform: translateY(-1px);
+@media (hover: hover) and (pointer: fine) {
+  .btn-select-design:hover {
+    background: var(--ink-soft);
+    transform: translateY(-1px);
+  }
+}
+
+.btn-select-design:active {
+  opacity: 0.85;
+  transform: scale(0.98);
 }
 
 .btn-select-design svg {
