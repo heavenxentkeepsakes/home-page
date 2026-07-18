@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /success.html
+Disallow: /cancel.html
+Disallow: /api/
+ 
+Sitemap: https://heavenxentph.com/sitemap.xml
