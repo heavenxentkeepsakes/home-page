@@ -130,19 +130,21 @@ export default async function handler(req, res) {
 
     await logReferenceToSheets({ date, name, email, code, driveUrl: driveFileUrl });
 
-    resend.emails.send({
-      from: "HeavenXent Keepsakes <no-reply@heavenxentph.com>",
-      to: email,
-      subject: `Your Shopee order code: ${code}`,
-      text: `Hi ${name},\n\nHere's your reference code for ordering "${designName || designId}" as a printed tag via Shopee:\n\n${code}\n\nHow to use it:\n1. Go to our Shopee listing: ${shopeeUrl || "(link not available)"}\n2. Place your order (selecting a matching design variant helps, but isn't required — we print from your exact saved file either way)\n3. Paste this code in your order note, or send it to us in Shopee chat\n\nWe'll match it to your exact design and print it as-is.\n\nThank you! 💖`,
-    }).catch(err => console.error("⚠️ Buyer email failed (non-fatal):", err.message));
+    await Promise.all([
+      resend.emails.send({
+        from: "HeavenXent Keepsakes <no-reply@heavenxentph.com>",
+        to: email,
+        subject: `Your Shopee order code: ${code}`,
+        text: `Hi ${name},\n\nHere's your reference code for ordering "${designName || designId}" as a printed tag via Shopee:\n\n${code}\n\nHow to use it:\n1. Go to our Shopee listing: ${shopeeUrl || "(link not available)"}\n2. Place your order (selecting a matching design variant helps, but isn't required — we print from your exact saved file either way)\n3. Paste this code in your order note, or send it to us in Shopee chat\n\nWe'll match it to your exact design and print it as-is.\n\nThank you! 💖`,
+      }).catch(err => console.error("⚠️ Buyer email failed (non-fatal):", err.message)),
 
-    resend.emails.send({
-      from: "HeavenXent Keepsakes <no-reply@heavenxentph.com>",
-      to: "heavenxentkeepsakes@gmail.com",
-      subject: `Shopee Ref: ${code} — ${designName || designId}`,
-      text: `New Shopee print reservation.\n\nCode: ${code}\nDesign: ${designName || designId}\nDate: ${date}\nName: ${name}\nEmail: ${email}\nDrive file: ${driveFileUrl}\n\nSearch this code when the matching Shopee order comes in.`,
-    }).catch(err => console.error("⚠️ Business email failed (non-fatal):", err.message));
+      resend.emails.send({
+        from: "HeavenXent Keepsakes <no-reply@heavenxentph.com>",
+        to: "heavenxentkeepsakes@gmail.com",
+        subject: `Shopee Ref: ${code} — ${designName || designId}`,
+        text: `New Shopee print reservation.\n\nCode: ${code}\nDesign: ${designName || designId}\nDate: ${date}\nName: ${name}\nEmail: ${email}\nDrive file: ${driveFileUrl}\n\nSearch this code when the matching Shopee order comes in.`,
+      }).catch(err => console.error("⚠️ Business email failed (non-fatal):", err.message)),
+    ]);
 
     return res.status(200).json({ code, driveFileUrl });
 

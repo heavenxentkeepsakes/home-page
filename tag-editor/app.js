@@ -736,6 +736,18 @@ async function handleCheckout() {
   }
 }
 
+function showShopeeState(state) {
+  const map = {
+    loading: 'shopeeLoadingState',
+    error: 'shopeeErrorState',
+    success: 'shopeeSuccessState'
+  };
+  Object.entries(map).forEach(([key, id]) => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = key === state ? 'block' : 'none';
+  });
+}
+
 async function handleShopeeReference() {
   if (!_currentDesign?.shopeeUrl) return;
 
@@ -757,10 +769,9 @@ async function handleShopeeReference() {
     return;
   }
 
-  const btn = document.getElementById('btnShopeeRef');
-  const originalText = btn.textContent;
-  btn.disabled = true;
-  btn.textContent = 'Generating code…';
+  closePreviewModal(true);
+  showShopeeState('loading');
+  document.getElementById('shopeeResultModal').classList.add('open');
 
   try {
     let blob = _cachedPDFBlob;
@@ -792,15 +803,11 @@ async function handleShopeeReference() {
     document.getElementById('shopeeCodeText').textContent = data.code;
     const link = document.getElementById('shopeeListingLink');
     link.href = _currentDesign.shopeeUrl || '#';
-    window.scrollTo(0, 0);
-    document.getElementById('shopeeResultModal').classList.add('open');
+    showShopeeState('success');
 
   } catch (err) {
     console.error(err);
-    alert('Something went wrong generating your Shopee code. Please try again.');
-  } finally {
-    btn.disabled = false;
-    btn.textContent = originalText;
+    showShopeeState('error');
   }
 }
 
