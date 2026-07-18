@@ -401,22 +401,60 @@
         </svg>
       </button>
 
-      <div class="shopee-result-icon">✓</div>
-      <p class="shopee-result-label">Your Shopee reference code</p>
-
-      <div class="shopee-code-row">
-        <span class="shopee-code" id="shopeeCodeText"></span>
-        <button class="shopee-copy-btn" id="shopeeCopyBtn" onclick="copyShopeeCode()">Copy</button>
+      <div id="shopeeLoadingState" style="display:none; padding: 1.5rem 0;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="32"
+          style="animation:spin 1s linear infinite; color: var(--gold); margin: 0 auto 1.1rem; display:block;">
+          <circle cx="12" cy="12" r="10" stroke-opacity="0.25" />
+          <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round" />
+        </svg>
+        <p class="shopee-result-label" style="margin-bottom:0;">Generating your Shopee code…</p>
       </div>
 
-      <p class="shopee-result-note">
-        Paste this code in your Shopee order note, or send it via Shopee chat — we'll print your exact design.
-        We've also emailed it to you.
-      </p>
+      <div id="shopeeErrorState" style="display:none; padding: 1rem 0;">
+        <p class="shopee-result-note" id="shopeeErrorText">Something went wrong generating your code. Please try again.
+        </p>
+        <button class="shopee-listing-link-btn"
+          style="background:var(--ink); color:var(--cream); border:none; cursor:pointer;"
+          onclick="handleShopeeReference()">Try again</button>
+      </div>
 
-      <a class="shopee-listing-link-btn" id="shopeeListingLink" href="#" target="_blank" rel="noopener">
-        Go to Shopee listing →
-      </a>
+      <div id="shopeeSuccessState" style="display:none;">
+        <div class="shopee-result-icon">✓</div>
+        <p class="shopee-result-label">Design Saved! Here's your code</p>
+
+        <div class="shopee-code-row">
+          <span class="shopee-code" id="shopeeCodeText"></span>
+          <button class="shopee-copy-btn" id="shopeeCopyBtn" onclick="copyShopeeCode()">Copy</button>
+        </div>
+
+        <div class="shopee-set-note">
+          📦 This Shopee listing is for <strong>1 set = 24 pcs (2 copies)</strong>
+        </div>
+
+        <ol class="shopee-steps">
+          <li>
+            <span class="shopee-step-num">1</span>
+            <span class="shopee-step-text">Click the button below to open our Shopee listing</span>
+          </li>
+          <li>
+            <span class="shopee-step-num">2</span>
+            <span class="shopee-step-text">Add to cart and checkout</span>
+          </li>
+          <li>
+            <span class="shopee-step-num">3</span>
+            <span class="shopee-step-text">Copy the code above and paste it in your <strong>order note</strong>, or send
+              it via <strong>Shopee chat</strong> — this tells us your design is ready to print</span>
+          </li>
+        </ol>
+
+        <p class="shopee-result-note">
+          We've also emailed this code to you in case you lose it.
+        </p>
+
+        <a class="shopee-listing-link-btn" id="shopeeListingLink" href="#" target="_blank" rel="noopener">
+          Go to Shopee listing →
+        </a>
+      </div>
     </div>
   </div>
 
