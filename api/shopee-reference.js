@@ -164,7 +164,7 @@ export default async function handler(req, res) {
       }).catch(err => console.error("⚠️ Business email failed (non-fatal):", err.message)),
     ]);
 
-    return res.status(200).json({ code, driveFileUrl });
+    return res.status(200).json({ code });
 
   } catch (err) {
     console.error("❌ Backend error:", err);
