@@ -792,6 +792,7 @@ async function handleShopeeReference() {
     document.getElementById('shopeeCodeText').textContent = data.code;
     const link = document.getElementById('shopeeListingLink');
     link.href = _currentDesign.shopeeUrl || '#';
+    window.scrollTo(0, 0);
     document.getElementById('shopeeResultModal').classList.add('open');
 
   } catch (err) {

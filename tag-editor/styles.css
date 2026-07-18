@@ -584,6 +584,15 @@ body::before {
   margin-bottom: 1.4rem;
 }
 
+#shopeeResultModal {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 1200; /* higher than previewModal's 900 */
+}
+
 .shopee-listing-link-btn {
   display: block;
   width: 100%;
