@@ -161,13 +161,16 @@ async function loadThumbnailForCard(design, card, requestId) {
     tagEl.style.boxShadow = '0 8px 28px rgba(90,60,40,0.22)';
 
     const wrapper = document.createElement('div');
+    wrapper.setAttribute('role', 'img');
+    wrapper.setAttribute('aria-label', `${design.name} — ${design.description}`);
     wrapper.style.cssText = `
-      width: 130px;
-      height: ${Math.round(design.tagDimensions.height * scale)}px;
-      overflow: hidden;
-      position: relative;
-      border-radius: ${Math.round(16 * scale)}px;
-    `;
+    width: ${THUMB_W}px;
+    height: ${scaledH}px;
+    overflow: hidden;
+    position: relative;
+    border-radius: ${Math.round(16 * scale)}px;
+    background: #e8ddd4;
+  `;
     wrapper.appendChild(tagEl);
 
     thumb.innerHTML = '';
