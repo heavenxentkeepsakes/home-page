@@ -151,8 +151,10 @@ async function loadThumbnailForCard(design, card, requestId) {
     const tagEl = await window.TagRenderer.buildTagElement(design, sampleValues, photoDataURL);
     if (requestId !== _loadRequestId) return;
 
+    const THUMB_W = 130;
     const W = design.tagDimensions.width;
-    const scale = 130 / W;
+    const scale = THUMB_W / W;
+    const scaledH = Math.round(design.tagDimensions.height * scale);
     tagEl.style.transformOrigin = 'top left';
     tagEl.style.transform = `scale(${scale})`;
     tagEl.style.position = 'absolute';
